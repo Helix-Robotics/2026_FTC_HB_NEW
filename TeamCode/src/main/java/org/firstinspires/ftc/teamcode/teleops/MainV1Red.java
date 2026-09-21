@@ -316,11 +316,18 @@ public class MainV1Red extends MainV0Red {
     public void telementryRoadRunner(Telemetry telemetry, TelemetryPacket packet) {
         Pose2d pose = localizer.getPose();
 
-        telemetry.addData("Robot X", pose.position.x);
-        packet.put("Robot X", pose.position.x);
+        telemetry.addData("Robot X inch", pose.position.x);
+        packet.put("Robot X inch", pose.position.x);
 
-        telemetry.addData("Robot Y", pose.position.y);
-        packet.put("Robot Y", pose.position.y);
+        telemetry.addData("Robot Y inches", pose.position.y);
+        packet.put("Robot Y inches", pose.position.y);
+
+        int ticksX = localizer.driver.getEncoderX();
+        int ticksY = localizer.driver.getEncoderY();
+        telemetry.addData("Robot X ticks", ticksX);
+        packet.put("Robot X ticks", ticksX);
+        telemetry.addData("Robot Y ticks", ticksY);
+        packet.put("Robot Y ticks", ticksY);
 
         double headingDegrees = Math.toDegrees(pose.heading.toDouble());
 
