@@ -21,13 +21,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave and Park Close Auto", group = "Autonomous")
-public class RedLeaveParkCloseAuto extends LinearOpMode {
+@Autonomous(name = "Blue Leave and Park Close Auto", group = "Autonomous")
+public class BlueLeaveParkCloseAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(7.5, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(-20.0, -72.5, Math.toRadians(90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -43,7 +43,7 @@ public class RedLeaveParkCloseAuto extends LinearOpMode {
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
 
-                .strafeToConstantHeading(new Vector2d(12.0, 51.0));
+                .strafeToConstantHeading(new Vector2d(-25.0, -70));
 
 
 
