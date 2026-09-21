@@ -39,11 +39,12 @@ public class ShooterTest extends OpMode {
 
     @Override
     public void init() {
-        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
-        leftMotor = hardwareMap.get(DcMotorEx.class, "left");
-        rightMotor = hardwareMap.get(DcMotorEx.class, "right");
+        leftMotor = hardwareMap.get(DcMotorEx.class, "leftmotor");
+        rightMotor = hardwareMap.get(DcMotorEx.class, "rightmotor");
         telemetry.addData("Status", "Initialized");
+
+        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /*
@@ -66,10 +67,14 @@ public class ShooterTest extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.dpad_up) {
-            leftMotor.setPower(1);
+            leftMotor.setPower(-1);
             rightMotor.setPower(1);
         }
-        else {
+        if (gamepad1.dpad_down) {
+            leftMotor.setPower(1);
+            rightMotor.setPower(-1);
+        }
+        if (gamepad1.dpad_left){
             leftMotor.setPower(0);
             rightMotor.setPower(0);
         }
