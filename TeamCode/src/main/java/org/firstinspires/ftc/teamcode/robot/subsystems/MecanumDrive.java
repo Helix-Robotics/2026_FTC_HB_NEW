@@ -865,9 +865,9 @@ public final class MecanumDrive {
         return localizer;
     }
 
-    //public Vision getVision(){
-        //return helixLocalizer.getVision();   just for now
-    //}
+    public Vision getVision(){
+        return helixLocalizer.getVision();
+    }
 
     public IMU getIMU(){
         return lazyImu.get();
