@@ -166,7 +166,7 @@ public class MainV1Red extends MainV0Red {
         }
 
         if (gamepad2.right_trigger > 0.5) {
-            robot.shoot();
+            robot.shoot(true);
         }
         else if (gamepad2.dpad_down) {robot.setFeeder(-1);}
 

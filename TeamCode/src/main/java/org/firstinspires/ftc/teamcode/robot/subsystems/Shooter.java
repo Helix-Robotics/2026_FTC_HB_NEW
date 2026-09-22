@@ -31,35 +31,131 @@ public class Shooter {
     protected double minVelocity;
 
 
+    private Shooter.LaunchState launchState = LaunchState.IDLE;
+
+    private int readyCount = 0;
+    private int feedDelayCount = 0;
+
+    private int count = 0;
+
+    private static final int READY_CYCLES = 5; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
+    public static final int FEED_DELAY_CYCLES = 3; //3;
 
 
-    public Shooter (HardwareMap hw) {
+    public enum LaunchState {
+        IDLE,
+        FEEDING_WAIT,
+        LAUNCH,
+        LAUNCHING,
+    }
+
+
+    public Shooter(HardwareMap hw) {
         shooter = hw.get(DcMotorEx.class, "shooter");
         feeder = new Feeder(hw);
         intake = new Intake(hw);
     }
-    public void shoot() {
 
 
-        updateShooterPID();
+    public void shoot(boolean shotRequested) {
+        switch (launchState) {
+            case IDLE:
+                if (shotRequested) {
+                    count = 0;
+                    updateShooterPID();
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(TARGET_VELOCITY);
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                    launchState = LaunchState.FEEDING_WAIT;
+                }
+                break;
 
-        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooter.setVelocity(TARGET_VELOCITY);
-        if (shooter.getVelocity() >= TARGET_VELOCITY - 20) {
-            feederTimer.reset();
-            feeder.setFeeder(1);
-            intake.setPower(-0.75);
-//            if (feederTimer.seconds() <= 1.0) {
-//                feeder.setFeeder(1);
-//                intake.setPower(-0.75);
-//            }
+
+
+
+            case FEEDING_WAIT:
+                shooter.setVelocity(TARGET_VELOCITY);
+                if (isReady()) {
+                    if (readyCount < READY_CYCLES) {
+                        readyCount++;
+                        feedDelayCount = 0; // don't start feed delay yet
+                    } else {
+                        // Shooter has been in band long enough,
+                        // now count extra cycles as feed delay
+                        launchState = LaunchState.FEEDING_WAIT;
+                        feedDelayCount++;
+                    }
+                    if (readyCount >= READY_CYCLES && feedDelayCount >= FEED_DELAY_CYCLES) {
+                        launchState = LaunchState.LAUNCH; //goes back
+                    }
+                } else {
+                    // Lost stability - reset both
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(TARGET_VELOCITY);
+                feeder.feed();
+                feederTimer.reset();
+                launchState = LaunchState.LAUNCHING;
+                break;
+
+            case LAUNCHING:
+                shooter.setVelocity(TARGET_VELOCITY);
+
+                // Keep the feeder running long enough to move one ball.
+                if (feederTimer.milliseconds() < 250) {
+                    break;
+                }
+
+                feeder.stopfeed();
+                count++;
+
+                if (count < 4) {
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                    launchState = LaunchState.FEEDING_WAIT;
+                } else {
+                    shooter.setVelocity(0);
+                    launchState = LaunchState.IDLE;
+                }
+                break;
+
+
+
+
+
         }
-//        else {
-//            feeder.setFeeder(0);
-////            shooter.setVelocity(TARGET_VELOCITY/2);
-////            intake.setPower(0.0);
-//        }
     }
+
+
+
+    public boolean isReady() {
+
+        double vel = shooter.getVelocity();
+        return vel >= TARGET_VELOCITY - 20.0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void stop() {
         shooter.setVelocity(0);
         feeder.setFeeder(0);
@@ -94,19 +190,10 @@ public class Shooter {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            shoot();
-            if (shooter.getVelocity() >= (TARGET_VELOCITY - 20)) {
-                feederTimer.reset();
-                if (feederTimer.seconds() <= 2.0) {
-                    return true;
-                } else {
-                    feeder.setFeeder(0);
-                    shooter.setVelocity(TARGET_VELOCITY/2);
-                    intake.setPower(0.0);
-                    return false;
-
-                }
-
+            shoot(true);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
             }
             return false;
         }

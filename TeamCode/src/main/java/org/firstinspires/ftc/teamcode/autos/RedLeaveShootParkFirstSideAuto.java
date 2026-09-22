@@ -72,9 +72,6 @@ public class RedLeaveShootParkFirstSideAuto extends LinearOpMode {
         runActionSafely(
                 new SequentialAction(
                         trajectoryActionChosen,
-                        robot.shooter.launchAction(),
-                        robot.shooter.launchAction(),
-                        robot.shooter.launchAction(),
                         robot.shooter.launchAction()
 
 
