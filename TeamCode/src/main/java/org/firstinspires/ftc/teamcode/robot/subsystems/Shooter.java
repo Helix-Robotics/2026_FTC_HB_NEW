@@ -29,6 +29,8 @@ public class Shooter {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
+    public static double shot_count = 6;
+
     protected double targetVelocity;
     protected double minVelocity;
 
@@ -60,7 +62,7 @@ public class Shooter {
     }
 
 
-    public void shoot(boolean shotRequested) {
+    public void shoot(boolean shotRequested, int shot_count) {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
@@ -101,7 +103,8 @@ public class Shooter {
 
             case LAUNCH:
                 shooter.setVelocity(TARGET_VELOCITY);
-                feeder.feed();
+                intake.setPower(-0.75);
+                feeder.slowfeed();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
                 break;
@@ -114,9 +117,10 @@ public class Shooter {
                 }
 
                 feeder.stopfeed();
+                intake.setPower(0);
                 count++;
 
-                if (count < 4) {
+                if (count < shot_count) {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
@@ -192,7 +196,7 @@ public class Shooter {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            shoot(true);
+            shoot(true, 6);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

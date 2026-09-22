@@ -86,8 +86,8 @@ public abstract class CommandAbstract {
         //intake.update();
     }
 
-    public void shoot(boolean requested) {
-        shooter.shoot(requested);
+    public void shoot(boolean requested, int shot_count) {
+        shooter.shoot(requested, shot_count);
     }
 
     public void stopshoot() {
