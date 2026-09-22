@@ -10,12 +10,10 @@ public class BreakBeamTest extends OpMode {
     DigitalChannel breakBeam;
 
     Servo light;
-
     private static final double COLOR_RED = 0.2000;
 
     private static final double COLOR_GREEN  = 0.5700;
-
-    private static final double OFF = 0.0000;
+    long count = 0;
 
     @Override
     public void init() {
@@ -32,12 +30,17 @@ public class BreakBeamTest extends OpMode {
 
     @Override
     public void loop() {
-        if (breakBeam.getState() == true) {
-            telemetry.addLine("no balls");
-            light.setPosition(COLOR_GREEN);
-        } else {
+
+        if (breakBeam.getState() == false) {
+            count = System.currentTimeMillis() + 200;
+        }
+
+        if (System.currentTimeMillis() < count) {
             telemetry.addLine("ball is going through");
             light.setPosition(COLOR_RED);
+        } else {
+            telemetry.addLine("no balls");
+            light.setPosition(COLOR_GREEN);
         }
 
         telemetry.update();
