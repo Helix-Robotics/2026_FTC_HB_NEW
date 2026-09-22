@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
+import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -40,6 +42,7 @@ public class Shooter {
 
     private static final int READY_CYCLES = 5; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
     public static final int FEED_DELAY_CYCLES = 3; //3;
+
 
 
     public enum LaunchState {
@@ -105,8 +108,8 @@ public class Shooter {
 
             case LAUNCHING:
                 shooter.setVelocity(TARGET_VELOCITY);
-                
-                if (feederTimer.milliseconds() < 250) {
+
+                if (feederTimer.milliseconds() < feed_ms) {
                     break;
                 }
 

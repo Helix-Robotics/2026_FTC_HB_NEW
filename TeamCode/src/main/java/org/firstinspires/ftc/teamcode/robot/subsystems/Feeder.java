@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Feeder {
     public CRServo feeder;
 
+    public static double feed_ms = 250;
+
     public Feeder(HardwareMap hw){
         feeder = hw.get(CRServo.class, "feeder");
     }
