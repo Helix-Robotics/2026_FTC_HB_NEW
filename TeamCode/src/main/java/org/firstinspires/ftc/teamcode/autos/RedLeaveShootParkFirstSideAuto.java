@@ -21,8 +21,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave and Park Far Auto", group = "Autonomous")
-public class RedLeaveParkFarAuto extends LinearOpMode {
+@Autonomous(name = "Red Leave Shoot Park First Side Auto", group = "Autonomous")
+public class RedLeaveShootParkFirstSideAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
@@ -41,10 +41,8 @@ public class RedLeaveParkFarAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(-45.0, 32.5))
-                .strafeToConstantHeading(new Vector2d(45.0, 32.5))
-                .strafeToConstantHeading(new Vector2d(45.0, 47.0));
+                .strafeToLinearHeading(new Vector2d(-67.5, 5.0), Math.toRadians(-179.0));
+
 
 
 
@@ -73,7 +71,11 @@ public class RedLeaveParkFarAuto extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
-                        trajectoryActionChosen
+                        trajectoryActionChosen,
+                        robot.shooter.launchAction(),
+                        robot.shooter.launchAction(),
+                        robot.shooter.launchAction(),
+                        robot.shooter.launchAction()
 
 
                 ), 30.0);

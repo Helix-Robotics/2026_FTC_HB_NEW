@@ -86,8 +86,8 @@ public abstract class CommandAbstract {
         //intake.update();
     }
 
-    public void shoot(double targetVel) {
-        shooter.shoot(targetVel);
+    public void shoot() {
+        shooter.shoot();
     }
 
     public void stopshoot() {

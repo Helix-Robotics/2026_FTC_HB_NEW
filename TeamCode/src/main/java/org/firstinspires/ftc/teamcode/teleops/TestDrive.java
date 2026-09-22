@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import java.util.List;
 
 
-@TeleOp(name = "Main Code")
-public class MainV1Red extends MainV0Red {
+@TeleOp(name = "Drive Test 1 Controller")
+public class TestDrive extends MainV0Red {
 
     Intake intake;
     boolean intaking = false;
@@ -27,7 +27,7 @@ public class MainV1Red extends MainV0Red {
 
 
 
-  
+
     @Override
     public void init() {
         // tune inPerTick for ur drivetrain encoders
@@ -47,7 +47,7 @@ public class MainV1Red extends MainV0Red {
         // keep subsystems updated
         robot.update();
         robot.setintakePower(intakePower);
-        if (gamepad2.rightBumperWasPressed())
+        if (gamepad1.rightBumperWasPressed())
         {
             if (!outtaking)
             {
@@ -61,7 +61,7 @@ public class MainV1Red extends MainV0Red {
                 intakePower = 0.0;
             }
         }
-        if (gamepad2.leftBumperWasPressed()) {
+        if (gamepad1.leftBumperWasPressed()) {
             if (!intaking) {
                 intaking = true;
                 outtaking = false;
@@ -103,42 +103,42 @@ public class MainV1Red extends MainV0Red {
         //double distance = robot.getDistanceFromGoal(); just for now
 
         /**
-        if (!robot.getIsBlue()){
-            distance = distance+0.1;
-        }
-        **/
+         if (!robot.getIsBlue()){
+         distance = distance+0.1;
+         }
+         **/
 
         double hoodTarget = 0;
         double rpmTarget = 0;
 
         /**  Limelight Aiming Seperate Logic Functions
-        if(gamepad1.dpad_left &&  distance>0) { //This is for the close to tip shot
-            double dCalc = 2.25; //we will cap at the distance we use
-            if (distance < dCalc)
-                dCalc = distance;
-            hoodTarget = robot.calculateHoodAngle(dCalc);
-            rpmTarget = robot.calculateShooterRPM(dCalc);
+         if(gamepad1.dpad_left &&  distance>0) { //This is for the close to tip shot
+         double dCalc = 2.25; //we will cap at the distance we use
+         if (distance < dCalc)
+         dCalc = distance;
+         hoodTarget = robot.calculateHoodAngle(dCalc);
+         rpmTarget = robot.calculateShooterRPM(dCalc);
 
-            robot.setHoodTarget(hoodTarget);
-            robot.shooter.rpmSet(rpmTarget);
-            robot.shooter.spinUpShooter();
-            robot.aimAtTag(robot.getCameraTagX());
-        }
-        robot.turnToTag(gamepad1.dpadLeftWasPressed());
+         robot.setHoodTarget(hoodTarget);
+         robot.shooter.rpmSet(rpmTarget);
+         robot.shooter.spinUpShooter();
+         robot.aimAtTag(robot.getCameraTagX());
+         }
+         robot.turnToTag(gamepad1.dpadLeftWasPressed());
 
-        if(gamepad1.dpad_right &&  distance>0) { //This is for the fence shot
-            double dCalc = 2.25; //we will cap at the distance we use
-            if (distance < dCalc)
-                dCalc = distance;
-            hoodTarget = robot.hood.calculateFencePositionToShoot(dCalc);
-            rpmTarget = robot.shooter.calculateFenceRpmToShoot(dCalc);
+         if(gamepad1.dpad_right &&  distance>0) { //This is for the fence shot
+         double dCalc = 2.25; //we will cap at the distance we use
+         if (distance < dCalc)
+         dCalc = distance;
+         hoodTarget = robot.hood.calculateFencePositionToShoot(dCalc);
+         rpmTarget = robot.shooter.calculateFenceRpmToShoot(dCalc);
 
-            robot.setHoodTarget(hoodTarget);
-            robot.shooter.rpmSet(rpmTarget);
-            robot.shooter.spinUpShooter();
-            robot.aimAtTag(robot.getCameraTagX());
-        }
-        robot.turnToTag(gamepad1.dpadRightWasPressed());
+         robot.setHoodTarget(hoodTarget);
+         robot.shooter.rpmSet(rpmTarget);
+         robot.shooter.spinUpShooter();
+         robot.aimAtTag(robot.getCameraTagX());
+         }
+         robot.turnToTag(gamepad1.dpadRightWasPressed());
          **/
 
         //robot.turnToTag(gamepad1.dpadRightWasPressed()); // aims at april tag
@@ -150,7 +150,7 @@ public class MainV1Red extends MainV0Red {
 
         /** SHOOTING STUFF **/
         //goal - close
-        if (gamepad2.left_trigger == 1.0){
+        if (gamepad1.left_trigger == 1.0){
 
         }
         /** Current Shooting Spot is Against Goal, slightly a bit to the left **/
@@ -165,10 +165,10 @@ public class MainV1Red extends MainV0Red {
             bindCommonDriveTrain();
         }
 
-        if (gamepad2.right_trigger > 0.5) {
+        if (gamepad1.right_trigger > 0.5) {
             robot.shoot();
         }
-        else if (gamepad2.dpad_down) {robot.setFeeder(-1);}
+        else if (gamepad1.dpad_down) {robot.setFeeder(-1);}
 
         else {
             robot.stopshoot();
@@ -185,8 +185,8 @@ public class MainV1Red extends MainV0Red {
         //close to tip - further away
 
 
-            // This is limelight shooting
-        if (gamepad2.right_bumper){
+        // This is limelight shooting
+        if (gamepad1.right_bumper){
 
         }
 
@@ -251,63 +251,63 @@ public class MainV1Red extends MainV0Red {
     }
 
     /**
-    protected void telemetryAlignment(Telemetry telemetry, TelemetryPacket packet){
-        telemetry.addData("Tag X", robot.getVision().getTagX());
-        packet.put("Tag X", robot.getVision().getTagX());
-    }
+     protected void telemetryAlignment(Telemetry telemetry, TelemetryPacket packet){
+     telemetry.addData("Tag X", robot.getVision().getTagX());
+     packet.put("Tag X", robot.getVision().getTagX());
+     }
      **/
 
     /**
-    protected void telemetryEssentials(Telemetry telemetry, TelemetryPacket packet, double distance){
+     protected void telemetryEssentials(Telemetry telemetry, TelemetryPacket packet, double distance){
 
 
 
-        telemetry.addData("Shooter2 Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
-        telemetry.addData("Shooter2 Distance to Goal - Fused", robot.getDistanceFromGoal());
-        packet.put("Shooter2 Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
-        packet.put("Shooter2 Distance to Goal - Fused", robot.getDistanceFromGoal());
+     telemetry.addData("Shooter2 Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
+     telemetry.addData("Shooter2 Distance to Goal - Fused", robot.getDistanceFromGoal());
+     packet.put("Shooter2 Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
+     packet.put("Shooter2 Distance to Goal - Fused", robot.getDistanceFromGoal());
 
-        telemetry.addData("Shooter3 Robot Align to Goal", robot.getAlignStatus());
-        packet.put("Shooter3 Robot Align to Goal", robot.getAlignStatus());
+     telemetry.addData("Shooter3 Robot Align to Goal", robot.getAlignStatus());
+     packet.put("Shooter3 Robot Align to Goal", robot.getAlignStatus());
 
-        telemetry.addData("Data to Goal - Vision", robot.getDistanceFromTag());
-        packet.put("Data to Goal - Vision", robot.getDistanceFromTag());
-    }
+     telemetry.addData("Data to Goal - Vision", robot.getDistanceFromTag());
+     packet.put("Data to Goal - Vision", robot.getDistanceFromTag());
+     }
 
 
-    protected void telemetryLocalisation(Telemetry telemetry, TelemetryPacket packet){
-        //pose data for vision
-        telemetry.addData("Vision - pos", robot.getVisionPose());
-        telemetry.addData("Odo - pos", robot.getPodPose());
-        telemetry.addData("Fused - pos", robot.drivetrain.getHelixLocalizer().getFusedPos());
-        telemetry.addData("Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
-        telemetry.addData("Last Visible Vision Pos", robot.drivetrain.getHelixLocalizer().getLastVisVisionPose2d());
-        telemetry.addData("Last Visible Odo Pos", robot.drivetrain.getHelixLocalizer().getLastVisOdoPose2d());
-        telemetry.addData("Data to Goal - Vision", robot.getDistanceFromTag());
-        telemetry.addData("Data to Goal - Fused", robot.getDistanceFromGoal());
-        packet.put("Vision - pos", robot.getVisionPose());
-        packet.put("Odo - pos", robot.getPodPose());
-        packet.put("Fused - pos", robot.drivetrain.getHelixLocalizer().getFusedPos());
-        packet.put("Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
-        packet.put("Last Visible Vision Pos", robot.drivetrain.getHelixLocalizer().getLastVisVisionPose2d());
-        packet.put("Last Visible Odo Pos", robot.drivetrain.getHelixLocalizer().getLastVisOdoPose2d());
-        packet.put("Data to Goal - Vision", robot.getDistanceFromTag());
-        packet.put("Data to Goal - Fused", robot.getDistanceFromGoal());
-    }
+     protected void telemetryLocalisation(Telemetry telemetry, TelemetryPacket packet){
+     //pose data for vision
+     telemetry.addData("Vision - pos", robot.getVisionPose());
+     telemetry.addData("Odo - pos", robot.getPodPose());
+     telemetry.addData("Fused - pos", robot.drivetrain.getHelixLocalizer().getFusedPos());
+     telemetry.addData("Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
+     telemetry.addData("Last Visible Vision Pos", robot.drivetrain.getHelixLocalizer().getLastVisVisionPose2d());
+     telemetry.addData("Last Visible Odo Pos", robot.drivetrain.getHelixLocalizer().getLastVisOdoPose2d());
+     telemetry.addData("Data to Goal - Vision", robot.getDistanceFromTag());
+     telemetry.addData("Data to Goal - Fused", robot.getDistanceFromGoal());
+     packet.put("Vision - pos", robot.getVisionPose());
+     packet.put("Odo - pos", robot.getPodPose());
+     packet.put("Fused - pos", robot.drivetrain.getHelixLocalizer().getFusedPos());
+     packet.put("Fused - data source", robot.drivetrain.getHelixLocalizer().getFusedDateSource());
+     packet.put("Last Visible Vision Pos", robot.drivetrain.getHelixLocalizer().getLastVisVisionPose2d());
+     packet.put("Last Visible Odo Pos", robot.drivetrain.getHelixLocalizer().getLastVisOdoPose2d());
+     packet.put("Data to Goal - Vision", robot.getDistanceFromTag());
+     packet.put("Data to Goal - Fused", robot.getDistanceFromGoal());
+     }
      **/
 
 
     /**public void telementryRoadRunner(Telemetry telemetry, TelemetryPacket packet){
-        Pose2d pose = localizer.getPose();
-        telemetry.addData("Robot X", pose.position.x);
-        packet.put("Robot X", pose.position.x);
+     Pose2d pose = localizer.getPose();
+     telemetry.addData("Robot X", pose.position.x);
+     packet.put("Robot X", pose.position.x);
 
-        telemetry.addData("Robot Y", pose.position.y);
-        packet.put("Robot Y", pose.position.y);
+     telemetry.addData("Robot Y", pose.position.y);
+     packet.put("Robot Y", pose.position.y);
 
-        telemetry.addData("heading", pose.heading);
-        packet.put("heading", pose.heading);
-    }
+     telemetry.addData("heading", pose.heading);
+     packet.put("heading", pose.heading);
+     }
      **/
 
     public void telementryRoadRunner(Telemetry telemetry, TelemetryPacket packet) {
