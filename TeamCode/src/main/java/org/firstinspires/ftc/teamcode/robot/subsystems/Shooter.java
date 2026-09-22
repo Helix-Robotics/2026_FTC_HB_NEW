@@ -105,8 +105,7 @@ public class Shooter {
 
             case LAUNCHING:
                 shooter.setVelocity(TARGET_VELOCITY);
-
-                // Keep the feeder running long enough to move one ball.
+                
                 if (feederTimer.milliseconds() < 250) {
                     break;
                 }
