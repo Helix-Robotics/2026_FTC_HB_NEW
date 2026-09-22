@@ -28,7 +28,7 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-45.0, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(7.5, 55.0, Math.toRadians(-90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -43,11 +43,10 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-67.5, 5.0), Math.toRadians(-179.0));
+                .strafeToLinearHeading(new Vector2d(53, 0.0), Math.toRadians(0));
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-53.0, 5.0), Math.toRadians(-179.0))
-                .strafeToLinearHeading(new Vector2d(-67.67, 53.0), Math.toRadians(90.0));
+                .strafeToLinearHeading(new Vector2d(28.5, 50.0), Math.toRadians(90.0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
@@ -93,11 +92,14 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
-                        robot.vision.checkForRedSideTag()
+                        trajectoryActionChosen,
+                        robot.vision.checkForRedSideTag(),
+                        robot.shooter.launchAction(),
+                        trajectoryActionChosen2
                         //robot.intake.spinUpIntake()
 
 
-                        // if there is 25s left in the auto, just make a thing to make it park 
+                        // if there is 25s left in the auto, just make a thing to make it park
 
 
 
