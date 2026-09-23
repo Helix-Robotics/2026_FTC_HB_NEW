@@ -16,6 +16,7 @@ public class Light {
     public final double blue = 0.611;
     public final double indigo = 0.666;
     public final double purple = 0.722;
+    public final double pink = 0.820;
     public final double white = 1.000;
 
 
@@ -34,5 +35,6 @@ public class Light {
     public void blue() {setColour(blue);}
     public void indigo() {setColour(indigo);}
     public void purple() {setColour(purple);}
+    public void pink() {setColour(pink);}
     public void white() {setColour(white);}
 }

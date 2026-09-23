@@ -75,8 +75,8 @@ public class Shooter {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
-                    light.red();
                 }
+                light.pink();
                 break;
 
 
@@ -170,6 +170,7 @@ public class Shooter {
     public void stop() {
         shooter.setVelocity(0);
         feeder.setFeeder(0);
+        light.pink();
     }
 
     public void setShooterPID(double kp, double ki, double kd, double kf) {
