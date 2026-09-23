@@ -22,13 +22,17 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
+@Autonomous(name = "Blue Leave Shoot Park Main Side Auto", group = "Autonomous")
+public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(7.5, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(30.0, -72.5, Math.toRadians(90.0));
+
+
+
+
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -41,14 +45,23 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
 
-
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(53, 0.0), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(52.5, -22.5), Math.toRadians(0));
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(28.5, 50.0), Math.toRadians(90.0));
+                .strafeToLinearHeading(new Vector2d(38.0, -22.5), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(52.67, -71.0), Math.toRadians(-90.0));
 
 
+
+
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90.0));
+
+
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0));
 
 
 
@@ -78,24 +91,22 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         Action trajectoryActionChosen = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
-
+        Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
 
 
 
         runActionSafely(
                 new SequentialAction(
                         trajectoryActionChosen,
-                        robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
-                        trajectoryActionChosen2
-                        //robot.intake.spinUpIntake()
-
-
-                        // if there is 25s left in the auto, just make a thing to make it park
-
-
-
-
+                        new ParallelAction(
+                                robot.intake.spinUpIntake(),
+                                trajectoryActionChosen2
+                        ),
+                        trajectoryActionChosen3,
+                        robot.intake.stopIntake(),
+                        trajectoryActionChosen4
 
 
 

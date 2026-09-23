@@ -22,13 +22,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
+@Autonomous(name = "Blue Leave Shoot Park Passive Side Auto", group = "Autonomous")
+public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(7.5, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(-22.0, -71.0, Math.toRadians(90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -43,11 +43,13 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(53, 0.0), Math.toRadians(0));
+                .strafeToConstantHeading(new Vector2d(-22.0, -50.0))
+
+                .strafeToLinearHeading(new Vector2d(-70, -16.0), Math.toRadians(179.0));
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(28.5, 50.0), Math.toRadians(90.0));
-
+                .strafeToConstantHeading(new Vector2d(-60.0, -16.0))
+                .strafeToLinearHeading(new Vector2d(-55.5, -65.0), Math.toRadians(90.0));
 
 
 
@@ -85,7 +87,7 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
         runActionSafely(
                 new SequentialAction(
                         trajectoryActionChosen,
-                        robot.vision.checkForRedSideTag(),
+                        robot.vision.checkForBlueSideTag(),
                         robot.shooter.launchAction(),
                         trajectoryActionChosen2
                         //robot.intake.spinUpIntake()
@@ -99,7 +101,7 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
 
-                ), 30.0);
+                ), 30000.0);
 
 
 
