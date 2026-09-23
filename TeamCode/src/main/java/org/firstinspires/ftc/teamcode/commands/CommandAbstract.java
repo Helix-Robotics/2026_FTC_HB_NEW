@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Vision;
@@ -19,6 +20,7 @@ public abstract class CommandAbstract {
     public Intake intake;
     public Feeder feeder;
     public Shooter shooter;
+    public Light light;
 
 
     //private LedController ledController;
@@ -64,6 +66,7 @@ public abstract class CommandAbstract {
         intake = new Intake(hardwareMap);
         feeder = new Feeder(hardwareMap);
         shooter = new Shooter(hardwareMap);
+        light = new Light(hardwareMap);
 
         vision = drivetrain.getVision();
 
@@ -103,6 +106,17 @@ public abstract class CommandAbstract {
     public void setintakePower(double intakepower){
         intake.setPower(intakepower);
     }
+
+    public void red() {light.red();}
+    public void orange() {light.orange();}
+    public void yellow() {light.yellow();}
+    public void lgreen() {light.lgreen();}
+    public void green() {light.green();}
+    public void azure() {light.azure();}
+    public void blue() {light.blue();}
+    public void indigo() {light.indigo();}
+    public void purple() {light.purple();}
+    public void white() {light.white();}
 
 //    public void setintake(double power) {intake.setintake(power);}
 

@@ -19,6 +19,7 @@ public class Shooter {
     public Feeder feeder;
 
     public Intake intake;
+    public Light light;
 
     private final ElapsedTime feederTimer = new ElapsedTime();
     public static double TARGET_VELOCITY = 1250; //2678 RPM
@@ -59,6 +60,7 @@ public class Shooter {
         shooter = hw.get(DcMotorEx.class, "shooter");
         feeder = new Feeder(hw);
         intake = new Intake(hw);
+        light = new Light(hw);
     }
 
 
@@ -73,6 +75,7 @@ public class Shooter {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
+                    light.red();
                 }
                 break;
 
@@ -107,6 +110,7 @@ public class Shooter {
                 feeder.slowfeed();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
+                light.yellow();
                 break;
 
             case LAUNCHING:
@@ -127,6 +131,7 @@ public class Shooter {
                 } else {
                     shooter.setVelocity(0);
                     launchState = LaunchState.IDLE;
+                    light.green();
                 }
                 break;
 
