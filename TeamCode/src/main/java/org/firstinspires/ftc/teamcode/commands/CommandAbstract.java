@@ -116,6 +116,7 @@ public abstract class CommandAbstract {
     public void blue() {light.blue();}
     public void indigo() {light.indigo();}
     public void purple() {light.purple();}
+    public void pink() {light.pink();}
     public void white() {light.white();}
 
 //    public void setintake(double power) {intake.setintake(power);}
