@@ -101,40 +101,61 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
 
-                ), 30000.0);
+                ), 30.0, 25.0);
 
 
 
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds) {
+    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
-
-        timer.reset();
+        boolean goingHome = false;
 
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
-            boolean stillRunning = action.run(packet);
 
-            if (!stillRunning) {
+            if (!goingHome && timer.seconds() > goHome) {
+                goingHome = true;
+
+                robot.stopshoot();
+
+                robot.setintakePower(0);
+
+                MecanumDrive md = robot.drivetrain;
+                Localizer localizer = md.getLocalizer();
+                localizer.update();
+
+                action = robot.drivetrain
+                        .actionBuilder(localizer.getPose())
+                        .strafeToConstantHeading(new Vector2d(-60.0, -16.0))
+                        .strafeToLinearHeading(new Vector2d(-55.5, -65.0), Math.toRadians(90.0))
+                        .build();
+            }
+
+            if (!action.run(packet)) {
                 break;
             }
 
-            telemetry.addData("RoadRunner", "Running");
+
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
-
             idle();
         }
 
-        // Final safety stop
+
+
+
+
+        robot.stopshoot();
+        robot.setFeeder(0);
+        robot.setintakePower(0);
+
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
                         new Vector2d(0, 0),
                         0
                 )
         );
-
     }
 
 }
