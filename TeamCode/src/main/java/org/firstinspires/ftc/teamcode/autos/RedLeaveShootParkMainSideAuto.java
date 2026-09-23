@@ -28,7 +28,7 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-45.0, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(-67.5, 5.0, Math.toRadians(-179.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -41,10 +41,9 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
 
 
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-67.5, 5.0), Math.toRadians(-179.0));
 
-        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
+
+        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
                 .strafeToLinearHeading(new Vector2d(-53.0, 5.0), Math.toRadians(-179.0))
                 .strafeToLinearHeading(new Vector2d(-67.67, 53.0), Math.toRadians(90.0));
 
@@ -83,7 +82,7 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen = tab1.build();
+
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
@@ -92,7 +91,7 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
-                        trajectoryActionChosen,
+
                         robot.shooter.launchAction(),
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),

@@ -28,7 +28,7 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(30.0, -72.5, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(52.5, -22.5, Math.toRadians(0));
 
 
 
@@ -40,13 +40,12 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
-
-
-
-
-
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(52.5, -22.5), Math.toRadians(0));
+                .strafeToConstantHeading(new Vector2d(51.5, -22.5));
+
+
+
+
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(38.0, -22.5), Math.toRadians(0))
