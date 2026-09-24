@@ -56,7 +56,10 @@ public class ShooterV2 extends Shooter {
                     updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(V2_TARGET_VELOCITY);
+                    feeder.closeGate();
+                    feeder.stopfeed();
                     intake.setPower(-0.75);
+
                     readyCountV2 = 0;
                     feedDelayCountV2 = 0;
                     launchStateV2 = LaunchStateV2.FEEDING_WAIT;
@@ -67,6 +70,7 @@ public class ShooterV2 extends Shooter {
             case FEEDING_WAIT:
                 shooter.setVelocity(V2_TARGET_VELOCITY);
                 intake.setPower(-0.75);
+                feeder.closeGate();
 
                 if (isReadyV2()) {
                     if (readyCountV2 < V2_READY_CYCLES) {
@@ -88,6 +92,7 @@ public class ShooterV2 extends Shooter {
             case LAUNCH:
                 shooter.setVelocity(V2_TARGET_VELOCITY);
                 intake.setPower(-0.75);
+                feeder.openGate();
                 feeder.feed();
                 feederTimerV2.reset();
                 launchStateV2 = LaunchStateV2.LAUNCHING;
@@ -103,6 +108,7 @@ public class ShooterV2 extends Shooter {
                 }
 
                 feeder.stopfeed();
+                feeder.closeGate();
                 countV2++;
 
                 if (countV2 < 0) {
@@ -131,6 +137,10 @@ public class ShooterV2 extends Shooter {
         readyCountV2 = 0;
         feedDelayCountV2 = 0;
         countV2 = 0;
+    }
+
+    public LaunchStateV2 getLaunchState(){
+        return launchStateV2;
     }
 
     private class LaunchV2 implements Action {

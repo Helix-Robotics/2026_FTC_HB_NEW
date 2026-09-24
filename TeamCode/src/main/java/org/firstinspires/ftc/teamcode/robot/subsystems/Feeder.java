@@ -45,4 +45,12 @@ public class Feeder {
 
         //compatible with v2 robot, it wont do anything for v1 robot
     }
+
+    public void closeGate() {
+
+    }
+
+    public void openGate() {
+
+    }
 }
