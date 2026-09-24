@@ -131,8 +131,8 @@ public class MainV1Red extends MainV0Red {
 
     public void telemetryFeeder(Telemetry telemetry, TelemetryPacket packet) {
         double feederPower = robot.feeder.getPower();
-        telemetry.addData("Intake Power", feederPower);
-        packet.put("Intake Power", feederPower);
+        telemetry.addData("Feeder Power", feederPower);
+        packet.put("Feeder Power", feederPower);
     }
 
     public void telemetryShooter(Telemetry telemetry, TelemetryPacket packet) {

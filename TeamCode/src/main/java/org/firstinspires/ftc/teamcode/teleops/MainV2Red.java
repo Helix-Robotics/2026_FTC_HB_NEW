@@ -21,13 +21,8 @@ public class MainV2Red extends MainV1Red {
 
     @Override
     public void init() {
-        Intake intake = new Intake(hardwareMap);
-        FeederV2 feederV2 = new FeederV2(hardwareMap);
-        robot.feederDirection(true);
-        Light light = new Light(hardwareMap);
-        ShooterV2 shooter = new ShooterV2(hardwareMap, feederV2, intake, light);
-
         robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
+        robot.feederDirection(true);
 
         stateMachine = StateMachine.WAITING_FOR_START;
     }
@@ -37,6 +32,7 @@ public class MainV2Red extends MainV1Red {
         // keep subsystems updated
         robot.update();
         robot.intake.update();
+        robot.feeder.update();
 
         /** Driver Operations **/
         // drivetrain
@@ -89,7 +85,9 @@ public class MainV2Red extends MainV1Red {
         if (gamepad2.right_trigger > 0.5) {
             robot.shoot(true, 5);
         }
-        else {
+        if (gamepad2.left_trigger > 0.5){
+            //Comment out fo debug
+            //We dont kjnow what is impact
             robot.stopshoot();
         }
 
@@ -114,8 +112,8 @@ public class MainV2Red extends MainV1Red {
     @Override
     public void telemetryFeeder(Telemetry telemetry, TelemetryPacket packet) {
         double feederPower = robot.feeder.getPower();
-        telemetry.addData("Intake Power", feederPower);
-        packet.put("Intake Power", feederPower);
+        telemetry.addData("feeder Power", feederPower);
+        packet.put("feeder Power", feederPower);
 
         double gatePos = robot.feeder.getGatePos();
         telemetry.addData("Gate Pos", gatePos);

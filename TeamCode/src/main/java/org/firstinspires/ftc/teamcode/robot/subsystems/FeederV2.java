@@ -35,13 +35,26 @@ public class FeederV2 extends Feeder{
 
     @Override
     public void setPower(double power) {
+        this.power = power;
         feeder.setPower(power);
     }
 
     @Override
+    public double getPower(){
+        return feeder.getPower();
+    }
+
+    public void feed() {
+
+        setPower(-1.0);
+        openGate();
+    }
+
+
+    @Override
     public void slowfeed() {
 
-        setPower(0.7);
+        setPower(-0.7);
         closeGate();
     }
 
@@ -49,12 +62,12 @@ public class FeederV2 extends Feeder{
     public void stopfeed() {
 
         setPower(0);
-        openGate();
+        closeGate();
     }
 
     public void reverseFeed() {
 
-        setPower(-1);
+        setPower(1);
         closeGate();
     }
 
@@ -65,7 +78,7 @@ public class FeederV2 extends Feeder{
 
     @Override
     public double getGatePos(){
-        return gatePos;
+        return gate.getPosition();
     }
     @Override
     public void closeGate() {
