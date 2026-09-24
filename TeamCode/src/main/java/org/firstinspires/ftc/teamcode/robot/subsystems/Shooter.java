@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
+//import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
 
 import androidx.annotation.NonNull;
 
@@ -16,17 +16,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 @Config
 public class Shooter {
+    //devices
     public DcMotorEx shooter;
     public Feeder feeder;
-
-    public FeederV2 feederv2;
-
     public Intake intake;
     public Light light;
 
+    //configurations
     private final ElapsedTime feederTimer = new ElapsedTime();
     public static double TARGET_VELOCITY = 1250; //2678 RPM
-    public static double MIN_VELOCITY = 1200; //2571 RPM
+    public static double MIN_VELOCITY = 1230; // 1200; //2571 RPM
 
     public static double SHOOTER_P = 12;
     public static double SHOOTER_I = 0;
@@ -49,6 +48,9 @@ public class Shooter {
     private static final int READY_CYCLES = 5; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
     public static final int FEED_DELAY_CYCLES = 3; //3;
 
+    protected int readyCycles = 0;
+    protected int feedDelayCycles = 0;
+
 
 
     public enum LaunchState {
@@ -64,11 +66,14 @@ public class Shooter {
         this.feeder = feeder;
         this.intake = intake;
         this.light = light;
-        //feeder = new Feeder(hw);
-        //intake = new Intake(hw);
-        //light = new Light(hw);
+        setShooterVelocity();
+        setCycles();
     }
 
+    public void setCycles(){
+        readyCycles = READY_CYCLES;
+        feedDelayCycles = FEED_DELAY_CYCLES;
+    }
 
     public void shoot(boolean shotRequested, int shot_count) {
         switch (launchState) {
@@ -77,7 +82,9 @@ public class Shooter {
                     count = 0;
                     updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    shooter.setVelocity(TARGET_VELOCITY);
+                    shooter.setVelocity(targetVelocity);
+                    feeder.stopfeed();
+                    intake.hold();
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
@@ -85,13 +92,10 @@ public class Shooter {
                 }
                 break;
 
-
-
-
             case FEEDING_WAIT:
-                shooter.setVelocity(TARGET_VELOCITY);
+                shooter.setVelocity(targetVelocity);
                 if (isReady()) {
-                    if (readyCount < READY_CYCLES) {
+                    if (readyCount < readyCycles) {
                         readyCount++;
                         feedDelayCount = 0; // don't start feed delay yet
                     } else {
@@ -100,7 +104,7 @@ public class Shooter {
                         launchState = LaunchState.FEEDING_WAIT;
                         feedDelayCount++;
                     }
-                    if (readyCount >= READY_CYCLES && feedDelayCount >= FEED_DELAY_CYCLES) {
+                    if (readyCount >= readyCycles && feedDelayCount >= feedDelayCycles) {
                         launchState = LaunchState.LAUNCH; //goes back
                     }
                 } else {
@@ -111,8 +115,8 @@ public class Shooter {
                 break;
 
             case LAUNCH:
-                shooter.setVelocity(TARGET_VELOCITY);
-                intake.setPower(-0.75);
+                shooter.setVelocity(targetVelocity);
+                intake.hold();
                 feeder.slowfeed();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
@@ -120,14 +124,14 @@ public class Shooter {
                 break;
 
             case LAUNCHING:
-                shooter.setVelocity(TARGET_VELOCITY);
+                shooter.setVelocity(targetVelocity);
 
-                if (feederTimer.milliseconds() < feed_ms) {
+                if (feederTimer.milliseconds() < feeder.getFeedMs()) {
                     break;
                 }
 
                 feeder.stopfeed();
-                intake.setPower(0);
+                intake.stop();
                 count++;
 
                 if (count < shot_count) {
@@ -141,10 +145,6 @@ public class Shooter {
                 }
                 break;
 
-
-
-
-
         }
     }
 
@@ -153,29 +153,13 @@ public class Shooter {
     public boolean isReady() {
 
         double vel = shooter.getVelocity();
-        return vel >= TARGET_VELOCITY - 20.0;
+        return vel >= minVelocity;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public void stop() {
         shooter.setVelocity(0);
-        feeder.setPower(0);
+        feeder.stopfeed();
+        intake.stopIntake();
     }
 
     public void setShooterPID(double kp, double ki, double kd, double kf) {
@@ -197,6 +181,9 @@ public class Shooter {
     }
 
 
+    public LaunchState getLaunchState() {
+        return launchState;
+    }
 
     public class Launch implements Action {
 

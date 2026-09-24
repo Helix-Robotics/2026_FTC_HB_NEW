@@ -9,18 +9,35 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Feeder {
     public CRServo feeder;
 
-    public static double feed_ms = 3000;
+    protected double feedMs = 0;
+    public static double FEED_MS = 3000;
 
+    public boolean  hasGate = false;
+
+    public double power = 0.0;
+    public double position = 0;
 
     public Feeder(HardwareMap hw){
         feeder = hw.get(CRServo.class, "feeder");
+        updateFeedMs();
     }
 
     public Feeder(){
+
         feeder = null;
+        updateFeedMs();
+    }
+
+    public void updateFeedMs(){
+        this.feedMs = FEED_MS;
+    }
+
+    public double getFeedMs(){
+        return feedMs;
     }
 
     public void setPower(double power){
+        this.power = power;
         feeder.setPower(power);
     }
 
@@ -37,20 +54,32 @@ public class Feeder {
     }
 
     public void reverseFeed() {
+        setPower(-1.0);
+    }
 
-        //compatible with v2 robot, it wont do anything for v1 robot
+    public double getPower(){
+        return power;
+    }
+
+    public boolean hasGate(){
+        return hasGate;
     }
 
     public void setReverse(boolean reverse) {
-
-        //compatible with v2 robot, it wont do anything for v1 robot
+        //We can't set reverse in Feeder with servo
     }
 
     public void closeGate() {
+        //v1 doesn't have gate
 
     }
 
     public void openGate() {
+        //v1 doesn't have gate
+    }
 
+    public double getGatePos(){
+        //V1 doesn't have gate
+        return -1000;
     }
 }

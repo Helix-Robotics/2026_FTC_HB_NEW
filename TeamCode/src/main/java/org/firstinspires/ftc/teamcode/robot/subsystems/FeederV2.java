@@ -14,15 +14,23 @@ public class FeederV2 extends Feeder{
 
     public Servo gate;
 
-    public static double feed_ms = 500;
+    private static double FEED_MS_V2 = 500;
+
+    private double gatePos;
 
 
     public FeederV2(HardwareMap hw) {
         super();
         feeder = hw.get(DcMotorEx.class, "feeder");
-
+        hasGate = true;
         gate = hw.get(Servo.class, "gate");
         gate.setDirection(Servo.Direction.REVERSE);
+        closeGate();
+    }
+
+    @Override
+    public void updateFeedMs(){
+        this.feedMs = FEED_MS_V2;
     }
 
     @Override
@@ -32,28 +40,44 @@ public class FeederV2 extends Feeder{
 
     @Override
     public void slowfeed() {
+
         setPower(0.7);
+        closeGate();
     }
 
     @Override
     public void stopfeed() {
+
         setPower(0);
+        openGate();
     }
 
     public void reverseFeed() {
+
         setPower(-1);
+        closeGate();
+    }
+
+    public void setGatePosition(double pos){
+        gatePos = pos;
+        gate.setPosition(pos);
     }
 
     @Override
+    public double getGatePos(){
+        return gatePos;
+    }
+    @Override
     public void closeGate() {
-        gate.setPosition(0);
+        setGatePosition(0);
     }
 
     @Override
     public void openGate() {
-        gate.setPosition(0.25);
+        setGatePosition(0.25);
     }
 
+    @Override
     public void setReverse(boolean reverse) {
         if (reverse) {
             feeder.setDirection(DcMotorSimple.Direction.REVERSE);

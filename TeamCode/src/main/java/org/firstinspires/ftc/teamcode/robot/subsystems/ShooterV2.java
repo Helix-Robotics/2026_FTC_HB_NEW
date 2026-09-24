@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
-
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -20,23 +17,10 @@ public class ShooterV2 extends Shooter {
     public static double V2_SHOOTER_D = 1.25;
     public static double V2_SHOOTER_F = 14.5;
     public static double V2_TARGET_VELOCITY = -1140;
+    public static double V2_MIN_VELOCITY = -1120;
 
     public static int V2_READY_CYCLES = 1;
     public static int V2_FEED_DELAY_CYCLES = 1;
-
-    private final ElapsedTime feederTimerV2 = new ElapsedTime();
-
-    private LaunchStateV2 launchStateV2 = LaunchStateV2.IDLE;
-    private int readyCountV2 = 0;
-    private int feedDelayCountV2 = 0;
-    private int countV2 = 0;
-
-    public enum LaunchStateV2 {
-        IDLE,
-        FEEDING_WAIT,
-        LAUNCH,
-        LAUNCHING
-    }
 
     public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
@@ -47,6 +31,19 @@ public class ShooterV2 extends Shooter {
         setShooterPID(V2_SHOOTER_P, V2_SHOOTER_I, V2_SHOOTER_D, V2_SHOOTER_F);
     }
 
+    @Override
+    public void setShooterVelocity() {
+        this.targetVelocity = V2_TARGET_VELOCITY;
+        this.minVelocity = V2_MIN_VELOCITY;
+    }
+
+    @Override
+    public void setCycles(){
+        readyCycles = V2_READY_CYCLES;
+        feedDelayCycles = V2_FEED_DELAY_CYCLES;
+    }
+
+    /*
     @Override
     public void shoot(boolean shotRequested, int requestedShotCount) {
         switch (launchStateV2) {
@@ -123,32 +120,19 @@ public class ShooterV2 extends Shooter {
                 }
                 break;
         }
-    }
-
-    public boolean isReadyV2() {
-        return shooter.getVelocity() < V2_TARGET_VELOCITY + 20.0;
-    }
+    }*/
 
     @Override
-    public void stop() {
-        super.stop();
-        intake.setPower(0);
-        launchStateV2 = LaunchStateV2.IDLE;
-        readyCountV2 = 0;
-        feedDelayCountV2 = 0;
-        countV2 = 0;
-    }
-
-    public LaunchStateV2 getLaunchState(){
-        return launchStateV2;
+    public boolean isReady() {
+        return shooter.getVelocity() < minVelocity;
     }
 
     private class LaunchV2 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             shoot(true, 6);
-            packet.put("Launch V2 Status:", launchStateV2);
-            return launchStateV2 != LaunchStateV2.IDLE;
+            packet.put("Launch V2 Status:", getLaunchState());
+            return getLaunchState() != LaunchState.IDLE;
         }
     }
 

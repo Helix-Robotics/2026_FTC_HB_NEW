@@ -153,9 +153,9 @@ public abstract class CommandAbstract {
 
     public void feederDirection(boolean reverse) {feeder.setReverse(reverse);}
 
-    public void setintakePower(double intakepower){
+    /*public void setintakePower(double intakepower){
         intake.setPower(intakepower);
-    }
+    }*/
 
     public void red() {light.red();}
     public void orange() {light.orange();}
