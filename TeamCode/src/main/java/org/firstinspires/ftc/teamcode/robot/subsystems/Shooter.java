@@ -19,6 +19,8 @@ public class Shooter {
     public DcMotorEx shooter;
     public Feeder feeder;
 
+    public FeederV2 feederv2;
+
     public Intake intake;
     public Light light;
 
@@ -57,11 +59,14 @@ public class Shooter {
     }
 
 
-    public Shooter(HardwareMap hw) {
+    public Shooter(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         shooter = hw.get(DcMotorEx.class, "shooter");
-        feeder = new Feeder(hw);
-        intake = new Intake(hw);
-        light = new Light(hw);
+        this.feeder = feeder;
+        this.intake = intake;
+        this.light = light;
+        //feeder = new Feeder(hw);
+        //intake = new Intake(hw);
+        //light = new Light(hw);
     }
 
 
@@ -170,7 +175,7 @@ public class Shooter {
 
     public void stop() {
         shooter.setVelocity(0);
-        feeder.setFeeder(0);
+        feeder.setPower(0);
     }
 
     public void setShooterPID(double kp, double ki, double kd, double kf) {

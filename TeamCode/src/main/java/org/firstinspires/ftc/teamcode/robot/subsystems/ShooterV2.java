@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
 
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -14,14 +15,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 public class ShooterV2 extends Shooter {
 
-    public static double V2_SHOOTER_P = 12;
+    public static double V2_SHOOTER_P = 27.5;
     public static double V2_SHOOTER_I = 0;
-    public static double V2_SHOOTER_D = 0.5;
-    public static double V2_SHOOTER_F = 11.75;
-    public static double V2_TARGET_VELOCITY = 1250;
+    public static double V2_SHOOTER_D = 1.25;
+    public static double V2_SHOOTER_F = 14.5;
+    public static double V2_TARGET_VELOCITY = -1140;
 
-    public static int V2_READY_CYCLES = 5;
-    public static int V2_FEED_DELAY_CYCLES = 3;
+    public static int V2_READY_CYCLES = 1;
+    public static int V2_FEED_DELAY_CYCLES = 1;
 
     private final ElapsedTime feederTimerV2 = new ElapsedTime();
 
@@ -37,8 +38,8 @@ public class ShooterV2 extends Shooter {
         LAUNCHING
     }
 
-    public ShooterV2(HardwareMap hw) {
-        super(hw);
+    public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
+        super(hw, feeder, intake, light);
     }
 
     @Override
@@ -46,7 +47,8 @@ public class ShooterV2 extends Shooter {
         setShooterPID(V2_SHOOTER_P, V2_SHOOTER_I, V2_SHOOTER_D, V2_SHOOTER_F);
     }
 
-    public void shootv2(boolean shotRequested, int requestedShotCount) {
+    @Override
+    public void shoot(boolean shotRequested, int requestedShotCount) {
         switch (launchStateV2) {
             case IDLE:
                 if (shotRequested) {
@@ -54,6 +56,7 @@ public class ShooterV2 extends Shooter {
                     updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(V2_TARGET_VELOCITY);
+                    intake.setPower(-0.75);
                     readyCountV2 = 0;
                     feedDelayCountV2 = 0;
                     launchStateV2 = LaunchStateV2.FEEDING_WAIT;
@@ -63,6 +66,7 @@ public class ShooterV2 extends Shooter {
 
             case FEEDING_WAIT:
                 shooter.setVelocity(V2_TARGET_VELOCITY);
+                intake.setPower(-0.75);
 
                 if (isReadyV2()) {
                     if (readyCountV2 < V2_READY_CYCLES) {
@@ -84,7 +88,7 @@ public class ShooterV2 extends Shooter {
             case LAUNCH:
                 shooter.setVelocity(V2_TARGET_VELOCITY);
                 intake.setPower(-0.75);
-                feeder.slowfeed();
+                feeder.feed();
                 feederTimerV2.reset();
                 launchStateV2 = LaunchStateV2.LAUNCHING;
                 light.yellow();
@@ -92,21 +96,22 @@ public class ShooterV2 extends Shooter {
 
             case LAUNCHING:
                 shooter.setVelocity(V2_TARGET_VELOCITY);
+                intake.setPower(-0.75);
 
                 if (feederTimerV2.milliseconds() < feed_ms) {
                     break;
                 }
 
                 feeder.stopfeed();
-                intake.setPower(0);
                 countV2++;
 
-                if (countV2 < requestedShotCount) {
+                if (countV2 < 0) {
                     readyCountV2 = 0;
                     feedDelayCountV2 = 0;
                     launchStateV2 = LaunchStateV2.FEEDING_WAIT;
                 } else {
                     shooter.setVelocity(0);
+                    intake.setPower(0);
                     launchStateV2 = LaunchStateV2.IDLE;
                     light.green();
                 }
@@ -114,13 +119,8 @@ public class ShooterV2 extends Shooter {
         }
     }
 
-    @Override
-    public void shoot(boolean shotRequested, int requestedShotCount) {
-        shootv2(shotRequested, requestedShotCount);
-    }
-
     public boolean isReadyV2() {
-        return shooter.getVelocity() > V2_TARGET_VELOCITY - 20.0;
+        return shooter.getVelocity() < V2_TARGET_VELOCITY + 20.0;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class ShooterV2 extends Shooter {
     private class LaunchV2 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            shootv2(true, 6);
+            shoot(true, 6);
             packet.put("Launch V2 Status:", launchStateV2);
             return launchStateV2 != LaunchStateV2.IDLE;
         }

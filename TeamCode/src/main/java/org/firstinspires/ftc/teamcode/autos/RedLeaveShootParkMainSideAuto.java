@@ -149,7 +149,7 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
 
         robot.stopshoot();
-        robot.setFeeder(0);
+        robot.setPower(0);
         robot.setintakePower(0);
 
         robot.drivetrain.setDrivePowers(
