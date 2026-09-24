@@ -48,7 +48,7 @@ public class TestDrive extends MainV1Red {
     public void loop() {
         // keep subsystems updated
         robot.update();
-        robot.setintakePower(intakePower);
+        robot.intake.stop();
         if (gamepad1.rightBumperWasPressed())
         {
             if (!outtaking)

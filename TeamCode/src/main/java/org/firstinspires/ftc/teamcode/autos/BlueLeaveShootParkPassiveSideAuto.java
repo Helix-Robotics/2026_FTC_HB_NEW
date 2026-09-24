@@ -112,7 +112,7 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
                 robot.stopshoot();
 
-                robot.setintakePower(0);
+                robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -141,7 +141,7 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         robot.stopshoot();
         robot.setPower(0);
-        robot.setintakePower(0);
+        robot.intake.stop();
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
