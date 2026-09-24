@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "Main V0 Red")
+@TeleOp(name = "Main V0 Red (Don't Use!!!)")
 public class MainV0Red extends OpMode {
 
     enum StateMachine {

@@ -4,11 +4,13 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
+import org.firstinspires.ftc.teamcode.robot.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
@@ -20,7 +22,10 @@ public abstract class CommandAbstract {
     public Intake intake;
     public Feeder feeder;
     public Shooter shooter;
+    public ShooterV2 shooterv2;
     public Light light;
+
+    public Gate gate;
 
 
     //private LedController ledController;
@@ -67,12 +72,15 @@ public abstract class CommandAbstract {
         feeder = new Feeder(hardwareMap);
         shooter = new Shooter(hardwareMap);
         light = new Light(hardwareMap);
+        shooterv2 = new ShooterV2(hardwareMap);
+        gate = new Gate(hardwareMap);
 
         vision = drivetrain.getVision();
 
         //ledController = new LedController(hardwareMap);
 
         createShooterInstances();
+
     }
 
     public void setIsBlue(boolean isBlue){
@@ -95,6 +103,10 @@ public abstract class CommandAbstract {
         shooter.shoot(requested, shot_count);
     }
 
+    public void shootv2(boolean requested, int shot_count) {
+        shooterv2.shootv2(requested, shot_count);
+    }
+
     public void stopshoot() {
         shooter.stop();
     }
@@ -106,6 +118,9 @@ public abstract class CommandAbstract {
     }
 
     public void feed() {feeder.feed();}
+
+    public void openGate() {gate.openGate();}
+    public void closeGate() {gate.closeGate();}
 
     public void reverseFeed() {feeder.reverseFeed();}
 
