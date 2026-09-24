@@ -1,5 +1,17 @@
+//MeepMeep done
 
-// 0, 0 is measured by the bottom right of robot touching the middle
+
+
+
+
+
+
+
+
+
+
+
+
 
 package org.firstinspires.ftc.teamcode.autos;
 
@@ -19,15 +31,18 @@ import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Config
 @Autonomous(name = "Blue Leave and Park Far Auto", group = "Autonomous")
 public class BlueLeaveParkFarAuto extends LinearOpMode {
+    private static final Logger log = LoggerFactory.getLogger(BlueLeaveParkFarAuto.class);
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(18.0, -75.0, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(-36, 60.25, Math.toRadians(-90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -42,9 +57,12 @@ public class BlueLeaveParkFarAuto extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(18.0, -52.0))
-                .strafeToConstantHeading(new Vector2d(-69.0, -52.0))
-                .strafeToConstantHeading(new Vector2d(-69.0, -68.0));
+                .strafeToConstantHeading(new Vector2d(-36, 45.0))
+                .strafeToLinearHeading(new Vector2d(28.4, 55.25), Math.toRadians(0));
+
+
+
+
 
 
 

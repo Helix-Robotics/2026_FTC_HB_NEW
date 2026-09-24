@@ -1,5 +1,7 @@
+//MeepMeep done
 
-// 0, 0 is measured by the bottom right of robot touching the middle
+
+
 
 package org.firstinspires.ftc.teamcode.autos;
 
@@ -28,7 +30,7 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-70.0, -16.0, Math.toRadians(179.0));
+        Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(179.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -42,11 +44,8 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-60.0, -16.0))
-                .strafeToLinearHeading(new Vector2d(-55.5, -65.0), Math.toRadians(90.0));
-
-
-
+                .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
+                .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0));
 
 
 

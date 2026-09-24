@@ -1,5 +1,8 @@
+//MeepMeep done
 
-// 0, 0 is measured by the bottom right of robot touching the middle
+
+
+
 
 package org.firstinspires.ftc.teamcode.autos;
 
@@ -27,7 +30,7 @@ public class RedLeaveParkFarAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-45.0, 55.0, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(38, -61.5, Math.toRadians(90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -36,15 +39,11 @@ public class RedLeaveParkFarAuto extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
 
-
-
-
-
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(-45.0, 32.5))
-                .strafeToConstantHeading(new Vector2d(45.0, 32.5))
-                .strafeToConstantHeading(new Vector2d(45.0, 47.0));
+                .strafeToConstantHeading(new Vector2d(38, -46.25))
+                .strafeToLinearHeading(new Vector2d(-17, -61.5), Math.toRadians(0));
+
 
 
 
@@ -74,7 +73,6 @@ public class RedLeaveParkFarAuto extends LinearOpMode {
         runActionSafely(
                 new SequentialAction(
                         trajectoryActionChosen
-
 
                 ), 30.0);
 

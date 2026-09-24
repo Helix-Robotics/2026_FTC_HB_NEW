@@ -43,8 +43,8 @@ public class Shooter {
 
     private int count = 0;
 
-    private static final int READY_CYCLES = 0; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
-    public static final int FEED_DELAY_CYCLES = 0; //3;
+    private static final int READY_CYCLES = 1; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
+    public static final int FEED_DELAY_CYCLES = 1; //3;
 
 
 
