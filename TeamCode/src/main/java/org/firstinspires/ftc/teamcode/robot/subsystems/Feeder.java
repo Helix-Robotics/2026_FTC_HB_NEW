@@ -49,6 +49,10 @@ public class Feeder {
         setPower(power);
     }
 
+    public void intakeSlowFeed(){
+        setPower(0.3);
+    }
+
     public void slowfeed() {
         setPower(0.5);
     }

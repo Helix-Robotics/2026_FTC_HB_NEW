@@ -44,18 +44,23 @@ public class FeederV2 extends Feeder{
         return feeder.getPower();
     }
 
+    @Override
     public void feed() {
-
         setPower(-1.0);
         openGate();
     }
 
+    @Override
+    public void intakeSlowFeed() {
+        setPower(-0.5);
+        closeGate();
+    }
 
     @Override
     public void slowfeed() {
 
         setPower(-0.7);
-        closeGate();
+        openGate();
     }
 
     @Override

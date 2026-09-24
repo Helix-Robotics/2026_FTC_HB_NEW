@@ -59,7 +59,7 @@ public class MainV2Red extends MainV1Red {
                 intaking = false;
                 outtaking = true;
                 robot.intake.in();
-                robot.feeder.slowfeed();
+                robot.feeder.intakeSlowFeed();
             }
             else
             {
