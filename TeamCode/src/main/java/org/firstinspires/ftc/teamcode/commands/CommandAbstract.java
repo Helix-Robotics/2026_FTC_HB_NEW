@@ -99,9 +99,17 @@ public abstract class CommandAbstract {
         shooter.stop();
     }
 
+    public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}
+
     public void setFeeder(double power) {
         feeder.setFeeder(power);
     }
+
+    public void feed() {feeder.feed();}
+
+    public void reverseFeed() {feeder.reverseFeed();}
+
+    public void feederDirection(boolean reverse) {feeder.setReverse(reverse);}
 
     public void setintakePower(double intakepower){
         intake.setPower(intakepower);

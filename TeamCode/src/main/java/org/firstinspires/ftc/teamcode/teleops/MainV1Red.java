@@ -34,6 +34,8 @@ public class MainV1Red extends MainV0Red {
         robot = new CommandsV1(hardwareMap, new Pose2d(0, 0, 0));
         stateMachine = StateMachine.WAITING_FOR_START;
 
+        robot.feederDirection(true);
+
     }
 
 
@@ -168,8 +170,8 @@ public class MainV1Red extends MainV0Red {
         if (gamepad2.right_trigger > 0.5) {
             robot.shoot(true, 5);
         }
-        else if (gamepad2.dpad_down) {robot.setFeeder(-1);}
-
+        else if (gamepad1.dpad_down) {robot.reverseFeed();}
+        else if (gamepad1.dpad_up) {robot.feed();}
         else {
             robot.stopshoot();
         }

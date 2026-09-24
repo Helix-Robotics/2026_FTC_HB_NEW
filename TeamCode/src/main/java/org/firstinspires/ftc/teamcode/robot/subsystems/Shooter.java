@@ -9,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -212,6 +213,16 @@ public class Shooter {
     }
 
     public Action launchAction() {return new Launch(); }
+
+
+    public void setReverse(boolean reverse) {
+        if (reverse) {
+            shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        else {
+            shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+    }
 
 
 }
