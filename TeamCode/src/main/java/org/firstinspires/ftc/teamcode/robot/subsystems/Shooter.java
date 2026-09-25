@@ -130,9 +130,9 @@ public class Shooter {
                     break;
                 }
 
-                feeder.stopfeed();
-                intake.stop();
+
                 count++;
+
 
                 if (count < shot_count) {
                     readyCount = 0;
@@ -142,6 +142,8 @@ public class Shooter {
                     shooter.setVelocity(0);
                     launchState = LaunchState.IDLE;
                     light.green();
+                    feeder.stopfeed();
+                    intake.stop();
                 }
                 break;
 

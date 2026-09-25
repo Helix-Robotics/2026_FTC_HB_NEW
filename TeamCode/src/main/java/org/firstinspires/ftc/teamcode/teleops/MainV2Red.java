@@ -81,6 +81,15 @@ public class MainV2Red extends MainV1Red {
             }
         }
 
+        // test gate
+        if (gamepad1.a) {
+            robot.feeder.openGate();
+        }
+
+        if (gamepad1.b) {
+            robot.feeder.closeGate();
+        }
+
         /** Shooting Related **/
         if (gamepad2.right_trigger > 0.5) {
             robot.shoot(true, 5);
