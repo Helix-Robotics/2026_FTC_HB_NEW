@@ -281,13 +281,13 @@ public final class MecanumDrive {
         public double kA = 0.000015;  //original value 0.000024
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 38; //50
-        public double minProfileAccel = -20; //-40
-        public double maxProfileAccel = 32; //50
+        public double maxWheelVel = 44; //50
+        public double minProfileAccel = -30; //-40
+        public double maxProfileAccel = 41; //50
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI ; // shared with path
-        public double maxAngAccel = Math.PI; // *1.5
+        public double maxAngVel = Math.PI * 1.25 ; // shared with path
+        public double maxAngAccel = Math.PI * 1.25; // *1.5
 
         // path controller gains
         public double axialGain = 6;
@@ -865,9 +865,9 @@ public final class MecanumDrive {
         return localizer;
     }
 
-    //public Vision getVision(){
-        //return helixLocalizer.getVision();   just for now
-    //}
+    public Vision getVision(){
+        return helixLocalizer.getVision();
+    }
 
     public IMU getIMU(){
         return lazyImu.get();

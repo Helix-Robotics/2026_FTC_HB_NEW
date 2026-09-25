@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.utils.PinpointLocalizer;
 public final class HelixLocalisation {
     private static HelixLocalisation helixLocalisation = null;
     public static PinpointLocalizer localizer; //used to be public for the telementry
-    //private static Vision vision;  just for now
+    private static Vision vision;
 
     private String fusedDateSource = "xxx Waiting";
 
@@ -27,9 +27,9 @@ public final class HelixLocalisation {
     }*/
 
     public HelixLocalisation(HardwareMap hardwareMap, double inPerTick, Pose2d initialPos) {
-        //vision = new Vision(hardwareMap); just for now
+        vision = new Vision(hardwareMap);
         Pose2d botPos = null;
-        //botPos = vision.getBotPose(); just for now
+        botPos = vision.getBotPose();
         /**We will use camera botpos to initalise position**/
         /**It seems that it doesn't work**/
         if (botPos != null){
@@ -38,9 +38,9 @@ public final class HelixLocalisation {
         localizer = new PinpointLocalizer(hardwareMap, inPerTick, initialPos);
     }
 
-    //public double getVisionDistanceFromGoal(){
-        //return vision.getDistanceToTagOnField();    this function just for now commented
-    //}
+    public double getVisionDistanceFromGoal(){
+        return vision.getDistanceToTagOnField();
+    }
 
     public double getDistanceFromGoal(boolean isBlue) {
         Pose2d robotPos = getFusedPos();
@@ -63,9 +63,9 @@ public final class HelixLocalisation {
         return localizer;
     }
 
-    //public Vision getVision(){
-        //return vision;    just for now
-    //}
+    public Vision getVision(){
+        return vision;
+    }
 
     public void updateLocalisation() {
         /**We disable botpos update from vision for now**/
@@ -75,33 +75,33 @@ public final class HelixLocalisation {
             localizer.setPose(botPos);
         }**/
         localizer.update();
-        //vision.update(); just for now
+        vision.update();
 
-        //Pose2d pose = getVisionPos(); just for now
+        Pose2d pose = getVisionPos();
 
-        //if (pose != null){
-          //  lastVisInitilised = true;
-            //lastVisVisionPose2d = pose;    just for now full function
-            //lastVisOdoPose2d = getOdoPose();
-        //}
+        if (pose != null){
+            lastVisInitilised = true;
+            lastVisVisionPose2d = pose;
+            lastVisOdoPose2d = getOdoPose();
+        }
     }
 
     public static Pose2d getOdoPose() { return localizer.getPose(); }
-    //public static Pose2d getVisionPos() { return vision.getBotPose(); } just for now
+    public static Pose2d getVisionPos() { return vision.getBotPose(); }
 
     public String getFusedDateSource(){
         return fusedDateSource;
     }
     public Pose2d getFusedPos() {
 
-        //Pose2d visionPos = getVisionPos(); //in meters and radians just for now
+        Pose2d visionPos = getVisionPos(); //in meters and radians just for now
         Pose2d odoPos = getOdoPose(); // in inches and radians
 
         //if we see vison pos, we will return vision bot pos
-        //if(visionPos != null){
-          //  fusedDateSource = "--- Vision";   //this function just for now
-            //return visionPos;
-        //}
+        if(visionPos != null){
+            fusedDateSource = "--- Vision";   //this function just for now
+            return visionPos;
+        }
 
         if (lastVisInitilised == false){
             return null;
