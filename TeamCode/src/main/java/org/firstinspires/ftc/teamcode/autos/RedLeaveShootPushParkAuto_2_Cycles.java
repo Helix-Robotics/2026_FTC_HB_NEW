@@ -140,7 +140,7 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                 robot.stopshoot();
 
-                robot.setintakePower(0);
+
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -167,8 +167,7 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
 
         robot.stopshoot();
-        robot.setFeeder(0);
-        robot.setintakePower(0);
+
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
