@@ -1,22 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
-
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
-@Config
-public class Shooter {
-    public DcMotorEx shooter;
-    public Feeder feeder;
+public class Shooter extends ShooterAbstract {
 
     public Intake intake;
     public Light light;
@@ -147,7 +133,7 @@ public class Shooter {
     public boolean isReady() {
 
         double vel = shooter.getVelocity();
-        return vel >= TARGET_VELOCITY - 20.0;
+        return vel >= minVelocity-1.0;
     }
 
 

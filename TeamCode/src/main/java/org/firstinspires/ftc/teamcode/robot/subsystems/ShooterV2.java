@@ -1,0 +1,150 @@
+package org.firstinspires.ftc.teamcode.robot.subsystems;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+@Config
+public class ShooterV2 extends ShooterAbstract {
+
+    public static double V2_SHOOTER_P = 23.0;
+    public static double V2_SHOOTER_I = 0.0;
+    public static double V2_SHOOTER_D = 1.25;
+    public static double V2_SHOOTER_F = 15.5;
+    public static double V2_TARGET_VELOCITY = 1140.0;
+    public static double V2_MIN_VELOCITY = 1120.0;
+
+    public static int V2_READY_CYCLES = 0;
+    public static int V2_FEED_DELAY_CYCLES = 0;
+
+    public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
+        super(hw, feeder, intake, light);
+    }
+
+    @Override
+    public void updateShooterPID() {
+        setShooterPID(V2_SHOOTER_P, V2_SHOOTER_I, V2_SHOOTER_D, V2_SHOOTER_F);
+    }
+
+    @Override
+    public void setShooterVelocity() {
+        this.targetVelocity = V2_TARGET_VELOCITY;
+        this.minVelocity = V2_MIN_VELOCITY;
+    }
+
+    @Override
+    public void setCycles(){
+        readyCycles = V2_READY_CYCLES;
+        feedDelayCycles = V2_FEED_DELAY_CYCLES;
+    }
+
+    /*
+    @Override
+    public void shoot(boolean shotRequested, int requestedShotCount) {
+        switch (launchStateV2) {
+            case IDLE:
+                if (shotRequested) {
+                    countV2 = 0;
+                    updateShooterPID();
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(V2_TARGET_VELOCITY);
+                    feeder.closeGate();
+                    feeder.stopfeed();
+                    intake.setPower(-0.75);
+
+                    readyCountV2 = 0;
+                    feedDelayCountV2 = 0;
+                    launchStateV2 = LaunchStateV2.FEEDING_WAIT;
+                    light.red();
+                }
+                break;
+
+            case FEEDING_WAIT:
+                shooter.setVelocity(V2_TARGET_VELOCITY);
+                intake.setPower(-0.75);
+                feeder.closeGate();
+
+                if (isReadyV2()) {
+                    if (readyCountV2 < V2_READY_CYCLES) {
+                        readyCountV2++;
+                        feedDelayCountV2 = 0;
+                    } else {
+                        feedDelayCountV2++;
+                    }
+
+                    if (readyCountV2 >= V2_READY_CYCLES && feedDelayCountV2 >= V2_FEED_DELAY_CYCLES) {
+                        launchStateV2 = LaunchStateV2.LAUNCH;
+                    }
+                } else {
+                    readyCountV2 = 0;
+                    feedDelayCountV2 = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(V2_TARGET_VELOCITY);
+                intake.setPower(-0.75);
+                feeder.openGate();
+                feeder.feed();
+                feederTimerV2.reset();
+                launchStateV2 = LaunchStateV2.LAUNCHING;
+                light.yellow();
+                break;
+
+            case LAUNCHING:
+                shooter.setVelocity(V2_TARGET_VELOCITY);
+                intake.setPower(-0.75);
+
+                if (feederTimerV2.milliseconds() < feed_ms) {
+                    break;
+                }
+
+                feeder.stopfeed();
+                feeder.closeGate();
+                countV2++;
+
+                if (countV2 < 0) {
+                    readyCountV2 = 0;
+                    feedDelayCountV2 = 0;
+                    launchStateV2 = LaunchStateV2.FEEDING_WAIT;
+                } else {
+                    shooter.setVelocity(0);
+                    intake.setPower(0);
+                    launchStateV2 = LaunchStateV2.IDLE;
+                    light.green();
+                }
+                break;
+        }
+    }*/
+
+    @Override
+    public boolean isReady() {
+
+
+        double vel = getVelocity();
+
+        boolean isReadyVal = (vel > minVelocity);
+        /*boolean isReadyVal = (vel < -500.0);
+        return isReadyVal;*/
+
+        return isReadyVal;
+    }
+
+    private class LaunchV2 implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            shoot(true, 6);
+            packet.put("Launch V2 Status:", getLaunchState());
+            return getLaunchState() != LaunchState.IDLE;
+        }
+    }
+
+    @Override
+    public Action launchAction() {
+        return new LaunchV2();
+    }
+}

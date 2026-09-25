@@ -4,11 +4,12 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
+
 import org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
@@ -19,7 +20,7 @@ public abstract class CommandAbstract {
     public MecanumDrive drivetrain;
     public Intake intake;
     public Feeder feeder;
-    public Shooter shooter;
+    public ShooterAbstract shooter;
     public Light light;
 
 
@@ -56,23 +57,34 @@ public abstract class CommandAbstract {
 
     public static ALIGN_STATUS alignStatus = ALIGN_STATUS.PENDING;
 
-    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose) {
+    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose){
         this.hardwareMap = hardwareMap;
 
         Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
         drivetrain = new MecanumDrive(hardwareMap, startPose);
         helixLocaliser = drivetrain.getHelixLocalizer();
         localiser = drivetrain.getLocalizer();
-        intake = new Intake(hardwareMap);
-        feeder = new Feeder(hardwareMap);
-        shooter = new Shooter(hardwareMap);
-        light = new Light(hardwareMap);
-
         vision = drivetrain.getVision();
+
+    }
+    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterAbstract shooter) {
+        this(hardwareMap, initialPose);
+
+        this.intake = intake;
+        this.feeder = feeder;
+        this.light = light;
+        this.shooter = shooter;
+        //intake = new Intake(hardwareMap);
+        //feeder = new Feeder(hardwareMap);
+        //light = new Light(hardwareMap);
+        //shooter = new Shooter(hardwareMap, feeder, intake, light);
+        //gate = new Gate(hardwareMap);
+
 
         //ledController = new LedController(hardwareMap);
 
         createShooterInstances();
+
     }
 
     public void setIsBlue(boolean isBlue){
@@ -99,13 +111,49 @@ public abstract class CommandAbstract {
         shooter.stop();
     }
 
-    public void setFeeder(double power) {
-        feeder.setFeeder(power);
+    public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}
+
+    public void setPower(double power) {
+        feeder.setPower(power);
     }
 
-    public void setintakePower(double intakepower){
-        intake.setPower(intakepower);
+    public void setFeeder(Feeder feeder){
+        this.feeder = feeder;
     }
+
+    public void setShooter(ShooterAbstract shooter){
+        this.shooter = shooter;
+    }
+
+    public void setIntake(Intake intake){
+        this.intake = intake;
+    }
+
+    public void setLight(Light light){
+        this.light = light;
+    }
+
+    public Intake getIntake(){
+        return intake;
+    }
+
+    public Feeder getFeeder(){
+        return feeder;
+    }
+
+    public Light getLight(){
+        return light;
+    }
+
+    public void feed() {feeder.feed();}
+
+    public void reverseFeed() {feeder.reverseFeed();}
+
+    public void feederDirection(boolean reverse) {feeder.setReverse(reverse);}
+
+    /*public void setintakePower(double intakepower){
+        intake.setPower(intakepower);
+    }*/
 
     public void red() {light.red();}
     public void orange() {light.orange();}

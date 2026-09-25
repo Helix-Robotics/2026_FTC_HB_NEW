@@ -16,11 +16,30 @@ public class Intake {
         intake = hw.get(DcMotor.class, "intake");
     }
 
-    public void setintake(double power) {
+
+    private void setPower(double power) {
         this.power = power;
-    }
-    public void setPower(double power) {
         intake.setPower(power);
+    }
+
+    public double getPower() {
+        return power;
+    }
+
+    public void hold(){
+        setPower(-0.75);
+    }
+
+    public void stop(){
+        setPower(0);
+    }
+
+    public void out(){
+        setPower(1.0);
+    }
+
+    public void in(){
+        setPower(-1.0);
     }
 
     public void update() {
