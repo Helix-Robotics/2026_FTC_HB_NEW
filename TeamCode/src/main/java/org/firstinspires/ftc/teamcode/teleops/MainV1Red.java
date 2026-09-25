@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 
 import java.util.List;
 
@@ -136,13 +136,39 @@ public class MainV1Red extends MainV0Red {
     }
 
     public void telemetryShooter(Telemetry telemetry, TelemetryPacket packet) {
-        double shootvel = robot.shooter.getVelocity();
+        double shootvel = robot.shooter.getGetVelocity();
         telemetry.addData("Shooter Velocity", shootvel);
         packet.put("Shooter Velocity", shootvel);
 
-        Shooter.LaunchState state = robot.shooter.getLaunchState();
+        double svel = robot.shooter.getVelocity();
+        telemetry.addData("Shooter Velocity 2", svel);
+        packet.put("Shooter Velocity 2", svel);
+
+        ShooterAbstract.LaunchState state = robot.shooter.getLaunchState();
         telemetry.addData("Shooter State", state);
         packet.put("Shooter State", state);
+
+
+        int readyCount = robot.shooter.getReadyCount();
+        telemetry.addData("Shooter Ready Count", readyCount);
+        packet.put("Shooter Ready Count", readyCount);
+
+        int feedDelayCount = robot.shooter.getFeedDelayCount();
+        telemetry.addData("Shooter Feed Count", feedDelayCount);
+        packet.put("Shooter Feed Count", feedDelayCount);
+
+        double minVelocity = robot.shooter.getMinVelocity();
+        telemetry.addData("Shooter Min V", minVelocity);
+        packet.put("Shooter Min V", minVelocity);
+
+        double targetVelocity = robot.shooter.getTargetVelocity();
+        telemetry.addData("Shooter Target V", targetVelocity);
+        packet.put("Shooter Target V", targetVelocity);
+
+        //boolean isReadyVal = robot.shooter.isReady();
+        //telemetry.addData("Shooter Ready", isReadyVal);
+        //packet.put("Shooter Ready", isReadyVal);
+
     }
 
     public void telementryRoadRunner(Telemetry telemetry, TelemetryPacket packet) {

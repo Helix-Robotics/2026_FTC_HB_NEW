@@ -58,8 +58,8 @@ public class MainV2Red extends MainV1Red {
             {
                 intaking = false;
                 outtaking = true;
-                robot.intake.in();
-                robot.feeder.intakeSlowFeed();
+                robot.intake.out();
+                robot.feeder.reverseFeed();
             }
             else
             {
@@ -72,8 +72,8 @@ public class MainV2Red extends MainV1Red {
             if (!intaking) {
                 intaking = true;
                 outtaking = false;
-                robot.intake.out();
-                robot.feeder.reverseFeed();
+                robot.intake.in();
+                robot.feeder.intakeSlowFeed();
             } else {
                 intaking = false;
                 robot.intake.stop();
@@ -82,13 +82,7 @@ public class MainV2Red extends MainV1Red {
         }
 
         // test gate
-        if (gamepad1.a) {
-            robot.feeder.openGate();
-        }
 
-        if (gamepad1.b) {
-            robot.feeder.closeGate();
-        }
 
         /** Shooting Related **/
         if (gamepad2.right_trigger > 0.5) {

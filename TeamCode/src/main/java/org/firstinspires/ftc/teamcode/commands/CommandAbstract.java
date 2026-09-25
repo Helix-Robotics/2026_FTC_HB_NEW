@@ -4,14 +4,12 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
@@ -22,7 +20,7 @@ public abstract class CommandAbstract {
     public MecanumDrive drivetrain;
     public Intake intake;
     public Feeder feeder;
-    public Shooter shooter;
+    public ShooterAbstract shooter;
     public Light light;
 
 
@@ -69,7 +67,7 @@ public abstract class CommandAbstract {
         vision = drivetrain.getVision();
 
     }
-    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, Shooter shooter) {
+    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterAbstract shooter) {
         this(hardwareMap, initialPose);
 
         this.intake = intake;
@@ -123,7 +121,7 @@ public abstract class CommandAbstract {
         this.feeder = feeder;
     }
 
-    public void setShooter(Shooter shooter){
+    public void setShooter(ShooterAbstract shooter){
         this.shooter = shooter;
     }
 

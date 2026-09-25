@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 public class CommandsV2 extends CommandAbstract {
@@ -18,7 +18,7 @@ public class CommandsV2 extends CommandAbstract {
 
     }
 
-    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, Shooter shooter) {
+    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV2 shooter) {
         super(hardwareMap, initialPose, intake, feeder, light, shooter);
     }
 

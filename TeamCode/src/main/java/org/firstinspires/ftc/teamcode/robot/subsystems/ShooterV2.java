@@ -5,22 +5,21 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
-public class ShooterV2 extends Shooter {
+public class ShooterV2 extends ShooterAbstract {
 
-    public static double V2_SHOOTER_P = 23;
-    public static double V2_SHOOTER_I = 0;
+    public static double V2_SHOOTER_P = 23.0;
+    public static double V2_SHOOTER_I = 0.0;
     public static double V2_SHOOTER_D = 1.25;
-    public static double V2_SHOOTER_F = 15.25;
-    public static double V2_TARGET_VELOCITY = -1140;
-    public static double V2_MIN_VELOCITY = -1120;
+    public static double V2_SHOOTER_F = 15.5;
+    public static double V2_TARGET_VELOCITY = 1140.0;
+    public static double V2_MIN_VELOCITY = 1120.0;
 
-    public static int V2_READY_CYCLES = 1;
-    public static int V2_FEED_DELAY_CYCLES = 1;
+    public static int V2_READY_CYCLES = 0;
+    public static int V2_FEED_DELAY_CYCLES = 0;
 
     public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
@@ -124,7 +123,15 @@ public class ShooterV2 extends Shooter {
 
     @Override
     public boolean isReady() {
-        return shooter.getVelocity() < minVelocity;
+
+
+        double vel = getVelocity();
+
+        boolean isReadyVal = (vel > minVelocity);
+        /*boolean isReadyVal = (vel < -500.0);
+        return isReadyVal;*/
+
+        return isReadyVal;
     }
 
     private class LaunchV2 implements Action {

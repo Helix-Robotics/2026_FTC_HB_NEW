@@ -34,11 +34,11 @@ public class Intake {
         setPower(0);
     }
 
-    public void in(){
+    public void out(){
         setPower(1.0);
     }
 
-    public void out(){
+    public void in(){
         setPower(-1.0);
     }
 
