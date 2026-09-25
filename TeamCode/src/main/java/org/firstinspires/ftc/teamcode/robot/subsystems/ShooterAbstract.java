@@ -150,7 +150,7 @@ public abstract class ShooterAbstract {
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
                 } else {
-                    shooter.setVelocity(0);
+                    shooter.setVelocity(targetVelocity / 2);
                     launchState = LaunchState.IDLE;
                     light.green();
                     feeder.stopfeed();
