@@ -1,5 +1,8 @@
+//MeepMeep done
 
-// 0, 0 is measured by the bottom right of robot touching the middle
+
+
+
 
 package org.firstinspires.ftc.teamcode.autos;
 
@@ -28,8 +31,7 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(52.5, -22.5, Math.toRadians(0));
-
+        Pose2d initialPose = new Pose2d(60, -14.75, Math.toRadians(0));
 
 
 
@@ -41,26 +43,28 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(51.5, -22.5));
+                .strafeToConstantHeading(new Vector2d(59, -14.75));
 
 
 
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(38.0, -22.5), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(52.67, -71.0), Math.toRadians(-90.0));
+                .strafeToConstantHeading(new Vector2d(45, -14.75))
+                .strafeToLinearHeading(new Vector2d(60.5, -60.0), Math.toRadians(-90))
+
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(61.5, -60.6));
 
 
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .waitSeconds(0.25)
-                .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90.0));
+                .strafeToConstantHeading(new Vector2d(40, -45));
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0));
 
 
 
@@ -103,8 +107,10 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
                                 robot.intake.spinUpIntake(),
                                 trajectoryActionChosen2
                         ),
+
                         trajectoryActionChosen3,
                         robot.intake.stopIntake(),
+
                         trajectoryActionChosen4
 
 

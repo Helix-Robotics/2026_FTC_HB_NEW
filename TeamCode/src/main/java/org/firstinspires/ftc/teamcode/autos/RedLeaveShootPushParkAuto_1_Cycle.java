@@ -1,4 +1,4 @@
-
+//NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
 package org.firstinspires.ftc.teamcode.autos;
@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Push Park Main Side Auto", group = "Autonomous")
-public class RedLeaveShootPushParkMainSideAuto extends LinearOpMode {
+@Autonomous(name = "Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
+public class RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override

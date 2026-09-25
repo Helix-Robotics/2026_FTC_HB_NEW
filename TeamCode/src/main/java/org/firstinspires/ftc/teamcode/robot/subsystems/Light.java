@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -16,6 +20,7 @@ public class Light {
     public final double blue = 0.611;
     public final double indigo = 0.666;
     public final double purple = 0.722;
+    public final double pink = 0.820;
     public final double white = 1.000;
 
 
@@ -34,5 +39,27 @@ public class Light {
     public void blue() {setColour(blue);}
     public void indigo() {setColour(indigo);}
     public void purple() {setColour(purple);}
+    public void pink() {setColour(pink);}
     public void white() {setColour(white);}
+
+
+
+    public class RedLight implements Action {
+
+        //private boolean hold = false;
+
+
+        // actions are formatted via telemetry packets as below
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            red();
+            return false;
+        }
+
+    }
+
+    public Action redlightAction() {return new RedLight(); }
+
+
+
 }

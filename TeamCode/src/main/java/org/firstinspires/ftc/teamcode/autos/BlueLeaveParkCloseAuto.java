@@ -1,5 +1,31 @@
+//MeepMeep done
 
-// 0, 0 is measured by the bottom right of robot touching the middle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31,7 +57,9 @@ public class BlueLeaveParkCloseAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-20.0, -72.5, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(-13, -61.5, Math.toRadians(90.0));
+
+
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -39,15 +67,16 @@ public class BlueLeaveParkCloseAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+        // .strafeToLinearHeading(new Vector2d(-14, -60.25), Math.toRadians(-90.0))
+
 
 
 
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
+                .strafeToLinearHeading(new Vector2d(-18, -56.5), Math.toRadians(0));
 
-                .strafeToConstantHeading(new Vector2d(-25.0, -70));
 
 
 

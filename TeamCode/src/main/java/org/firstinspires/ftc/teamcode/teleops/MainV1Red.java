@@ -34,7 +34,8 @@ public class MainV1Red extends MainV0Red {
         // tune inPerTick for ur drivetrain encoders
         robot = new CommandsV1(hardwareMap, new Pose2d(0, 0, 0));
         stateMachine = StateMachine.WAITING_FOR_START;
-        robot.feederDirection(true);
+        robot.pink();
+
     }
 
     @Override
