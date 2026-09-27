@@ -53,6 +53,9 @@ public abstract class ShooterAbstract {
     private double shooterVel = 0.0;
 
 
+    private boolean hold = false;
+
+
 
     public enum LaunchState {
         IDLE,
@@ -150,7 +153,11 @@ public abstract class ShooterAbstract {
                     feedDelayCount = 0;
                     launchState = LaunchState.FEEDING_WAIT;
                 } else {
-                    shooter.setVelocity(targetVelocity / 2);
+                    if (hold) {
+                        shooter.setVelocity(targetVelocity / 2.0);
+                    } else {
+                        shooter.setVelocity(0);
+                    }
                     launchState = LaunchState.IDLE;
                     light.green();
                     feeder.stopfeed();
@@ -160,8 +167,6 @@ public abstract class ShooterAbstract {
 
         }
     }
-
-
 
     public int getReadyCount(){
         return readyCount;
@@ -182,6 +187,10 @@ public abstract class ShooterAbstract {
         shooter.setVelocity(0);
         feeder.stopfeed();
         intake.stop();
+        readyCount = 0;
+        feedDelayCount = 0;
+        count = 0;
+        launchState = LaunchState.IDLE;
     }
 
     public void setShooterPID(double kp, double ki, double kd, double kf) {
@@ -213,6 +222,10 @@ public abstract class ShooterAbstract {
         return launchState;
     }
 
+    public void setHold(boolean hold) {
+        this.hold = hold;
+    }
+
     public class Launch implements Action {
 
         //private boolean hold = false;
@@ -222,6 +235,7 @@ public abstract class ShooterAbstract {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
+            setHold(false);
             shoot(true, 6);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){

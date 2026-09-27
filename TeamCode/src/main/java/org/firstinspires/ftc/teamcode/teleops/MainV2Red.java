@@ -23,6 +23,7 @@ public class MainV2Red extends MainV1Red {
     public void init() {
         robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
         robot.feederDirection(true);
+        robot.shooter.setHold(true);
 
         stateMachine = StateMachine.WAITING_FOR_START;
     }
@@ -88,6 +89,7 @@ public class MainV2Red extends MainV1Red {
         if (gamepad2.right_trigger > 0.5) {
             robot.shoot(true, 5);
         }
+
         if (gamepad2.left_trigger > 0.5){
             //Comment out fo debug
             //We dont kjnow what is impact
