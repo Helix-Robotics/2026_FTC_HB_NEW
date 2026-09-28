@@ -44,8 +44,8 @@ public abstract class ShooterAbstract {
 
     protected int count = 0;
 
-    private static final int READY_CYCLES = 5; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
-    public static final int FEED_DELAY_CYCLES = 3; //3;
+    private static final int READY_CYCLES = 2; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
+    public static final int FEED_DELAY_CYCLES = 0; //3;
 
     protected int readyCycles = 0;
     protected int feedDelayCycles = 0;
@@ -84,6 +84,10 @@ public abstract class ShooterAbstract {
     }
 
     public void shoot(boolean shotRequested, int shot_count) {
+        if (launchState != LaunchState.IDLE) {
+            light.yellow();
+        }
+
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
@@ -96,14 +100,12 @@ public abstract class ShooterAbstract {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
-                    light.red();
+
                 }
                 break;
 
             case SPIN_UP:
-
             case FEEDING_WAIT:
-                light.red();
 
                 shooter.setVelocity(targetVelocity);
                 boolean isReadyVar = isReady();
@@ -132,7 +134,6 @@ public abstract class ShooterAbstract {
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
                 intake.hold();
-                light.yellow();
                 feeder.slowfeed();
 
                 feederTimer.reset();
@@ -140,6 +141,7 @@ public abstract class ShooterAbstract {
                 break;
 
             case LAUNCHING:
+
                 shooter.setVelocity(targetVelocity);
 
                 count++;
@@ -153,17 +155,14 @@ public abstract class ShooterAbstract {
                     feeder.stopfeed();
                     intake.stop();
                     light.green();
-
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 2.0);
                     } else {
                         shooter.setVelocity(0);
                     }
-
                     launchState = LaunchState.IDLE;
                 }
                 break;
-
         }
     }
 

@@ -14,8 +14,8 @@ public class Shooter extends ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static int READY_CYCLES = 1;
-    public static int FEED_DELAY_CYCLES = 1;
+    public static int READY_CYCLES = 2;
+    public static int FEED_DELAY_CYCLES = 0;
 
     public Shooter(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);

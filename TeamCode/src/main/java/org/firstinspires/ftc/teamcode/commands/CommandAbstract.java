@@ -155,7 +155,7 @@ public abstract class CommandAbstract {
         intake.setPower(intakepower);
     }*/
 
-    public void red() {light.red();}
+    //public void red() {light.red();}
     public void orange() {light.orange();}
     public void yellow() {light.yellow();}
     public void lgreen() {light.lgreen();}
