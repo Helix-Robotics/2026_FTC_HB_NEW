@@ -68,6 +68,7 @@ public class MainV2Red extends MainV1Red {
             }
         }
         if (gamepad2.leftBumperWasPressed()) {
+            robot.light.blue();
             if (!robot.intake.checkIn())
             {
                 robot.intake.in();
