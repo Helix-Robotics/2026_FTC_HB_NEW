@@ -83,11 +83,11 @@ public class MainV2Red extends MainV1Red {
             robot.stopshoot();
         }
 
-        if (gamepad2.a) {
+        if (gamepad2.a) {  // this unjam feeder
             robot.intake.hold();
             robot.feeder.reverseFeed();
 
-        } else if (gamepad2.b) {
+        } else if (gamepad2.b) { // this unjam intake
             robot.intake.out();
             robot.feeder.intakeSlowFeed();
 
