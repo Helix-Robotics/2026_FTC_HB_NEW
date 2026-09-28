@@ -82,17 +82,36 @@ public class MainV2Red extends MainV1Red {
             }
         }
 
-        // test gate
 
-
-        /** Shooting Related **/
-        robot.shoot(gamepad2.right_trigger == 1.0, 5);
-
-        if (gamepad2.left_trigger == 1.0){
-            //Comment out fo debug
-            //We dont kjnow what is impact
+        if (gamepad2.aWasPressed() || gamepad2.bWasPressed()) {
             robot.stopshoot();
         }
+
+        if (gamepad2.a) {
+            robot.intake.hold();
+            robot.feeder.reverseFeed();
+
+        } else if (gamepad2.b) {
+            robot.intake.out();
+            robot.feeder.intakeSlowFeed();
+
+        } else {
+            if (gamepad2.aWasReleased() || gamepad2.bWasReleased()) {
+                robot.feeder.stopfeed();
+                robot.intake.stop();
+            }
+
+            robot.shoot(gamepad2.right_trigger > 0.75, 5);
+
+            if (gamepad2.left_trigger > 0.75) {
+                robot.stopshoot();
+            }
+        }
+
+
+
+
+
 
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
