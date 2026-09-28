@@ -60,8 +60,9 @@ public abstract class ShooterAbstract {
     public enum LaunchState {
         IDLE,
         FEEDING_WAIT,
-        FEEDING_WAIT_STUCK,
-        FEEDING_WAIT_DELAY,
+
+        SPIN_UP,
+
         LAUNCH,
         LAUNCHING,
     }
@@ -94,25 +95,25 @@ public abstract class ShooterAbstract {
                     intake.hold();
                     readyCount = 0;
                     feedDelayCount = 0;
-                    launchState = LaunchState.FEEDING_WAIT;
+                    launchState = LaunchState.SPIN_UP;
                     light.red();
                 }
                 break;
 
+            case SPIN_UP:
+
             case FEEDING_WAIT:
-            case FEEDING_WAIT_STUCK:
-            case FEEDING_WAIT_DELAY:
+
                 shooter.setVelocity(targetVelocity);
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
-                        launchState = LaunchState.FEEDING_WAIT;
                         readyCount++;
                         feedDelayCount = 0; // don't start feed delay yet
                     } else {
                         // Shooter has been in band long enough,
                         // now count extra cycles as feed delay
-                        launchState = LaunchState.FEEDING_WAIT_DELAY;
+                        launchState = LaunchState.FEEDING_WAIT;
                         feedDelayCount++;
                     }
 
@@ -124,7 +125,6 @@ public abstract class ShooterAbstract {
                     // Lost stability - reset both
                     readyCount = 0;
                     feedDelayCount = 0;
-                    launchState = LaunchState.FEEDING_WAIT_STUCK;
                 }
                 break;
 
@@ -140,28 +140,25 @@ public abstract class ShooterAbstract {
             case LAUNCHING:
                 shooter.setVelocity(targetVelocity);
 
-                if (feederTimer.milliseconds() < feeder.getFeedMs()) {
-                    break;
-                }
-
-
                 count++;
 
 
                 if (count < shot_count) {
                     readyCount = 0;
                     feedDelayCount = 0;
-                    launchState = LaunchState.FEEDING_WAIT;
+                    launchState = LaunchState.SPIN_UP;
                 } else {
+                    feeder.stopfeed();
+                    intake.stop();
+                    light.green();
+
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 2.0);
                     } else {
                         shooter.setVelocity(0);
                     }
+
                     launchState = LaunchState.IDLE;
-                    light.green();
-                    feeder.stopfeed();
-                    intake.stop();
                 }
                 break;
 
