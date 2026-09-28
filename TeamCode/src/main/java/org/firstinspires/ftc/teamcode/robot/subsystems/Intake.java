@@ -8,18 +8,33 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class Intake {
+    protected final ElapsedTime jamTimer = new ElapsedTime();
+    protected final ElapsedTime restartIntakeTimer = new ElapsedTime();
     public DcMotorEx intake;
+    public FeederV2 feeder;
+    public Light light;
     private double power = 0;
+
+    private int jamCycles;
+    private int unjamming;
 
     public static boolean intaking = false;
     public static boolean outtaking = false;
 
+    public static double jamDelay = 0.5;
+    public static double restartIntakeDelay = 1.0;
+
     public Intake(HardwareMap hw) {
 
         intake = hw.get(DcMotorEx.class, "intake");
+        feeder = new FeederV2(hw);
+        light = new Light(hw);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
 
@@ -32,6 +47,9 @@ public class Intake {
         if (reverse) {
             intake.setDirection(DcMotorSimple.Direction.REVERSE);
         }
+        else {
+            intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
     }
 
     public double getPower() {
@@ -39,14 +57,15 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(-0.75);
+        setPower(0.75);
         intaking = true;
     }
 
     public void stop(){
-        setPower(0);
+        setPower(0.0);
         intaking = false;
         outtaking = false;
+        light.green();
     }
     public void setVel(double velocity) {
         intake.setVelocity(velocity);
@@ -55,13 +74,20 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setVel(-1200);
+        setPower(-1.0);
     }
 
     public void in(){
+        jamTimer.reset();
         intaking = true;
         outtaking = false;
-        setVel(1200);
+        setPower(1.0);
+    }
+
+    public void unjamIntake() {
+        out();
+        feeder.intakeSlowFeed();
+        light.purple();
     }
 
     public boolean checkIn() {
@@ -99,8 +125,35 @@ public class Intake {
     }
 
 
-    public boolean checkJam() {
-        return intaking && getVel() < 40;
+    public void checkJam() {
+        if (jamTimer.seconds() > jamDelay) {
+            if (intaking && getVel() < 50) {
+                jamCycles++;
+
+            }
+            if (jamCycles > 2) {
+                unjamIntake();
+                jamCycles = 0;
+
+                if (getVel() < -1200) {
+                    stop();
+                }
+
+
+
+            }
+
+
+        }
+//        if (jamTimer.seconds() > jamDelay) {
+//            if (intaking && getVel() < 10) {
+//
+//
+//                unjamIntake();
+//
+//                }
+
+
     }
 
     public Action stopIntake() {
@@ -109,6 +162,7 @@ public class Intake {
 
     public void update() {
         setPower(power);
+        checkJam();
     }
 
 }

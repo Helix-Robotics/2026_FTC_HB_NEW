@@ -33,11 +33,6 @@ public class MainV2Red extends MainV1Red {
         robot.update();
         robot.feeder.update();
 
-        if (robot.intake.checkJam()) {
-            robot.intake.hold();
-            robot.feeder.reverseFeed();
-        }
-
         /** Driver Operations **/
         // drivetrain
         bindCommonDriveTrain();
@@ -71,7 +66,7 @@ public class MainV2Red extends MainV1Red {
             if (!robot.intake.checkIn())
             {
                 robot.intake.in();
-                robot.feeder.reverseFeed();
+                robot.feeder.intakeSlowFeed();
             }
             else {
                 robot.intake.stop();
