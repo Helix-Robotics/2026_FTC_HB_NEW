@@ -84,10 +84,12 @@ public class MainV2Red extends MainV1Red {
         }
 
         if (gamepad2.a) {  // this unjam feeder
+            robot.light.pink();
             robot.intake.hold();
             robot.feeder.reverseFeed();
 
         } else if (gamepad2.b) { // this unjam intake
+            robot.light.purple();
             robot.intake.out();
             robot.feeder.intakeSlowFeed();
 

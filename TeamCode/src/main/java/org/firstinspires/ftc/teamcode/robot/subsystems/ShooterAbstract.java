@@ -103,6 +103,7 @@ public abstract class ShooterAbstract {
             case SPIN_UP:
 
             case FEEDING_WAIT:
+                light.red();
 
                 shooter.setVelocity(targetVelocity);
                 boolean isReadyVar = isReady();
@@ -131,10 +132,11 @@ public abstract class ShooterAbstract {
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
                 intake.hold();
+                light.yellow();
                 feeder.slowfeed();
+
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
-                light.yellow();
                 break;
 
             case LAUNCHING:
