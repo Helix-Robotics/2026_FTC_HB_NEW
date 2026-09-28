@@ -5,15 +5,21 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 public class Intake {
-    public DcMotor intake;
+    public DcMotorEx intake;
     private double power = 0;
 
+    public static boolean intaking = false;
+    public static boolean outtaking = false;
+
     public Intake(HardwareMap hw) {
-        intake = hw.get(DcMotor.class, "intake");
+
+        intake = hw.get(DcMotorEx.class, "intake");
     }
 
 
@@ -22,35 +28,55 @@ public class Intake {
         intake.setPower(power);
     }
 
+    public void setReverse(boolean reverse) {
+        if (reverse) {
+            intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+    }
+
     public double getPower() {
         return power;
     }
 
     public void hold(){
         setPower(-0.75);
+        intaking = true;
     }
 
     public void stop(){
         setPower(0);
+        intaking = false;
+        outtaking = false;
+    }
+    public void setVel(double velocity) {
+        intake.setVelocity(velocity);
     }
 
     public void out(){
-        setPower(1.0);
+        outtaking = true;
+        intaking = false;
+        setVel(-1200);
     }
 
     public void in(){
-        setPower(-1.0);
+        intaking = true;
+        outtaking = false;
+        setVel(1200);
     }
 
-    public void update() {
-        intake.setPower(power);
+    public boolean checkIn() {
+        return intaking;
+    }
+
+    public boolean checkOut() {
+        return outtaking;
     }
 
     public class SpinUpIntake implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intake.setPower(-1.0);
+            setPower(1.0);
             return false;
         }
     }
@@ -63,13 +89,26 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intake.setPower(0);
+            setPower(0);
             return false;
         }
     }
 
+    public double getVel() {
+        return intake.getVelocity();
+    }
+
+
+    public boolean checkJam() {
+        return intaking && getVel() < 40;
+    }
+
     public Action stopIntake() {
         return new StopIntake();
+    }
+
+    public void update() {
+        setPower(power);
     }
 
 }

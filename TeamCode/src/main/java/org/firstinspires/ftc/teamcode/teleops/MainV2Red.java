@@ -33,6 +33,11 @@ public class MainV2Red extends MainV1Red {
         robot.update();
         robot.feeder.update();
 
+        if (robot.intake.checkJam()) {
+            robot.intake.hold();
+            robot.feeder.reverseFeed();
+        }
+
         /** Driver Operations **/
         // drivetrain
         bindCommonDriveTrain();
@@ -51,29 +56,24 @@ public class MainV2Red extends MainV1Red {
         /** Intake Related **/
         if (gamepad2.rightBumperWasPressed())
         {
-            if (!outtaking)
+            if (!robot.intake.checkOut())
             {
-                intaking = false;
-                outtaking = true;
                 robot.intake.out();
                 robot.feeder.reverseFeed();
             }
             else
             {
-                outtaking = false;
                 robot.intake.stop();
                 robot.feeder.stopfeed();
             }
         }
         if (gamepad2.leftBumperWasPressed()) {
-            robot.light.blue();
-            if (!intaking) {
-                intaking = true;
-                outtaking = false;
+            if (!robot.intake.checkIn())
+            {
                 robot.intake.in();
-                robot.feeder.intakeSlowFeed();
-            } else {
-                intaking = false;
+                robot.feeder.reverseFeed();
+            }
+            else {
                 robot.intake.stop();
                 robot.feeder.stopfeed();
             }
@@ -125,6 +125,9 @@ public class MainV2Red extends MainV1Red {
         /**Start of Drive Train Information **/
         //telemetryDrivetrain(telemetry, packet);
         /**End of Drive Train Information**/
+
+        telemetry.addData("Intake Velocity", robot.intake.getVel());
+        packet.put("Intake Vel", robot.intake.getVel());
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
