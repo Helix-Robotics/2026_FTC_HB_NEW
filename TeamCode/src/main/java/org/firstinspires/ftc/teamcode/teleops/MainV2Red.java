@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
@@ -32,7 +31,6 @@ public class MainV2Red extends MainV1Red {
     public void loop() {
         // keep subsystems updated
         robot.update();
-        robot.intake.update();
         robot.feeder.update();
 
         /** Driver Operations **/
@@ -43,8 +41,6 @@ public class MainV2Red extends MainV1Red {
         //binding
         /**Above is only for testing**/
         robot.fieldRelativeDrive(driveValues.get(1), driveValues.get(0), driveValues.get(2));
-
-        ElapsedTime timer = new ElapsedTime();
 
         /** Bind Drivetrain **/
         //binding Drive train
