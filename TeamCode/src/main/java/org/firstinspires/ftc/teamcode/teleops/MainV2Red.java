@@ -86,9 +86,7 @@ public class MainV2Red extends MainV1Red {
 
 
         /** Shooting Related **/
-        if (gamepad2.right_trigger == 1.0) {
-            robot.shoot(true, 5);
-        }
+        robot.shoot(gamepad2.right_trigger == 1.0, 5);
 
         if (gamepad2.left_trigger == 1.0){
             //Comment out fo debug
