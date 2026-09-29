@@ -50,6 +50,8 @@ public abstract class ShooterAbstract {
     protected int readyCycles = 0;
     protected int feedDelayCycles = 0;
 
+    protected int extra_cycles = 4;
+
     private double shooterVel = 0.0;
 
 
@@ -147,7 +149,7 @@ public abstract class ShooterAbstract {
                 count++;
 
 
-                if (count < shot_count) {
+                if (count < shot_count + extra_cycles) {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
@@ -156,7 +158,7 @@ public abstract class ShooterAbstract {
                     intake.stop();
                     light.green();
                     if (hold) {
-                        shooter.setVelocity(targetVelocity / 2.0);
+                        shooter.setVelocity(targetVelocity / 1.67);
                     } else {
                         shooter.setVelocity(0);
                     }

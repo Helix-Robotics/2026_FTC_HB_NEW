@@ -145,6 +145,10 @@ public abstract class CommandAbstract {
         this.light = light;
     }
 
+    public void setArm(Arm arm){
+        this.arm = arm;
+    }
+
     public Intake getIntake(){
         return intake;
     }

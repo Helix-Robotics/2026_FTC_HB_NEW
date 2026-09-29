@@ -22,11 +22,13 @@ public class CommandsV1 extends CommandAbstract {
         Feeder feeder = new Feeder(hardwareMap);
         Light light = new Light(hardwareMap);
         Shooter shooter = new Shooter(hardwareMap, feeder, intake, light);
+        Arm arm = new Arm(hardwareMap);
 
         this.setIntake(intake);
         this.setFeeder(feeder);
         this.setLight(light);
         this.setShooter(shooter);
+        this.setArm(arm);
 
     }
     @Override
