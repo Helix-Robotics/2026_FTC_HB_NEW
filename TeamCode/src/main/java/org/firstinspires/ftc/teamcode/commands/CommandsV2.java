@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
@@ -18,8 +19,8 @@ public class CommandsV2 extends CommandAbstract {
 
     }
 
-    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV2 shooter) {
-        super(hardwareMap, initialPose, intake, feeder, light, shooter);
+    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV2 shooter, Arm arm) {
+        super(hardwareMap, initialPose, intake, feeder, light, shooter, arm);
     }
 
     public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose){

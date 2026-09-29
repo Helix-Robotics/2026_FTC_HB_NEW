@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation;
@@ -22,6 +23,8 @@ public abstract class CommandAbstract {
     public Feeder feeder;
     public ShooterAbstract shooter;
     public Light light;
+
+    public Arm arm;
 
 
     //private LedController ledController;
@@ -67,13 +70,14 @@ public abstract class CommandAbstract {
         vision = drivetrain.getVision();
 
     }
-    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterAbstract shooter) {
+    public CommandAbstract(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterAbstract shooter, Arm arm) {
         this(hardwareMap, initialPose);
 
         this.intake = intake;
         this.feeder = feeder;
         this.light = light;
         this.shooter = shooter;
+        this.arm = arm;
         //intake = new Intake(hardwareMap);
         //feeder = new Feeder(hardwareMap);
         //light = new Light(hardwareMap);
@@ -109,6 +113,14 @@ public abstract class CommandAbstract {
 
     public void stopshoot() {
         shooter.stop();
+    }
+
+    public void liftup() {
+        arm.liftUpArm();
+    }
+
+    public void putdown() {
+        arm.putDownArm();
     }
 
     public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}
