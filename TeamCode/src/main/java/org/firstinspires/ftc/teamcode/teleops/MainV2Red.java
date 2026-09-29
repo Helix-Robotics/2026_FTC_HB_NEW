@@ -104,6 +104,15 @@ public class MainV2Red extends MainV1Red {
         }
 
 
+        if (gamepad2.xWasPressed()) {
+            robot.arm.liftUpArm();
+        }
+
+        if (gamepad2.yWasPressed()) {
+            robot.arm.putDownArm();
+        }
+
+
 
 
 
