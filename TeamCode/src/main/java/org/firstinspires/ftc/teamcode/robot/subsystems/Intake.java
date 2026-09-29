@@ -15,7 +15,6 @@ public class Intake {
     protected final ElapsedTime jamTimer = new ElapsedTime();
     protected final ElapsedTime restartIntakeTimer = new ElapsedTime();
     public DcMotorEx intake;
-    public FeederV2 feeder;
     public Light light;
     private double power = 0;
 
@@ -31,7 +30,6 @@ public class Intake {
     public Intake(HardwareMap hw) {
 
         intake = hw.get(DcMotorEx.class, "intake");
-        feeder = new FeederV2(hw);
         light = new Light(hw);
 
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -86,7 +84,6 @@ public class Intake {
 
     public void unjamIntake() {
         out();
-        feeder.intakeSlowFeed();
         light.purple();
     }
 

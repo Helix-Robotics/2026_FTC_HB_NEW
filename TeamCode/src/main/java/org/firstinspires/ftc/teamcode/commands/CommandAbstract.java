@@ -144,6 +144,9 @@ public abstract class CommandAbstract {
     public void setLight(Light light){
         this.light = light;
     }
+    public void setArm(Arm arm){
+        this.arm = arm;
+    }
 
     public Intake getIntake(){
         return intake;
