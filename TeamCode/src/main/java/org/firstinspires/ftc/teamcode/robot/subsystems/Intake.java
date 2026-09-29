@@ -162,7 +162,6 @@ public class Intake {
 
     public void update() {
         setPower(power);
-        //checkJam();
     }
 
 }
