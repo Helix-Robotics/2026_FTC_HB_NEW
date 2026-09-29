@@ -99,6 +99,14 @@ public class MainV1Red extends MainV0Red {
             robot.stopshoot();
         }
 
+        if (gamepad2.xWasPressed()) {
+            robot.upArm();
+        }
+
+        if (gamepad2.yWasPressed()) {
+            robot.downArm();
+        }
+
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
         FtcDashboard dashboard = FtcDashboard.getInstance();

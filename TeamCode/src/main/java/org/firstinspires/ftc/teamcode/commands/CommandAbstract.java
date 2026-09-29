@@ -115,12 +115,12 @@ public abstract class CommandAbstract {
         shooter.stop();
     }
 
-    public void liftup() {
-        arm.liftUpArm();
+    public void upArm() {
+        arm.up();
     }
 
-    public void putdown() {
-        arm.putDownArm();
+    public void downArm() {
+        arm.down();
     }
 
     public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}

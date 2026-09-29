@@ -70,13 +70,9 @@ public class MeepMeepTesting {
         mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
                 //.strafeToConstantHeading(new Vector2d(-60.0, -16.0))
                 //.strafeToLinearHeading(new Vector2d(59, 10), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(-60, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-59, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-45, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-60.5, 60), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-61.5, 60.6), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-30, 45), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-5, 60.6), Math.toRadians(179.9))
+                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
+
+
 
 
 
