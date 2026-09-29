@@ -99,11 +99,11 @@ public class MainV1Red extends MainV0Red {
             robot.stopshoot();
         }
 
-        if (gamepad2.xWasPressed()) {
+        if (gamepad1.xWasPressed()) {
             robot.upArm();
         }
 
-        if (gamepad2.yWasPressed()) {
+        if (gamepad1.yWasPressed()) {
             robot.downArm();
         }
 

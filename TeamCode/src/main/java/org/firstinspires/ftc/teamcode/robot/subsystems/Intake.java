@@ -57,7 +57,7 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(0.75);
+        setPower(0.6); // 0.75
         intaking = true;
     }
 
@@ -74,14 +74,14 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(-1.0);
+        setPower(-0.8); // -1.0
     }
 
     public void in(){
         jamTimer.reset();
         intaking = true;
         outtaking = false;
-        setPower(1.0);
+        setPower(0.8);  // 1.0
     }
 
     public void unjamIntake() {
@@ -102,7 +102,7 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setPower(1.0);
+            setPower(0.8);
             return false;
         }
     }

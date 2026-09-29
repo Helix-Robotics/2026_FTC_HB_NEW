@@ -98,6 +98,10 @@ public class MainV2Red extends MainV1Red {
 
             robot.shoot(gamepad2.right_trigger > 0.75, 5);
 
+            if (gamepad2.xWasPressed()) {  // this unjam feeder
+                robot.shooter.singleShot(true);
+            }
+
             if (gamepad2.left_trigger > 0.75) {
                 robot.stopshoot();
             }

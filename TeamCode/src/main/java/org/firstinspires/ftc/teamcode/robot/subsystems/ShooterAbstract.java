@@ -44,13 +44,13 @@ public abstract class ShooterAbstract {
 
     protected int count = 0;
 
-    private static final int READY_CYCLES = 2; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
+    private static final int READY_CYCLES = 3; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
     public static final int FEED_DELAY_CYCLES = 0; //3;
 
     protected int readyCycles = 0;
     protected int feedDelayCycles = 0;
 
-    protected int extra_cycles = 4;
+    protected int extra_cycles = 5;
 
     private double shooterVel = 0.0;
 
@@ -167,6 +167,88 @@ public abstract class ShooterAbstract {
                 break;
         }
     }
+
+
+    public void singleShot(boolean shotRequested) {
+        if (launchState != LaunchState.IDLE) {
+            light.yellow();
+        }
+
+        switch (launchState) {
+            case IDLE:
+                if (shotRequested) {
+                    count = 0;
+                    updateShooterPID();
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(targetVelocity);
+                    feeder.stopfeed();
+                    intake.hold();
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                    launchState = LaunchState.SPIN_UP;
+
+                }
+                break;
+
+            case SPIN_UP:
+            case FEEDING_WAIT:
+
+                shooter.setVelocity(targetVelocity);
+                boolean isReadyVar = isReady();
+                if (isReadyVar) {
+                    if (readyCount <= readyCycles) {
+                        readyCount++;
+                        feedDelayCount = 0; // don't start feed delay yet
+                    } else {
+                        // Shooter has been in band long enough,
+                        // now count extra cycles as feed delay
+                        launchState = LaunchState.FEEDING_WAIT;
+                        feedDelayCount++;
+                    }
+
+                    if (readyCount >= readyCycles && feedDelayCount >= feedDelayCycles) {
+                        launchState = LaunchState.LAUNCH; //goes back
+                    }
+
+                } else {
+                    // Lost stability - reset both
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(targetVelocity);
+                intake.hold();
+                feederTimer.reset();
+                feeder.slowfeed();
+                if (feederTimer.milliseconds() > 250) {
+                    feeder.stopfeed();
+                    launchState = LaunchState.LAUNCHING;
+                    break;
+                }
+
+
+
+            case LAUNCHING:
+
+                shooter.setVelocity(targetVelocity);
+
+
+                feeder.stopfeed();
+                intake.stop();
+                light.green();
+                if (hold) {
+                    shooter.setVelocity(targetVelocity / 1.67);
+                } else {
+                    shooter.setVelocity(0);
+                }
+                launchState = LaunchState.IDLE;
+                break;
+            }
+
+        }
+
 
     public int getReadyCount(){
         return readyCount;
