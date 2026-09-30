@@ -62,7 +62,7 @@ public class Intake {
     }
 
     public void stop(){
-        setPower(0.0);
+        setPower(0); //0.0
         intaking = false;
         outtaking = false;
         light.green();
@@ -74,14 +74,14 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(-0.8); // -1.0
+        setPower(-1.0); // -0.8
     }
 
     public void in(){
         jamTimer.reset();
         intaking = true;
         outtaking = false;
-        setPower(0.8);  // 1.0
+        setPower(0.6); //0.8 // 1.0
     }
 
     public void unjamIntake() {
@@ -132,12 +132,12 @@ public class Intake {
 
             }
             if (jamCycles > 2) {
-                unjamIntake();
+                light.blue();
                 jamCycles = 0;
 
-                if (getVel() < -1200) {
-                    stop();
-                }
+//                if (getVel() < -1200) {
+//                    stop();
+//                }
 
 
 
@@ -162,6 +162,7 @@ public class Intake {
 
     public void update() {
         setPower(power);
+        checkJam();
     }
 
 }
