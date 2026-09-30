@@ -113,8 +113,6 @@ public class MainV2Red extends MainV1Red {
 
 
 
-
-
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
         FtcDashboard dashboard = FtcDashboard.getInstance();

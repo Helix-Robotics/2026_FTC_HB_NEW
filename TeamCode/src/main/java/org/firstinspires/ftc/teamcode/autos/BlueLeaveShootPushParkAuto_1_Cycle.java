@@ -28,11 +28,12 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(52.5, -22.5, Math.toRadians(0));
 
-
-
-
+        Pose2d initialPose = new Pose2d(
+                60,
+                -14.75,
+                Math.toRadians(0)
+        );
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -40,47 +41,53 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(51.5, -22.5));
-
-
-
+                .strafeToConstantHeading(
+                        new Vector2d(59.0, -14.75)
+                );
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(38.0, -22.5), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(52.0, -70.0), Math.toRadians(-90.0));
-
-
+                .strafeToLinearHeading(
+                        new Vector2d(45.5, -14.75),
+                        Math.toRadians(0)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(59.5, -62.25),
+                        Math.toRadians(-90.0)
+                );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .waitSeconds(0.25)
-                .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90.0))
-                .strafeToConstantHeading(new Vector2d(25.0, -53.0));
-
+                .strafeToLinearHeading(
+                        new Vector2d(55.17, -45.25),
+                        Math.toRadians(-90.0)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(32.5, -45.25)
+                );
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-3.0, -70.0), Math.toRadians(0))
-                .strafeToConstantHeading(new Vector2d(-12.0, -70.0))
+                .strafeToLinearHeading(
+                        new Vector2d(4.5, -62.25),
+                        Math.toRadians(0)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-4.5, -62.25)
+                )
                 .waitSeconds(0.1)
-                .strafeToConstantHeading(new Vector2d(-7.0, -50.0))
-                .strafeToConstantHeading(new Vector2d(-50.0, -50.0))
-                .strafeToConstantHeading(new Vector2d(-50.0, -65.0));
-
-//
-
-
-
-
-
-
-
-
-
-
-
+                .strafeToConstantHeading(
+                        new Vector2d(0.5, -42.25)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-42.5, -42.25)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-42.5, -57.25)
+                );
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -89,7 +96,10 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
             telemetry.update();
         }
 
@@ -97,34 +107,44 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+
         Action trajectoryActionChosen = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
 
 
-
         runActionSafely(
                 new SequentialAction(
+
                         trajectoryActionChosen,
+
                         robot.shooter.launchAction(),
+
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
                                 trajectoryActionChosen2
                         ),
+
                         trajectoryActionChosen3,
+
                         robot.intake.stopIntake(),
+
                         trajectoryActionChosen4
 
-
-
-                ), 30.0, 25.0);
-
-
-
+                ),
+                30.0,
+                25.0
+        );
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
+
+    private void runActionSafely(
+            Action action,
+            double timeoutSeconds,
+            double goHome
+    ) {
+
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
         boolean goingHome = false;
@@ -132,10 +152,10 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
 
             if (!goingHome && timer.seconds() > goHome) {
+
                 goingHome = true;
 
                 robot.stopshoot();
-
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -143,8 +163,14 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0))
+                        .strafeToLinearHeading(
+                                new Vector2d(55.17, -45.25),
+                                Math.toRadians(-90)
+                        )
+                        .strafeToLinearHeading(
+                                new Vector2d(-25.8, -58.85),
+                                Math.toRadians(0)
+                        )
                         .build();
             }
 
@@ -152,18 +178,13 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                 break;
             }
 
-
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
             idle();
         }
 
 
-
-
-
         robot.stopshoot();
-
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
@@ -172,5 +193,4 @@ public class BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                 )
         );
     }
-
 }

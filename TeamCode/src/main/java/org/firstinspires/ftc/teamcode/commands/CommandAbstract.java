@@ -23,7 +23,6 @@ public abstract class CommandAbstract {
     public Feeder feeder;
     public ShooterAbstract shooter;
     public Light light;
-
     public Arm arm;
 
 
@@ -144,6 +143,7 @@ public abstract class CommandAbstract {
     public void setLight(Light light){
         this.light = light;
     }
+
 
     public void setArm(Arm arm){
         this.arm = arm;

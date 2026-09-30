@@ -1,4 +1,4 @@
-//NO MEEEP YET
+// NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
 package org.firstinspires.ftc.teamcode.autos;
@@ -24,11 +24,17 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 @Config
 @Autonomous(name = "Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
 public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
+
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-67.5, 5.0, Math.toRadians(-179.0));
+
+        Pose2d initialPose = new Pose2d(
+                60.799,
+                -13.6,
+                Math.toRadians(0)
+        );
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -37,59 +43,66 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
 
-
-
-
-
-
-
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-53.0, 5.0), Math.toRadians(-179.0))
-                .strafeToLinearHeading(new Vector2d(-67.67, 53.0), Math.toRadians(90.0));
+                .strafeToLinearHeading(
+                        new Vector2d(59.799, -13.6),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(45.299, -13.6),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(59.969, -61.6),
+                        Math.toRadians(-90)
+                );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-62.67, 24.0), Math.toRadians(90.0));
+                .strafeToLinearHeading(
+                        new Vector2d(54.969, -32.6),
+                        Math.toRadians(-90)
+                );
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-15.0, 53.0), Math.toRadians(179.0))
-                .strafeToConstantHeading(new Vector2d(0, 53.0))  //push
-                .strafeToConstantHeading(new Vector2d(-10.0, 45.0))
-                //.strafeToLinearHeading(new Vector2d(-10.0, 45.0), Math.toRadians(135.0))
-                .strafeToConstantHeading(new Vector2d(27.5, 25))
-                .strafeToLinearHeading(new Vector2d(53.0, 1.0), Math.toRadians(0));
-                //.strafeToConstantHeading(new Vector2d(37.5, 33.0))
-                //.strafeToConstantHeading(new Vector2d(37.5, 45.0));
+                .strafeToLinearHeading(
+                        new Vector2d(7.299, -61.6),
+                        Math.toRadians(-179)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-7.701, -61.6)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(2.299, -53.6)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-35.201, -33.6)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(-60.701, -9.6),
+                        Math.toRadians(-179)
+                );
+
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(38.0, 45.0), Math.toRadians(90.0));
-
-        //.strafeToConstantHeading(new Vector2d(37.5, 33.0))
-        //.strafeToConstantHeading(new Vector2d(37.5, 45.0));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                .strafeToLinearHeading(
+                        new Vector2d(-45.701, -53.6),
+                        Math.toRadians(-90)
+                );
 
 
         while (!isStopRequested() && !opModeIsActive()) {
+
             localizer.update();
             Pose2d position = localizer.getPose();
 
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
             telemetry.update();
         }
 
@@ -104,31 +117,41 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
         Action trajectoryActionChosen5 = tab5.build();
 
 
-
         runActionSafely(
                 new SequentialAction(
 
                         robot.shooter.launchAction(),
+
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
                                 trajectoryActionChosen2
                         ),
+
                         trajectoryActionChosen3,
+
                         robot.intake.stopIntake(),
+
                         trajectoryActionChosen4,
+
                         robot.vision.checkForRedSideTag(),
+
                         robot.shooter.launchAction(),
-                        trajectoryActionChosen4
 
+                        trajectoryActionChosen5
 
-
-                ), 30.0, 27.5);
-
-
-
+                ),
+                30.0,
+                27.5
+        );
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
+
+    private void runActionSafely(
+            Action action,
+            double timeoutSeconds,
+            double goHome
+    ) {
+
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
         boolean goingHome = false;
@@ -136,11 +159,10 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
 
             if (!goingHome && timer.seconds() > goHome) {
+
                 goingHome = true;
 
                 robot.stopshoot();
-
-
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -148,7 +170,10 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(38.0, 45.0), Math.toRadians(90.0))
+                        .strafeToLinearHeading(
+                                new Vector2d(-45.701, -53.6),
+                                Math.toRadians(-90)
+                        )
                         .build();
             }
 
@@ -156,18 +181,13 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                 break;
             }
 
-
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
             idle();
         }
 
 
-
-
-
         robot.stopshoot();
-
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
@@ -176,6 +196,4 @@ public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                 )
         );
     }
-
-
 }

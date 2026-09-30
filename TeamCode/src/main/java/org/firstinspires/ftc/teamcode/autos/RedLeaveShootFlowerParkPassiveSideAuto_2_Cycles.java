@@ -44,17 +44,24 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
               // -10 x y 10
-                .strafeToLinearHeading(new Vector2d(50, 19.5), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(47.0, 25), Math.toRadians(0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
 
-                .waitSeconds(0.4)
+                .waitSeconds(1.0)
 
 //                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(55, 19.5), Math.toRadians(-5.0))
-                .strafeToLinearHeading(new Vector2d(50, 19.5), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(60, 9.5), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(56.0, 15.42), Math.toRadians(10.0))
+
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(50, 21.0), Math.toRadians(0));
+
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(47.0, 23.08), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(58, 9.5), Math.toRadians(0));
+
+
 
 
 
@@ -85,6 +92,7 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
 
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
 
 
 
@@ -92,11 +100,20 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
         runActionSafely(
                 new SequentialAction(
                         robot.vision.checkForRedSideTag(),
-                        robot.shooter.launchAction(),
-                        trajectoryActionChosen2,
-                        robot.arm.armDownAction(),
+                        //robot.shooter.oldLaunchAction(),
+                        robot.intake.stopIntake(),
+
+                        new ParallelAction(
+
+                                trajectoryActionChosen2,
+                                robot.arm.armDownAction()
+                        ),
+                        robot.intake.spinUpIntake(),
                         trajectoryActionChosen3,
-                        robot.arm.armStopAction()
+
+                        robot.arm.armUpAction(),
+                        trajectoryActionChosen4,
+                        robot.intake.stopIntake()
 
                         //robot.intake.spinUpIntake()
 
@@ -109,7 +126,7 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
 
 
 
-                ), 30.0, 25.0);
+                ), 30.0, 99.0);
 
 
 

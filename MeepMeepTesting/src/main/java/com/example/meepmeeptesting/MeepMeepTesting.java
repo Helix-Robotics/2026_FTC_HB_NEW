@@ -42,13 +42,20 @@ public class MeepMeepTesting {
 
         /** First Test Zone **/
 
-        myFirstBot.runAction(myFirstBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-                .strafeToLinearHeading(new Vector2d(13, 61.5), Math.toRadians(0))
+        myFirstBot.runAction(myFirstBot.getDrive().actionBuilder(new Pose2d(-59, 14.75, Math.toRadians(0)))
+                .strafeToLinearHeading(new Vector2d(-60, 14.75), Math.toRadians(-179))
+                .strafeToConstantHeading(new Vector2d(-59.0, 14.75))
+                .strafeToLinearHeading(new Vector2d(-45.5, 14.75), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(-58.5, 62.25), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-55.17, 45.25), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(-32.5, 45.25))
+                .strafeToLinearHeading(new Vector2d(-4.5, 62.25), Math.toRadians(-179))
+                .strafeToConstantHeading(new Vector2d(4.5, 62.25))
+                .strafeToConstantHeading(new Vector2d(-5.5, 54.25))
+                .strafeToConstantHeading(new Vector2d(32.0, 34.25))
+                .strafeToLinearHeading(new Vector2d(62.5, 8.25), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(47.5, 57.25), Math.toRadians(90))
                 .build());
-
-
-
-
 
 
 
@@ -60,35 +67,22 @@ public class MeepMeepTesting {
                 .build();
 
 
-
-
-
-
         /** Second Test Zone Red **/
 
 
-        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                //.strafeToConstantHeading(new Vector2d(-60.0, -16.0))
-                //.strafeToLinearHeading(new Vector2d(59, 10), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9)) // -10 x y 10
-                .strafeToLinearHeading(new Vector2d(-50, -19.5), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-55, -19.5), Math.toRadians(175.0))
-                .strafeToLinearHeading(new Vector2d(-50, -19.5), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
-//                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
 
-
-
-
-
-
-
-
-
-
-
-
+        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(-59, -9.5, Math.toRadians(0)))
+                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(-47.0, -25), Math.toRadians(-179))
+                .waitSeconds(1.0)
+                .strafeToLinearHeading(new Vector2d(-56.0, -15.42), Math.toRadians(-169))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(-50, -21.0), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(-47.0, -23.08), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(-58, -9.5), Math.toRadians(-179))
                 .build());
+
+
 
 
 
@@ -118,7 +112,7 @@ public class MeepMeepTesting {
                     .setDarkMode(true)
                     .setBackgroundAlpha(0.95f)
                     // Add both of our declared bot entities
-                    .addEntity(myFirstBot)
+                    //.addEntity(myFirstBot)
                     .addEntity(mySecondBot)
                     .start();
 
@@ -129,7 +123,8 @@ public class MeepMeepTesting {
                     .setBackgroundAlpha(0.95f)
                     // Add both of our declared bot entities
                     .addEntity(myFirstBot)
-                    .addEntity(mySecondBot)
+                    // take out second robot for now
+                    // .addEntity(mySecondBot)
                     .start();
         }
     }

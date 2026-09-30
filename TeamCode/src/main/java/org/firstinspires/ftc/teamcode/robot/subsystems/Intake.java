@@ -81,7 +81,7 @@ public class Intake {
         jamTimer.reset();
         intaking = true;
         outtaking = false;
-        setPower(0.8);  // 1.0
+        setPower(0.8);
     }
 
     public void unjamIntake() {
