@@ -1,9 +1,7 @@
-//MeepMeep done
+// NO MEEEP YET
+// 0, 0 is measured by the bottom right of robot touching the middle
 
-
-
-
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -24,13 +22,19 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Flower Park Passive Side Auto 2 Cycles", group = "Autonomous")
-public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
+@Autonomous(name = "Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
+
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(60, 9.5, Math.toRadians(0));
+
+        Pose2d initialPose = new Pose2d(
+                60.799,
+                -13.6,
+                Math.toRadians(0)
+        );
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -39,43 +43,57 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
         Localizer localizer = md.getLocalizer();
 
 
-
-
-
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-              // -10 x y 10
-                .strafeToLinearHeading(new Vector2d(47.0, 25), Math.toRadians(0));
+                .strafeToLinearHeading(
+                        new Vector2d(59.799, -13.6),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(45.299, -13.6),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(59.969, -61.6),
+                        Math.toRadians(-90)
+                );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(54.969, -32.6),
+                        Math.toRadians(-90)
+                );
 
-                .waitSeconds(1.0)
-
-//                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(56.0, 15.42), Math.toRadians(10.0))
-
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(50, 21.0), Math.toRadians(0));
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(47.0, 23.08), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(58, 9.5), Math.toRadians(0));
+                .strafeToLinearHeading(
+                        new Vector2d(7.299, -61.6),
+                        Math.toRadians(-179)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-7.701, -61.6)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(2.299, -53.6)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-35.201, -33.6)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(-60.701, -9.6),
+                        Math.toRadians(-179)
+                );
 
 
-
-
-
-
-
-
-
-
-
-
-
+        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(-45.701, -53.6),
+                        Math.toRadians(-90)
+                );
 
 
         while (!isStopRequested() && !opModeIsActive()) {
+
             localizer.update();
             Pose2d position = localizer.getPose();
 
@@ -87,52 +105,52 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
 
         waitForStart();
 
+
+
         if (isStopRequested()) return;
 
 
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
-
-
+        Action trajectoryActionChosen5 = tab5.build();
 
 
         runActionSafely(
                 new SequentialAction(
-                        robot.vision.checkForRedSideTag(),
-                        //robot.shooter.oldLaunchAction(),
-                        robot.intake.stopIntake(),
+
+                        robot.shooter.launchAction(),
 
                         new ParallelAction(
-
-                                trajectoryActionChosen2,
-                                robot.arm.armDownAction()
+                                robot.intake.spinUpIntake(),
+                                trajectoryActionChosen2
                         ),
-                        robot.intake.spinUpIntake(),
+
                         trajectoryActionChosen3,
 
-                        robot.arm.armUpAction(),
+                        robot.intake.stopIntake(),
+
                         trajectoryActionChosen4,
-                        robot.intake.stopIntake()
 
-                        //robot.intake.spinUpIntake()
+                        robot.vision.checkForRedSideTag(),
 
+                        robot.shooter.launchAction(),
 
-                        // if there is 25s left in the auto, just make a thing to make it park
+                        trajectoryActionChosen5
 
-
-
-
-
-
-
-                ), 30.0, 99.0);
-
-
-
+                ),
+                30.0,
+                27.5
+        );
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
+
+    private void runActionSafely(
+            Action action,
+            double timeoutSeconds,
+            double goHome
+    ) {
+
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
         boolean goingHome = false;
@@ -140,11 +158,10 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
 
             if (!goingHome && timer.seconds() > goHome) {
+
                 goingHome = true;
 
                 robot.stopshoot();
-
-                robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -152,7 +169,10 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                       //HOME
+                        .strafeToLinearHeading(
+                                new Vector2d(-45.701, -53.6),
+                                Math.toRadians(-90)
+                        )
                         .build();
             }
 
@@ -160,19 +180,13 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
                 break;
             }
 
-
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
             idle();
         }
 
 
-
-
-
         robot.stopshoot();
-        robot.setPower(0);
-        robot.intake.stop();
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
@@ -181,5 +195,4 @@ public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMod
                 )
         );
     }
-
 }

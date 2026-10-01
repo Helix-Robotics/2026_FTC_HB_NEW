@@ -57,7 +57,7 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(0.6); // 0.75
+        setPower(-0.6); // 0.75
         intaking = true;
     }
 
@@ -74,7 +74,7 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(-1.0); // -0.8
+        setPower(0.6); // -1.0 // -0.8
     }
 
     public void in(){
@@ -84,7 +84,7 @@ public class Intake {
 
 
 
-        setPower(0.6); //0.8 // 1.0
+        setPower(-0.6); //0.6
 
     }
 
@@ -106,7 +106,7 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setPower(0.8);
+            setPower(-0.8);
             return false;
         }
     }

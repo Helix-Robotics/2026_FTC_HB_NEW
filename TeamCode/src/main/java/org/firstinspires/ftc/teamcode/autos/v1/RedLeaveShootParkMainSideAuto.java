@@ -1,7 +1,7 @@
 // NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;

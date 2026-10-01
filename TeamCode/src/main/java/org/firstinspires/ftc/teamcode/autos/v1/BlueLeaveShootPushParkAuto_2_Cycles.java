@@ -1,7 +1,7 @@
-// NO MEEEP YET
+//NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
+@Autonomous(name = "Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+public class BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
 
@@ -32,7 +32,7 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         Pose2d initialPose = new Pose2d(
                 60,
-                9,
+                -14.75,
                 Math.toRadians(0)
         );
 
@@ -42,11 +42,57 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+                .strafeToConstantHeading(
+                        new Vector2d(59.0, -14.75)
+                );
 
-        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
+
+        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(35.5, 59.0),
-                        Math.toRadians(90.0)
+                        new Vector2d(45.5, -14.75),
+                        Math.toRadians(0)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(58.5, -62.25),
+                        Math.toRadians(-90.0)
+                );
+
+
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(55.17, -45.25),
+                        Math.toRadians(-90.0)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(32.5, -45.25)
+                );
+
+
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(4.5, -62.25),
+                        Math.toRadians(0)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(-4.5, -62.25)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(5.5, -54.25)
+                ) // out
+                .strafeToConstantHeading(
+                        new Vector2d(-32.0, -34.25)
+                ) // middle
+                .strafeToLinearHeading(
+                        new Vector2d(-62.5, -8.25),
+                        Math.toRadians(179.0)
+                );
+
+
+        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(-47.5, -57.25),
+                        Math.toRadians(-90.0)
                 );
 
 
@@ -69,24 +115,40 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
         if (isStopRequested()) return;
 
 
+        Action trajectoryActionChosen = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
+        Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
+        Action trajectoryActionChosen5 = tab5.build();
 
 
         runActionSafely(
                 new SequentialAction(
 
-                        robot.vision.checkForRedSideTag(),
+                        trajectoryActionChosen,
+
                         robot.shooter.launchAction(),
-                        trajectoryActionChosen2
 
-                        // robot.intake.spinUpIntake()
+                        new ParallelAction(
+                                robot.intake.spinUpIntake(),
+                                trajectoryActionChosen2
+                        ),
 
-                        // if there is 25s left in the auto,
-                        // just make a thing to make it park
+                        trajectoryActionChosen3,
+
+                        robot.intake.stopIntake(),
+
+                        trajectoryActionChosen4,
+
+                        robot.vision.checkForBlueSideTag(),
+
+                        robot.shooter.launchAction(),
+
+                        trajectoryActionChosen5
 
                 ),
                 30.0,
-                25.0
+                27.5
         );
     }
 
@@ -108,7 +170,6 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
                 goingHome = true;
 
                 robot.stopshoot();
-                robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -117,12 +178,8 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToLinearHeading(
-                                new Vector2d(40, 9.0),
-                                Math.toRadians(0)
-                        )
-                        .strafeToLinearHeading(
-                                new Vector2d(35.5, 59.0),
-                                Math.toRadians(90.0)
+                                new Vector2d(-47.5, -57.25),
+                                Math.toRadians(-90.0)
                         )
                         .build();
             }
@@ -136,10 +193,7 @@ public class RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
             idle();
         }
 
-
         robot.stopshoot();
-        robot.setPower(0);
-        robot.intake.stop();
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(

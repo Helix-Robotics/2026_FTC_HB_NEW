@@ -3,8 +3,7 @@
 
 
 
-
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -25,16 +24,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Blue Leave Shoot Park Main Side Auto", group = "Autonomous")
-public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
+@Autonomous(name = "Red Leave Shoot Flower Park Passive Side Auto 2 Cycles", group = "Autonomous")
+public class RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(60, -14.75, Math.toRadians(0));
-
-
-
+        Pose2d initialPose = new Pose2d(60, 9.5, Math.toRadians(0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -42,29 +38,30 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(59, -14.75));
 
 
 
 
-
-        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(45, -14.75))
-                .strafeToLinearHeading(new Vector2d(60.5, -60.0), Math.toRadians(-90))
-
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(61.5, -60.6));
-
-
+        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
+              // -10 x y 10
+                .strafeToLinearHeading(new Vector2d(47.0, 25), Math.toRadians(0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(40, -45));
 
+                .waitSeconds(1.0)
+
+//                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
+                .strafeToLinearHeading(new Vector2d(56.0, 15.42), Math.toRadians(10.0))
+
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(50, 21.0), Math.toRadians(0));
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(47.0, 23.08), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(58, 9.5), Math.toRadians(0));
+
+
 
 
 
@@ -92,30 +89,44 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen = tab1.build();
+
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
 
 
 
+
         runActionSafely(
                 new SequentialAction(
-                        trajectoryActionChosen,
-                        robot.shooter.launchAction(),
-                        new ParallelAction(
-                                robot.intake.spinUpIntake(),
-                                trajectoryActionChosen2
-                        ),
-
-                        trajectoryActionChosen3,
+                        robot.vision.checkForRedSideTag(),
+                        //robot.shooter.oldLaunchAction(),
                         robot.intake.stopIntake(),
 
-                        trajectoryActionChosen4
+                        new ParallelAction(
+
+                                trajectoryActionChosen2,
+                                robot.arm.armDownAction()
+                        ),
+                        robot.intake.spinUpIntake(),
+                        trajectoryActionChosen3,
+
+                        robot.arm.armUpAction(),
+                        trajectoryActionChosen4,
+                        robot.intake.stopIntake()
+
+                        //robot.intake.spinUpIntake()
+
+
+                        // if there is 25s left in the auto, just make a thing to make it park
 
 
 
-                ), 30.0, 25.0);
+
+
+
+
+                ), 30.0, 99.0);
 
 
 
@@ -141,8 +152,7 @@ public class BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0))
+                       //HOME
                         .build();
             }
 
