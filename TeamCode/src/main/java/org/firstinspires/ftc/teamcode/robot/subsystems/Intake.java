@@ -34,7 +34,7 @@ public class Intake {
 
         light = new Light(hw);
 
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        //intake.setDirection(DcMotorSimple.Direction.REVERSE); //not for new intake position
     }
 
 
