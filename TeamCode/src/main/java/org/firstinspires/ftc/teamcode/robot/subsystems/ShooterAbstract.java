@@ -23,6 +23,8 @@ public abstract class ShooterAbstract {
 
     //configurations
     protected final ElapsedTime feederTimer = new ElapsedTime();
+    protected final ElapsedTime shootTimer = new ElapsedTime();
+
     public static double TARGET_VELOCITY = 1250; //2678 RPM
     public static double MIN_VELOCITY = 1230; // 1200; //2571 RPM
 
@@ -138,6 +140,9 @@ public abstract class ShooterAbstract {
                 intake.hold();
                 feeder.slowfeed();
 
+                if (count == 0) {
+                    shootTimer.reset();
+                }
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
                 break;
@@ -149,7 +154,7 @@ public abstract class ShooterAbstract {
                 count++;
 
 
-                if (count < shot_count) {
+                if (count < shot_count || shootTimer.milliseconds() < shot_count * 500) {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;

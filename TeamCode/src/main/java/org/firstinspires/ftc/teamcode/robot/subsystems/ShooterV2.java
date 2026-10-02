@@ -61,7 +61,7 @@ public class ShooterV2 extends ShooterAbstract {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             setHold(false);
-            shoot(true, 6);
+            shoot(true, 5);
             packet.put("Launch V2 Status:", getLaunchState());
             return getLaunchState() != LaunchState.IDLE;
         }
