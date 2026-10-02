@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Intake {
     protected final ElapsedTime jamTimer = new ElapsedTime();
-    protected final ElapsedTime restartIntakeTimer = new ElapsedTime();
+    protected final ElapsedTime outtakeTime = new ElapsedTime();
     public DcMotorEx intake;
 
     public Light light;
@@ -57,7 +57,7 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(-0.6); // 0.75
+        setPower(0.6); // 0.75
         intaking = true;
     }
 
@@ -74,7 +74,16 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(0.6); // -1.0 // -0.8
+        setPower(-0.6); // -1.0 // -0.8
+    }
+
+    public void outSlowly() {
+        outtakeTime.reset();
+        if (outtakeTime.seconds() < 2.0) {
+            setPower(-0.5);
+        } else {
+            setPower(0);
+        }
     }
 
     public void in(){
@@ -84,7 +93,7 @@ public class Intake {
 
 
 
-        setPower(-0.6); //0.6
+        setPower(0.6); //0.6
 
     }
 

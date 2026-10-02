@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V2 Teleop")
+@TeleOp(name = "V2 Red Teleop")
 public class MainV2Red extends MainV1Red {
 
     @Override
@@ -60,8 +60,15 @@ public class MainV2Red extends MainV1Red {
             {
                 robot.intake.stop();
                 robot.feeder.stopfeed();
+
             }
         }
+
+
+
+
+
+
         if (gamepad2.leftBumperWasPressed()) {
             robot.light.blue();
             if (!robot.intake.checkIn())
@@ -70,10 +77,12 @@ public class MainV2Red extends MainV1Red {
                 robot.feeder.intakeSlowFeed();
             }
             else {
-                robot.intake.stop();
-                robot.feeder.stopfeed();
+                robot.feeder.veryslowfeed();
+                robot.intake.out();
             }
         }
+
+
 
 
         if (gamepad2.aWasPressed() || gamepad2.bWasPressed()) {

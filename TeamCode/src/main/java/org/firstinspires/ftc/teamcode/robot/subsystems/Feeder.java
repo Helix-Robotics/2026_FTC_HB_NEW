@@ -86,6 +86,11 @@ public class Feeder {
         //v1 doesn't have gate
     }
 
+
+    public void veryslowfeed() {
+
+    }
+
     public double getGatePos(){
         //V1 doesn't have gate
         return -1000;

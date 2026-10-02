@@ -6,6 +6,8 @@
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
+import static java.lang.Math.abs;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -82,9 +84,27 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
             localizer.update();
             Pose2d position = localizer.getPose();
 
+            double positionx = position.position.x;
+            double positiony = position.position.y;
+            double heading = Math.toDegrees(position.heading.toDouble());
+
+            double targetx = -47.5;
+            double targety = -57.25;
+            double targetheading = -90.0;
+
+            double errorx = abs(targetx - positionx);
+            double errory = abs(targety - positiony);
+            double headingError = abs(targetheading - heading);
+
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
+            telemetry.addData("X Error", errorx);
+            telemetry.addData("Y Error", errory);
+            telemetry.addData("Heading Error", headingError);
             telemetry.update();
         }
 
@@ -92,26 +112,26 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen = tab1.build();
-        Action trajectoryActionChosen2 = tab2.build();
-        Action trajectoryActionChosen3 = tab3.build();
-        Action trajectoryActionChosen4 = tab4.build();
+        Action action1 = tab1.build();
+        Action action2 = tab2.build();
+        Action action3 = tab3.build();
+        Action action4 = tab4.build();
 
 
 
         runActionSafely(
                 new SequentialAction(
-                        trajectoryActionChosen,
+                        action1,
                         robot.shooter.launchAction(),
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
-                                trajectoryActionChosen2
+                                action2
                         ),
 
-                        trajectoryActionChosen3,
+                        action3,
                         robot.intake.stopIntake(),
 
-                        trajectoryActionChosen4
+                        action4
 
 
 

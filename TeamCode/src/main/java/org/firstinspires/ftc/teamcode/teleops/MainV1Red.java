@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import java.util.List;
 
 
-@TeleOp(name = "V1 Teleop")
+@TeleOp(name = "V1 Red Teleop")
 public class MainV1Red extends MainV0Red {
 
     Intake intake;
