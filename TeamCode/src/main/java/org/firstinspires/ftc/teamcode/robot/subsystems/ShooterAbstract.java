@@ -149,7 +149,7 @@ public abstract class ShooterAbstract {
                 count++;
 
 
-                if (count < shot_count + extra_cycles) {
+                if (count < shot_count) {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
@@ -251,84 +251,7 @@ public abstract class ShooterAbstract {
 
 
 
-    public void oldshoot(boolean shotRequested, int shot_count) {
-        switch (launchState) {
-            case IDLE:
-                if (shotRequested) {
-                    count = 0;
-                    updateShooterPID();
-                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                    shooter.setVelocity(targetVelocity);
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                    launchState = LaunchState.FEEDING_WAIT;
-                }
-                light.pink();
-                break;
-
-
-
-
-            case FEEDING_WAIT:
-                shooter.setVelocity(targetVelocity);
-                if (isReady()) {
-                    if (readyCount < readyCycles) {
-                        readyCount++;
-                        feedDelayCount = 0; // don't start feed delay yet
-                    } else {
-                        // Shooter has been in band long enough,
-                        // now count extra cycles as feed delay
-                        launchState = LaunchState.FEEDING_WAIT;
-                        feedDelayCount++;
-                    }
-                    if (readyCount >= readyCycles && feedDelayCount >= feedDelayCycles) {
-                        launchState = LaunchState.LAUNCH; //goes back
-                    }
-                } else {
-                    // Lost stability - reset both
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                }
-                break;
-
-            case LAUNCH:
-                shooter.setVelocity(targetVelocity);
-                intake.in();
-                feeder.slowfeed();
-                feederTimer.reset();
-                launchState = LaunchState.LAUNCHING;
-                light.yellow();
-                break;
-
-            case LAUNCHING:
-                shooter.setVelocity(targetVelocity);
-
-                if (feederTimer.milliseconds() < 750) {
-                    break;
-                }
-
-                feeder.stopfeed();
-                intake.stop();
-                count++;
-
-                if (count < shot_count) {
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                    launchState = LaunchState.FEEDING_WAIT;
-                } else {
-                    shooter.setVelocity(0);
-                    launchState = LaunchState.IDLE;
-                    light.green();
-                }
-                break;
-
-
-
-
-
-        }
-    }
 
 
     public int getReadyCount(){
@@ -405,27 +328,7 @@ public abstract class ShooterAbstract {
 
 
 
-    public class OldLaunch implements Action {
 
-        //private boolean hold = false;
-
-
-        // actions are formatted via telemetry packets as below
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-
-            setHold(false);
-            oldshoot(true, 4);
-            packet.put("Launch Status:", launchState);
-            if (launchState != LaunchState.IDLE){
-                return true;
-            }
-            return false;
-        }
-
-    }
-
-    public Action oldLaunchAction() {return new OldLaunch(); }
 
 
     public void setReverse(boolean reverse) {
