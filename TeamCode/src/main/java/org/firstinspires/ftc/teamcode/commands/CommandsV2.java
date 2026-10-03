@@ -30,11 +30,13 @@ public class CommandsV2 extends CommandAbstract {
         FeederV2 feeder = new FeederV2(hardwareMap);
         Light light = new Light(hardwareMap);
         ShooterV2 shooter = new ShooterV2(hardwareMap, feeder, intake, light);
+        Arm arm = new Arm(hardwareMap);
 
         this.setIntake(intake);
         this.setFeeder(feeder);
         this.setLight(light);
         this.setShooter(shooter);
+        this.setArm(arm);
 
     }
 }

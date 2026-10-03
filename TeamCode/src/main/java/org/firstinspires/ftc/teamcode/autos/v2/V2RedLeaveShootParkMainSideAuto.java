@@ -1,6 +1,8 @@
 // NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
+// WORKS
+
 package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -100,12 +102,17 @@ public class V2RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
                                 trajectoryActionChosen2
                         ),
 
                         trajectoryActionChosen3,
 
-                        robot.intake.stopIntake(),
+                        new ParallelAction(
+                                robot.intake.stopIntake(),
+                                robot.feeder.stopFeedAction()
+                        ),
+
 
                         trajectoryActionChosen4
 

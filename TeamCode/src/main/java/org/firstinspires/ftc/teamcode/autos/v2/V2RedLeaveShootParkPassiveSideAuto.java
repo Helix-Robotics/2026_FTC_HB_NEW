@@ -1,5 +1,7 @@
 // NO MEEEP YET
-// 0, 0 is measured by the bottom right of robot touching the middle
+// 0, 0 is measured by the bottom right of robot touching the mi
+
+// WORKS
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
@@ -44,6 +46,11 @@ public class V2RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
+                .strafeToConstantHeading(
+                        new Vector2d(48, 9)
+                )
+
+
                 .strafeToLinearHeading(
                         new Vector2d(35.5, 59.0),
                         Math.toRadians(90.0)

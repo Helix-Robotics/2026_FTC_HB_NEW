@@ -1,6 +1,8 @@
 // NO MEEEP YET
 // 0, 0 is measured by the bottom right of robot touching the middle
 
+// WORKS
+
 package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -17,13 +19,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Red Leave Shoot Park Auto 2 Cycles", group = "Autonomous")
+@Autonomous(name = "V2 Red 2 cycles", group = "Autonomous")
 public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -32,9 +33,9 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(
-                60.799,
-                -13.6,
-                Math.toRadians(0)
+                -60,
+                14,
+                Math.toRadians(179)
         );
 
         robot = new CommandsV2(hardwareMap, initialPose);
@@ -46,41 +47,45 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
                 .strafeToLinearHeading(
-                        new Vector2d(59.799, -13.6),
+                        new Vector2d(-45.5, 14),
                         Math.toRadians(179)
                 )
                 .strafeToLinearHeading(
-                        new Vector2d(45.299, -13.6),
-                        Math.toRadians(179)
-                )
-                .strafeToLinearHeading(
-                        new Vector2d(59.969, -61.6),
-                        Math.toRadians(-90)
+                        new Vector2d(-60.17, 62),
+                        Math.toRadians(90)
                 );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .waitSeconds(0.25)
                 .strafeToLinearHeading(
-                        new Vector2d(54.969, -32.6),
-                        Math.toRadians(-90)
+                        new Vector2d(-55.17, 44),
+                        Math.toRadians(90)
                 );
+
+
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-
-                .strafeToConstantHeading(
-                        new Vector2d(-35.201, -33.6)
-                )
                 .strafeToLinearHeading(
-                        new Vector2d(-60.701, -9.6),
-                        Math.toRadians(-179)
+                        new Vector2d(28, 44),
+                        Math.toRadians(179)
+                )
+
+                .strafeToLinearHeading(
+                        new Vector2d(60, 4),
+                        Math.toRadians(0)
                 );
 
-
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(48, 9)
+                )
+
+
                 .strafeToLinearHeading(
-                        new Vector2d(-45.701, -53.6),
-                        Math.toRadians(-90)
+                        new Vector2d(35.5, 59.0),
+                        Math.toRadians(90.0)
                 );
 
 
@@ -91,13 +96,14 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
             telemetry.update();
         }
 
         waitForStart();
-
-
 
         if (isStopRequested()) return;
 
@@ -115,24 +121,28 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
                                 trajectoryActionChosen2
                         ),
 
                         trajectoryActionChosen3,
 
-                        robot.intake.stopIntake(),
+                        new ParallelAction(
+                                robot.intake.stopIntake(),
+                                robot.feeder.stopFeedAction()
+                        ),
+
 
                         trajectoryActionChosen4,
-
-                        robot.vision.checkForRedSideTag(),
-
+                        robot.feeder.startFeedAction(),
                         robot.shooter.launchAction(),
-
                         trajectoryActionChosen5
+
+
 
                 ),
                 30.0,
-                27.5
+                29.0
         );
     }
 
@@ -154,6 +164,7 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
                 goingHome = true;
 
                 robot.stopshoot();
+                robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -162,8 +173,12 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToLinearHeading(
-                                new Vector2d(-45.701, -53.6),
-                                Math.toRadians(-90)
+                                new Vector2d(-55.17, 44),
+                                Math.toRadians(88)
+                        )
+                        .strafeToLinearHeading(
+                                new Vector2d(22.5, 54),
+                                Math.toRadians(-2)
                         )
                         .build();
             }
@@ -179,6 +194,8 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
 
         robot.stopshoot();
+        robot.setPower(0);
+        robot.intake.stop();
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
