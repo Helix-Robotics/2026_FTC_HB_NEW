@@ -62,34 +62,34 @@ public class MainV1Red extends MainV0Red {
         }
 
         /** Intake Related **/
-        if (gamepad2.rightBumperWasPressed())
-        {
-            if (!outtaking)
-            {
-                intaking = false;
-                outtaking = true;
-                robot.intake.in();
-                robot.feeder.slowfeed();
-            }
-            else
-            {
-                outtaking = false;
-                robot.intake.stop();
-                robot.feeder.stopfeed();
-            }
-        }
-        if (gamepad2.leftBumperWasPressed()) {
-            if (!intaking) {
-                intaking = true;
-                outtaking = false;
-                robot.intake.out();
-                robot.feeder.reverseFeed();
-            } else {
-                intaking = false;
-                robot.intake.stop();
-                robot.feeder.stopfeed();
-            }
-        }
+//        if (gamepad2.rightBumperWasPressed())
+//        {
+//            if (!outtaking)
+//            {
+//                intaking = false;
+//                outtaking = true;
+//                robot.intake.in();
+//                robot.feeder.slowfeed();
+//            }
+//            else
+//            {
+//                outtaking = false;
+//                robot.intake.stop();
+//                robot.feeder.stopfeed();
+//            }
+//        }
+//        if (gamepad2.leftBumperWasPressed()) {
+//            if (!intaking) {
+//                intaking = true;
+//                outtaking = false;
+//                robot.intake.out();
+//                robot.feeder.reverseFeed();
+//            } else {
+//                intaking = false;
+//                robot.intake.stop();
+//                robot.feeder.stopfeed();
+//            }
+//        }
 
         /** Shooting Related **/
         if (gamepad2.right_trigger > 0.5) {

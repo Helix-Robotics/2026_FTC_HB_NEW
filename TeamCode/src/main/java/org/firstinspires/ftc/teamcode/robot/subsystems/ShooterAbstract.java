@@ -21,6 +21,8 @@ public abstract class ShooterAbstract {
     public Intake intake;
     public Light light;
 
+
+
     //configurations
     protected final ElapsedTime feederTimer = new ElapsedTime();
     protected final ElapsedTime shootTimer = new ElapsedTime();
@@ -33,7 +35,7 @@ public abstract class ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static double shot_count = 6;
+    public static double shoot_time_ms = 500;
 
     protected double targetVelocity;
     protected double minVelocity;
@@ -100,7 +102,7 @@ public abstract class ShooterAbstract {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     feeder.stopfeed();
-                    intake.hold();
+                    //intake.hold();
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
@@ -137,7 +139,7 @@ public abstract class ShooterAbstract {
 
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
-                intake.hold();
+                //intake.hold();
                 feeder.slowfeed();
 
                 if (count == 0) {
@@ -154,13 +156,13 @@ public abstract class ShooterAbstract {
                 count++;
 
 
-                if (count < shot_count || shootTimer.milliseconds() < shot_count * 500) {
+                if (count < shot_count || shootTimer.milliseconds() < shot_count * shoot_time_ms) {
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
                 } else {
                     feeder.stopfeed();
-                    intake.stop();
+                    //intake.stop();
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
@@ -321,7 +323,7 @@ public abstract class ShooterAbstract {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             setHold(false);
-            shoot(true, 6);
+            shoot(true, 12);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

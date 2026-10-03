@@ -167,6 +167,8 @@ public abstract class CommandAbstract {
 
     public void feederDirection(boolean reverse) {feeder.setReverse(reverse);}
 
+    public void intakeDirection(boolean reverse) {intake.setReverse(reverse);}
+
     /*public void setintakePower(double intakepower){
         intake.setPower(intakepower);
     }*/

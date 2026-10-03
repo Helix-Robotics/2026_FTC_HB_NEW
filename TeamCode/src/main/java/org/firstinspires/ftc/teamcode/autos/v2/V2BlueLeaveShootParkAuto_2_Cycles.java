@@ -57,9 +57,10 @@ public class V2BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
                         Math.toRadians(0)
                 )
                 .strafeToLinearHeading(
-                        new Vector2d(58.5, -62.25),
+                        new Vector2d(60.5, -60.25),
                         Math.toRadians(-90.0)
                 );
+
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
@@ -75,7 +76,7 @@ public class V2BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
 
                 .strafeToConstantHeading(
-                        new Vector2d(-32.0, -34.25)
+                        new Vector2d(-32.0, -32.5)
                 ) // middle
                 .strafeToLinearHeading(
                         new Vector2d(-62.5, -8.25),
@@ -84,6 +85,9 @@ public class V2BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(-50, -8.25)
+                ) // middle
                 .strafeToLinearHeading(
                         new Vector2d(-47.5, -57.25),
                         Math.toRadians(-90.0)
@@ -130,12 +134,16 @@ public class V2BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
                                 trajectoryActionChosen2
                         ),
 
                         trajectoryActionChosen3,
+                        new ParallelAction(
+                                robot.feeder.stopFeedAction(),
+                                robot.intake.stopIntake()
+                        ),
 
-                        robot.intake.stopIntake(),
 
                         trajectoryActionChosen4,
 

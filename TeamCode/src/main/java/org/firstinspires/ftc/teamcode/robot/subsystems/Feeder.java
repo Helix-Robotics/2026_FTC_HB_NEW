@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static android.os.SystemClock.sleep;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -86,6 +90,11 @@ public class Feeder {
         //v1 doesn't have gate
     }
 
+    public void fullGate() {
+        //v1 doesn't have gate
+    }
+
+
 
     public void veryslowfeed() {
 
@@ -94,5 +103,31 @@ public class Feeder {
     public double getGatePos(){
         //V1 doesn't have gate
         return -1000;
+    }
+
+    public class StartFeedAction implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0.8);
+            return false;
+        }
+    }
+
+    public Action startFeedAction() {
+        return new StartFeedAction();
+    }
+
+    public class StopFeedAction implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0);
+            return false;
+        }
+    }
+
+    public Action stopFeedAction() {
+        return new StopFeedAction();
     }
 }

@@ -22,6 +22,8 @@ public class MainV2Red extends MainV1Red {
     public void init() {
         robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
         robot.feederDirection(true);
+        robot.intakeDirection(true);
+        //robot.shooterDirection(true);
         robot.shooter.setHold(true);
 
         stateMachine = StateMachine.WAITING_FOR_START;
@@ -77,8 +79,8 @@ public class MainV2Red extends MainV1Red {
                 robot.feeder.intakeSlowFeed();
             }
             else {
-                robot.feeder.veryslowfeed();
-                robot.intake.out();
+                robot.intake.stop();
+                robot.feeder.stopfeed();
             }
         }
 
@@ -114,6 +116,14 @@ public class MainV2Red extends MainV1Red {
             if (gamepad2.left_trigger > 0.75) {
                 robot.stopshoot();
             }
+        }
+
+        if (gamepad1.yWasPressed()) {
+            robot.arm.up();
+        }
+
+        if (gamepad1.xWasPressed()) {
+            robot.arm.down();
         }
 
 

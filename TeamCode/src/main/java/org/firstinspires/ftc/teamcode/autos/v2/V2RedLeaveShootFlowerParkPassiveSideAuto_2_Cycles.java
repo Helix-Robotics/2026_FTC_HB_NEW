@@ -1,9 +1,9 @@
-//V2 Checked
+//MeepMeep done
+
+
 
 
 package org.firstinspires.ftc.teamcode.autos.v2;
-
-import static java.lang.Math.abs;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -19,21 +19,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
+import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Blue Leave Shoot Park Main Side Auto", group = "Autonomous")
-public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
+@Autonomous(name = "V2 Red Leave Shoot Flower Park Passive Side Auto 2 Cycles", group = "Autonomous")
+public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(60, -14.75, Math.toRadians(0));
-
-
-
+        Pose2d initialPose = new Pose2d(60, 9.5, Math.toRadians(0));
 
         robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -41,29 +39,30 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(59, -14.75));
 
 
 
 
-
-        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(45.5, -14.75))
-                .strafeToLinearHeading(new Vector2d(60.5, -60.0), Math.toRadians(-90))
-
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(61.5, -60.6));
-
-
+        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
+                // -10 x y 10
+                .strafeToLinearHeading(new Vector2d(47.0, 25), Math.toRadians(0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(40, -45));
 
+                .waitSeconds(1.0)
+
+//                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(179.9))
+                .strafeToLinearHeading(new Vector2d(56.0, 15.42), Math.toRadians(10.0))
+
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(50, 21.0), Math.toRadians(0));
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(47.0, 23.08), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(58, 9.5), Math.toRadians(0));
+
+
 
 
 
@@ -81,27 +80,9 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
             localizer.update();
             Pose2d position = localizer.getPose();
 
-            double positionx = position.position.x;
-            double positiony = position.position.y;
-            double heading = Math.toDegrees(position.heading.toDouble());
-
-            double targetx = -47.5;
-            double targety = -57.25;
-            double targetheading = -90.0;
-
-            double errorx = abs(targetx - positionx);
-            double errory = abs(targety - positiony);
-            double headingError = abs(targetheading - heading);
-
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData(
-                    "deg",
-                    Math.toDegrees(position.heading.toDouble())
-            );
-            telemetry.addData("X Error", errorx);
-            telemetry.addData("Y Error", errory);
-            telemetry.addData("Heading Error", headingError);
+            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
             telemetry.update();
         }
 
@@ -109,37 +90,44 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action action1 = tab1.build();
-        Action action2 = tab2.build();
-        Action action3 = tab3.build();
-        Action action4 = tab4.build();
+
+        Action trajectoryActionChosen2 = tab2.build();
+        Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
+
 
 
 
         runActionSafely(
                 new SequentialAction(
-                        action1,
+                        robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
+                        robot.intake.stopIntake(),
+
                         new ParallelAction(
-                                robot.intake.spinUpIntake(),
-                                robot.feeder.startFeedAction(),
 
-                                action2
+                                trajectoryActionChosen2,
+                                robot.arm.armDownAction()
                         ),
+                        robot.intake.spinUpIntake(),
+                        trajectoryActionChosen3,
 
-                        action3,
-                        new ParallelAction(
-                                robot.intake.stopIntake(),
-                                robot.feeder.stopFeedAction()
+                        robot.arm.armUpAction(),
+                        trajectoryActionChosen4,
+                        robot.intake.stopIntake()
 
-                        ),
-
-
-                        action4
+                        //robot.intake.spinUpIntake()
 
 
+                        // if there is 25s left in the auto, just make a thing to make it park
 
-                ), 30.0, 29.0);
+
+
+
+
+
+
+                ), 30.0, 99.0);
 
 
 
@@ -165,8 +153,7 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0))
+                        //HOME
                         .build();
             }
 

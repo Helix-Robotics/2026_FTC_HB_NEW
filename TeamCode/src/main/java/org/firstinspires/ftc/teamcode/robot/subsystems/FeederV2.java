@@ -2,6 +2,10 @@ package org.firstinspires.ftc.teamcode.robot.subsystems;
 
 import static android.os.SystemClock.sleep;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -59,7 +63,7 @@ public class FeederV2 extends Feeder{
 
     @Override
     public void slowfeed() {
-        setPower(0.7);
+        setPower(0.3);
         openGate();
     }
 
@@ -101,6 +105,11 @@ public class FeederV2 extends Feeder{
     }
 
     @Override
+    public void fullGate() {
+        setGatePosition(0.25);
+    }
+
+    @Override
     public void setReverse(boolean reverse) {
         if (reverse) {
             motorFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -108,5 +117,32 @@ public class FeederV2 extends Feeder{
         else {
             motorFeeder.setDirection(DcMotorSimple.Direction.FORWARD);
         }
+    }
+
+    public class StartFeedAction implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0.8);
+            return false;
+        }
+    }
+
+    public Action startFeedAction() {
+        return new StartFeedAction();
+    }
+
+
+    public class StopFeedAction implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0);
+            return false;
+        }
+    }
+
+    public Action stopFeedAction() {
+        return new StopFeedAction();
     }
 }

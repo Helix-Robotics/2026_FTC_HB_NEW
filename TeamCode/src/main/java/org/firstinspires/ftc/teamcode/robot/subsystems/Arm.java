@@ -16,33 +16,33 @@ public class Arm {
     public CRServo arm;
 
     public double armMoveTime = 0.75;
+    public double power = 0.0;
+
 
     public Arm(HardwareMap hw){
         arm = hw.get(CRServo.class, "arm");
 
     }
 
+
+    public void setPower(double power){
+        this.power = power;
+        arm.setPower(power);
+    }
+
+
     public void down() {
-        armTimer.reset();
-        if (armTimer.seconds() < armMoveTime) {
-            arm.setPower(-1.0);
-        } else {
-            stopArm();
-        }
+
+        setPower(-1.0);
 
     }
 
     public void up() {
-        armTimer.reset();
-        if (armTimer.seconds() < armMoveTime) {
-            arm.setPower(1.0);
-        } else {
-            stopArm();
-        }
+        setPower(1.0);
     }
 
     public void stopArm() {
-        arm.setPower(0);
+        setPower(0);
     }
 
     public class ArmDownAction implements Action {
