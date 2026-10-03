@@ -119,11 +119,11 @@ public class MainV2Red extends MainV1Red {
         }
 
         if (gamepad1.yWasPressed()) {
-            robot.arm.up();
+            robot.feeder.closeGate();
         }
 
         if (gamepad1.xWasPressed()) {
-            robot.arm.down();
+            robot.feeder.openGate();
         }
 
 

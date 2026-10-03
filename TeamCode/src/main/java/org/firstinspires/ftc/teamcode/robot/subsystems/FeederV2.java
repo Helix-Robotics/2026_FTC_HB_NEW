@@ -101,7 +101,7 @@ public class FeederV2 extends Feeder{
 
     @Override
     public void openGate() {
-        setGatePosition(0.25);
+        setGatePosition(0.33);
     }
 
     @Override
