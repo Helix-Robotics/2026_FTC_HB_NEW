@@ -60,6 +60,17 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
                 .strafeToLinearHeading(new Vector2d(47.0, 23.08), Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(60, 9.5), Math.toRadians(0));
 
+        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(48, 9)
+                )
+
+
+                .strafeToLinearHeading(
+                        new Vector2d(35.5, 59.0),
+                        Math.toRadians(90.0)
+                );
+
 
 
 
@@ -92,6 +103,7 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
+        Action trajectoryActionChosen5 = tab5.build();
 
 
 
@@ -116,7 +128,8 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
                         robot.feeder.startFeedAction(),
                         trajectoryActionChosen4,
                         robot.shooter.launchAction(),
-                        robot.feeder.stopFeedAction()
+                        robot.feeder.stopFeedAction(),
+                        trajectoryActionChosen5
 
                         //robot.intake.spinUpIntake()
 

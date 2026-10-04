@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Config
-@Autonomous(name = " V2 Blue Leave and Park Far Auto", group = "Autonomous")
+//@Autonomous(name = " V2 Blue Leave and Park Far Auto", group = "Autonomous")
 public class V2BlueLeaveParkFarAuto extends LinearOpMode {
 
     protected CommandAbstract robot;

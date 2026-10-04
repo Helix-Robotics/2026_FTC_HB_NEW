@@ -132,18 +132,24 @@ public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
                                 trajectoryActionChosen2
                         ),
 
                         trajectoryActionChosen3,
 
                         robot.intake.stopIntake(),
+                        robot.feeder.stopFeedAction(),
 
                         trajectoryActionChosen4,
+
+                        robot.feeder.startFeedAction(),
 
                         robot.vision.checkForBlueSideTag(),
 
                         robot.shooter.launchAction(),
+
+                        robot.feeder.stopFeedAction(),
 
                         trajectoryActionChosen5
 
