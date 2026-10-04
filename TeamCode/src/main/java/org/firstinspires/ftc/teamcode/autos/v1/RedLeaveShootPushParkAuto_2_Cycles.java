@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+//@Autonomous(name = "Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
 public class RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;

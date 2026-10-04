@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave and Park Close Auto", group = "Autonomous")
+//@Autonomous(name = "Red Leave and Park Close Auto", group = "Autonomous")
 public class RedLeaveParkCloseAuto extends LinearOpMode {
     protected CommandAbstract robot;
 

@@ -31,7 +31,7 @@
 
 
 
-package org.firstinspires.ftc.teamcode.autos.v1;
+package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -47,12 +47,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "Blue Leave and Park Close Auto", group = "Autonomous")
-public class BlueLeaveParkCloseAuto extends LinearOpMode {
+@Autonomous(name = "V2 Blue Leave and Park Close Auto", group = "Autonomous")
+public class V2BlueLeaveParkCloseAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
@@ -61,7 +62,7 @@ public class BlueLeaveParkCloseAuto extends LinearOpMode {
 
 
 
-        robot = new CommandsV1(hardwareMap, initialPose);
+        robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;

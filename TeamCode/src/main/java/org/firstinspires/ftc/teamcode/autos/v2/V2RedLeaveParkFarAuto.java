@@ -4,7 +4,7 @@
 
 
 
-package org.firstinspires.ftc.teamcode.autos.v1;
+package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -14,24 +14,26 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "Red Leave and Park Far Auto", group = "Autonomous")
-public class NEED_TO_REDO_THIS_IS_WRONG_RedLeaveParkFarAuto extends LinearOpMode {
+@Autonomous(name = "V2 Red Leave and Park Far Auto", group = "Autonomous")
+public class V2RedLeaveParkFarAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(38, -61.5, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(-38, 61.5, Math.toRadians(-90.0));
 
-        robot = new CommandsV1(hardwareMap, initialPose);
+        robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
@@ -40,8 +42,8 @@ public class NEED_TO_REDO_THIS_IS_WRONG_RedLeaveParkFarAuto extends LinearOpMode
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(38, -46.25))
-                .strafeToLinearHeading(new Vector2d(-17, -61.5), Math.toRadians(0));
+                .strafeToConstantHeading(new Vector2d(-38, 46.25))
+                .strafeToLinearHeading(new Vector2d(20, 61.5), Math.toRadians(0));
 
 
 

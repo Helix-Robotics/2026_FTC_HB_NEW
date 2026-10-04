@@ -4,34 +4,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-package org.firstinspires.ftc.teamcode.autos.v1;
+package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -47,21 +20,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "Blue Leave and Park Close Auto", group = "Autonomous")
-public class BlueLeaveParkCloseAuto extends LinearOpMode {
+@Autonomous(name = "V2 Red Leave and Park Close Auto", group = "Autonomous")
+public class V2RedLeaveParkCloseAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-13, -61.5, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(14, 60.25, Math.toRadians(-90.0));
 
-
-
-        robot = new CommandsV1(hardwareMap, initialPose);
+        robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
@@ -75,7 +47,7 @@ public class BlueLeaveParkCloseAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-18, -56.5), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(19, 56), Math.toRadians(0));
 
 
 

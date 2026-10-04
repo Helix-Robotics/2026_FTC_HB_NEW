@@ -4,33 +4,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 package org.firstinspires.ftc.teamcode.autos.v1;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -51,15 +24,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "Blue Leave and Park Close Auto", group = "Autonomous")
-public class BlueLeaveParkCloseAuto extends LinearOpMode {
+//@Autonomous(name = "Red Leave and Park Far Auto", group = "Autonomous")
+public class RedLeaveParkFarAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-13, -61.5, Math.toRadians(90.0));
-
-
+        Pose2d initialPose = new Pose2d(-38, 61.5, Math.toRadians(-90.0));
 
         robot = new CommandsV1(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -67,15 +38,11 @@ public class BlueLeaveParkCloseAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
-        // .strafeToLinearHeading(new Vector2d(-14, -60.25), Math.toRadians(-90.0))
-
-
-
-
-
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-18, -56.5), Math.toRadians(0));
+                //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
+                .strafeToConstantHeading(new Vector2d(-38, 46.25))
+                .strafeToLinearHeading(new Vector2d(20, 61.5), Math.toRadians(0));
 
 
 
