@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
+//@Autonomous(name = "V2 Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
 public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -114,6 +114,7 @@ public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
                                 trajectoryActionChosen2
                         ),
 
@@ -122,6 +123,7 @@ public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                         trajectoryActionChosen3,
 
                         robot.intake.stopIntake(),
+                        robot.feeder.stopFeedAction(),
 
                         trajectoryActionChosen4
 
