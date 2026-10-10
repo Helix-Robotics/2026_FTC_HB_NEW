@@ -1,5 +1,4 @@
-//MeepMeep done
-
+// Meep meep tested it works
 
 
 
@@ -14,12 +13,10 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
@@ -27,11 +24,12 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 @Config
 //@Autonomous(name = "V2 Red Leave and Park Far Auto", group = "Autonomous")
 public class V2RedLeaveParkFarAuto extends LinearOpMode {
+
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-38, 61.5, Math.toRadians(-90.0));
+        Pose2d initialPose = new Pose2d(-36, 60.25, Math.toRadians(-90.0));
 
         robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -40,10 +38,17 @@ public class V2RedLeaveParkFarAuto extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
 
+
+
+
+
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(-38, 46.25))
-                .strafeToLinearHeading(new Vector2d(20, 61.5), Math.toRadians(0));
+                .strafeToConstantHeading(new Vector2d(-36, 45.0))
+                .strafeToLinearHeading(new Vector2d(28.4, 55.25), Math.toRadians(0));
+
+
+
 
 
 

@@ -1,7 +1,4 @@
-// NO MEEEP YET
-// 0, 0 is measured by the bottom right of robot touching the mi
-
-// WORKS
+// This was ran on scrimmage and worked
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 

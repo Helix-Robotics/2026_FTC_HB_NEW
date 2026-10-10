@@ -1,7 +1,4 @@
-//V2 Checked
-// WORKS
-
-
+// This was ran on scrimmage and worked
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 

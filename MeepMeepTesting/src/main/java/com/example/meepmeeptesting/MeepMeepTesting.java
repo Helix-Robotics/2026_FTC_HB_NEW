@@ -2,6 +2,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
@@ -71,16 +72,135 @@ public class MeepMeepTesting {
 
 
 
-        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(-59, -9.5, Math.toRadians(0)))
-                .strafeToLinearHeading(new Vector2d(-60, -9.5), Math.toRadians(-179))
-                .strafeToLinearHeading(new Vector2d(-47.0, -25), Math.toRadians(-179))
-                .waitSeconds(1.0)
-                .strafeToLinearHeading(new Vector2d(-56.0, -15.42), Math.toRadians(-169))
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(-50, -21.0), Math.toRadians(-179))
-                .strafeToLinearHeading(new Vector2d(-47.0, -23.08), Math.toRadians(-179))
-                .strafeToLinearHeading(new Vector2d(-58, -9.5), Math.toRadians(-179))
+//        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
+//                    .strafeToLinearHeading(
+//                            new Vector2d(60, -14.75),
+//                            Math.toRadians(0)
+//                    )
+//
+//
+//
+//
+//
+//                    .strafeToConstantHeading(
+//                            new Vector2d(59.0, -14.75)
+//                    )
+//
+//
+//                    .strafeToLinearHeading(
+//                            new Vector2d(45.5, -14.75),
+//                            Math.toRadians(0)
+//                    )
+//                    .strafeToLinearHeading(
+//                            new Vector2d(60.5, -60.25),
+//                            Math.toRadians(-90.0)
+//                    )
+//
+//
+//
+//                    .strafeToLinearHeading(
+//                            new Vector2d(55.17, -45.25),
+//                            Math.toRadians(-90.0)
+//                    )
+//
+//
+//
+//
+//
+//
+//                    .strafeToLinearHeading(
+//                            new Vector2d(-37, -40),  // -62.5   -8
+//                            Math.toRadians(179.0)
+//                    )
+//                    .strafeToConstantHeading(
+//                            new Vector2d(-51.5, -8)
+//                    ) // middle
+//                    .strafeToConstantHeading(
+//                            new Vector2d(-62.5, -8)
+//                    ) // middle
+//
+//
+//
+//                    .strafeToConstantHeading(
+//                            new Vector2d(-50, -8)
+//                    ) // middle
+//                    .strafeToLinearHeading(
+//                            new Vector2d(-47.5, -57.25),
+//                            Math.toRadians(-90.0)
+//                    )
+
+
+
+
+
+
+//                .build());
+
+
+
+        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
+                .strafeToLinearHeading(
+                        new Vector2d(-60, 14.75),
+                        Math.toRadians(179)
+                )
+
+
+
+
+
+                .strafeToConstantHeading(
+                        new Vector2d(-59.0, 14.75)
+                )
+
+
+                .strafeToLinearHeading(
+                        new Vector2d(-45.5, 14.75),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(-60.5, 60.25),
+                        Math.toRadians(90.0)
+                )
+
+
+
+                .strafeToLinearHeading(
+                        new Vector2d(-55.17, 45.25),
+                        Math.toRadians(90.0)
+                )
+
+
+
+
+
+
+                .strafeToLinearHeading(
+                        new Vector2d(37, 40),  // -62.5   -8
+                        Math.toRadians(0)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(51.5, 8)
+                ) // middle
+                .strafeToConstantHeading(
+                        new Vector2d(62.5, 8)
+                ) // middle
+
+
+
+                .strafeToConstantHeading(
+                        new Vector2d(50, 8)
+                ) // middle
+                .strafeToLinearHeading(
+                        new Vector2d(47.5, 57.25),
+                        Math.toRadians(90.0)
+                )
+
+
+
+
                 .build());
+
+
 
 
 

@@ -14,7 +14,6 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -34,7 +33,7 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
         Pose2d initialPose = new Pose2d(
                 -60,
-                14,
+                14.75,
                 Math.toRadians(179)
         );
 
@@ -46,47 +45,62 @@ public class V2RedLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
+                .strafeToConstantHeading(
+                        new Vector2d(-59.0, 14.75)
+                )
+
                 .strafeToLinearHeading(
-                        new Vector2d(-45.5, 14),
+                        new Vector2d(-45.5, 14.75),
                         Math.toRadians(179)
                 )
+
                 .strafeToLinearHeading(
-                        new Vector2d(-60.17, 62),
-                        Math.toRadians(90)
+                        new Vector2d(-60.5, 60.25),
+                        Math.toRadians(90.0)
                 );
+
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToLinearHeading(
-                        new Vector2d(-55.17, 44),
-                        Math.toRadians(90)
+                        new Vector2d(-55.17, 45.25),
+                        Math.toRadians(90.0)
                 );
+
 
 
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(28, 44),
-                        Math.toRadians(179)
+                        new Vector2d(37, 40),  // -62.5   -8
+                        Math.toRadians(0)
                 )
 
-                .strafeToLinearHeading(
-                        new Vector2d(60, 4),
-                        Math.toRadians(0)
-                );
+
+                .strafeToConstantHeading(
+                        new Vector2d(51.5, 8)
+                ) // middle\
+
+                .strafeToConstantHeading(
+                        new Vector2d(62.5, 8)
+                ); // middle
+
+
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
                 .strafeToConstantHeading(
-                        new Vector2d(48, 9)
-                )
+                        new Vector2d(50, 8)
+                ) // middle
+
 
 
                 .strafeToLinearHeading(
-                        new Vector2d(35.5, 59.0),
+                        new Vector2d(47.5, 57.25),
                         Math.toRadians(90.0)
                 );
+
 
 
         while (!isStopRequested() && !opModeIsActive()) {

@@ -1,5 +1,4 @@
-//NO MEEEP YET
-// 0, 0 is measured by the bottom right of robot touching the middle
+// meep meep tested
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
@@ -12,12 +11,10 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
 import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
@@ -51,32 +48,32 @@ public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                 )
                 .strafeToLinearHeading(
                         new Vector2d(-59.969, 61.6),
-                        Math.toRadians(88)
+                        Math.toRadians(90)
                 );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToLinearHeading(
-                        new Vector2d(-54.969, 32.6),
-                        Math.toRadians(88)
+                        new Vector2d(-30.969, 40),
+                        Math.toRadians(90)
                 );
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(-7.299, 61.6),
-                        Math.toRadians(177)
+                        new Vector2d(-4.5, 61.6),
+                        Math.toRadians(179)
                 )
                 .strafeToConstantHeading(
                         new Vector2d(7.701, 61.6)
                 )
                 .waitSeconds(0.1)
                 .strafeToConstantHeading(
-                        new Vector2d(2.701, 41.6)
+                        new Vector2d(-3, 36.6)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(45.201, 41.6)
+                        new Vector2d(45.201, 36.6)
                 )
                 .strafeToConstantHeading(
                         new Vector2d(45.201, 53.6)

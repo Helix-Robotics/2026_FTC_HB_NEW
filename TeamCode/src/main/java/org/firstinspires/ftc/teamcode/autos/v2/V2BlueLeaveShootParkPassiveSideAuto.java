@@ -1,7 +1,4 @@
-//MeepMeep done
-
-
-// WORKS
+//This ran on the scrimmage and worked
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
