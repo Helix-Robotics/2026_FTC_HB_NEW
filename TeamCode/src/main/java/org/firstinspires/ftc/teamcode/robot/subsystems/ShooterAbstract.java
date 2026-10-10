@@ -46,8 +46,6 @@ public abstract class ShooterAbstract {
     protected int readyCount = 0;
     protected int feedDelayCount = 0;
 
-    protected int count = 0;
-
     private static final int READY_CYCLES = 3; //5;   //5 for real life, 250 for fine tuning must be in-band N loops
     public static final int FEED_DELAY_CYCLES = 0; //3;
 
@@ -97,7 +95,6 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    count = 0;
                     updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
@@ -142,9 +139,7 @@ public abstract class ShooterAbstract {
                 //intake.hold();
                 feeder.slowfeed();
 
-                if (count == 0) {
-                    shootTimer.reset();
-                }
+                shootTimer.reset();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
                 break;
@@ -153,14 +148,7 @@ public abstract class ShooterAbstract {
 
                 shooter.setVelocity(targetVelocity);
 
-                count++;
-
-
-                if (count < shot_count || shootTimer.milliseconds() < shot_count * shoot_time_ms) {
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                    launchState = LaunchState.SPIN_UP;
-                } else {
+                if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
                     feeder.stopfeed();
                     //intake.stop();
                     light.green();
@@ -184,7 +172,6 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    count = 0;
                     updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
@@ -282,7 +269,6 @@ public abstract class ShooterAbstract {
         intake.stop();
         readyCount = 0;
         feedDelayCount = 0;
-        count = 0;
         launchState = LaunchState.IDLE;
     }
 
@@ -293,6 +279,11 @@ public abstract class ShooterAbstract {
     public void setShooterVelocity() {
         this.targetVelocity = TARGET_VELOCITY;
         this.minVelocity = MIN_VELOCITY;
+    }
+
+    public void rpmSet(double rpm) {
+        this.targetVelocity = rpm;
+        this.minVelocity = rpm - 50;
     }
 
     public void updateShooterPID() {
