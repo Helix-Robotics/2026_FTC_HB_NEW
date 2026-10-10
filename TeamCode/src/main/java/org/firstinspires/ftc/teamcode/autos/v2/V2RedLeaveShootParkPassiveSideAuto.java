@@ -89,8 +89,8 @@ public class V2RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
                         // just make a thing to make it park
 
                 ),
-                30.0,
-                25.0
+                29.5,
+                27.0
         );
     }
 
@@ -120,10 +120,11 @@ public class V2RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(
-                                new Vector2d(40, 9.0),
-                                Math.toRadians(0)
+                        .strafeToConstantHeading(
+                                new Vector2d(48, 9)
                         )
+
+
                         .strafeToLinearHeading(
                                 new Vector2d(35.5, 59.0),
                                 Math.toRadians(90.0)

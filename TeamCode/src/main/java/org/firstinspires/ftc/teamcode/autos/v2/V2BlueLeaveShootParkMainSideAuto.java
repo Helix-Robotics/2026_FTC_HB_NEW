@@ -138,7 +138,7 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
 
 
-                ), 30.0, 29.0);
+                ), 29.5, 27.0);
 
 
 
@@ -164,8 +164,7 @@ public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(47.67, -53.0), Math.toRadians(-90))
-                        .strafeToLinearHeading(new Vector2d(-33.3, -66.6), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0))
                         .build();
             }
 

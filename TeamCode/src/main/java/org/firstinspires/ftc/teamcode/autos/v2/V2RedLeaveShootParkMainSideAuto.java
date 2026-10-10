@@ -114,8 +114,8 @@ public class V2RedLeaveShootParkMainSideAuto extends LinearOpMode {
                         trajectoryActionChosen4
 
                 ),
-                30.0,
-                29.0
+                29.5,
+                27.0
         );
     }
 
@@ -146,12 +146,8 @@ public class V2RedLeaveShootParkMainSideAuto extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToLinearHeading(
-                                new Vector2d(-55.17, 44),
-                                Math.toRadians(88)
-                        )
-                        .strafeToLinearHeading(
-                                new Vector2d(22.5, 54),
-                                Math.toRadians(-2)
+                                new Vector2d(25, 54),
+                                Math.toRadians(0)
                         )
                         .build();
             }

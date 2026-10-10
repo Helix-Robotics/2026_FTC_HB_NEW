@@ -144,8 +144,8 @@ public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                         trajectoryActionChosen5
 
                 ),
-                30.0,
-                27.5
+                29.5,
+                27
         );
     }
 

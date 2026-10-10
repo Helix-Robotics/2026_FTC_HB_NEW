@@ -125,8 +125,8 @@ public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                         trajectoryActionChosen4
 
                 ),
-                30.0,
-                999.99
+                29.5,
+                27.0
         );
     }
 
@@ -156,13 +156,11 @@ public class V2RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(
-                                new Vector2d(-54.969, 43.6),
-                                Math.toRadians(88)
+                        .strafeToConstantHeading(
+                                new Vector2d(45.201, 36.6)
                         )
-                        .strafeToLinearHeading(
-                                new Vector2d(22.701, 53.6),
-                                Math.toRadians(-2)
+                        .strafeToConstantHeading(
+                                new Vector2d(45.201, 53.6)
                         )
                         .build();
             }
