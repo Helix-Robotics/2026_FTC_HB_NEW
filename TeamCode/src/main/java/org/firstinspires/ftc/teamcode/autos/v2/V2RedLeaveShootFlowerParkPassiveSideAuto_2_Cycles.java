@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Red Leave Shoot Flower Park Passive Side Auto 2 Cycles", group = "Autonomous")
+//@Autonomous(name = "V2 Red Leave Shoot Flower Park Passive Side Auto 2 Cycles", group = "Autonomous")
 public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
     protected CommandAbstract robot;
 
@@ -40,7 +40,8 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
         Localizer localizer = md.getLocalizer();
 
 
-
+        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+                .waitSeconds(10);
 
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
@@ -99,7 +100,7 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
 
         if (isStopRequested()) return;
 
-
+        Action trajectoryActionChosen1 = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
@@ -110,6 +111,8 @@ public class V2RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
 
         runActionSafely(
                 new SequentialAction(
+
+                        trajectoryActionChosen1,
                         robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
                         robot.intake.stopIntake(),

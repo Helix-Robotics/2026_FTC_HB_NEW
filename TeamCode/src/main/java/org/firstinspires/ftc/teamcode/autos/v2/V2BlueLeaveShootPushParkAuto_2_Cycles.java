@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+@Autonomous(name = "V2 Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
 public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -79,18 +79,21 @@ public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                         new Vector2d(-4.5, -62.25)
                 ) // push
                 .strafeToConstantHeading(
-                        new Vector2d(5.5, -54.25)
+                        new Vector2d(5.5, -34.25)
                 ) // out
                 .strafeToConstantHeading(
-                        new Vector2d(-32.0, -34.25)
+                        new Vector2d(-42.0, -35.25)
                 ) // middle
                 .strafeToLinearHeading(
-                        new Vector2d(-62.5, -8.25),
+                        new Vector2d(-62.5, -8),
                         Math.toRadians(179.0)
                 );
 
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(-50, -8)
+                )
                 .strafeToLinearHeading(
                         new Vector2d(-47.5, -57.25),
                         Math.toRadians(-90.0)

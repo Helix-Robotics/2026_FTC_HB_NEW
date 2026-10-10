@@ -66,7 +66,7 @@ public class V2RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(22.5, 54),
+                        new Vector2d(25, 54),
                         Math.toRadians(0)
                 );
 
