@@ -32,7 +32,7 @@ public class V2RedLeaveParkFarAuto extends LinearOpMode {
         Pose2d initialPose = new Pose2d(-36, 60.25, Math.toRadians(-90.0));
 
         robot = new CommandsV2(hardwareMap, initialPose);
-        robot.setIsBlue(false);
+        robot.setIsBlue(true);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();

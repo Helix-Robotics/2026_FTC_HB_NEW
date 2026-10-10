@@ -32,7 +32,7 @@ public class V2BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
         Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(-179.0));
 
         robot = new CommandsV2(hardwareMap, initialPose);
-        robot.setIsBlue(false);
+        robot.setIsBlue(true);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();

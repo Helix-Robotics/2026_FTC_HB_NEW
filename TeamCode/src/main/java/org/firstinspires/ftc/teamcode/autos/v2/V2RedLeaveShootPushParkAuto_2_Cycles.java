@@ -37,7 +37,7 @@ public class V2RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
         );
 
         robot = new CommandsV2(hardwareMap, initialPose);
-        robot.setIsBlue(false);
+        robot.setIsBlue(true);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
