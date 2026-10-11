@@ -219,20 +219,8 @@ public class MainV0Red extends OpMode {
         //do nothing for v0
     }
 
-    /**
-    public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){
 
-        telemetry.addData("Distance to Tag", robot.getDistanceFromTag());
-        packet.put("Distance to Tag", robot.getDistanceFromTag());
-        telemetry.addData("Distance to Tag PODS", robot.getDistanceFromTagPODS());
-        packet.put("Distance to Tag PODS", robot.getDistanceFromTagPODS());
 
-        telemetry.addData("TagX", robot.getCameraTagX());
-        packet.put("TagX", robot.getCameraTagX());
-        telemetry.addData("TagY", robot.getCameraTagY());
-        packet.put("TagY", robot.getCameraTagY());
-    }
-     **/
 
     public void telemetryDrivetrain(Telemetry telemtry, TelemetryPacket packet){
         telemetry.addData("FR Power", robot.getFRPower());

@@ -107,14 +107,33 @@ public class MainV2Red extends MainV1Red {
                 robot.intake.stop();
             }
 
+
+
+
+
+            if (gamepad2.right_trigger > 0.75) {
+                robot.shooter.updateShooterPID();
+                robot.shooter.rpmSet(1175.0);
+            }
             robot.shoot(gamepad2.right_trigger > 0.75, 5);
+
+            if (gamepad2.left_trigger > 0.75) {
+                robot.shooter.updateShooterPIDFar();
+                robot.turnToTag(true);
+                robot.shooter.rpmSet(1250.0);
+            }
+            robot.shoot(gamepad2.left_trigger > 0.75, 5);
+
+
+
 
             if (gamepad2.xWasPressed()) {  // this unjam feeder
                 robot.shooter.singleShot(true);
             }
 
-            if (gamepad2.left_trigger > 0.75) {
+            if (gamepad2.y) {
                 robot.stopshoot();
+                robot.turnToTag(true);
             }
         }
 
@@ -138,8 +157,9 @@ public class MainV2Red extends MainV1Red {
 
         telemetryEssentials(telemetry, packet);
         telemetryIntake(telemetry, packet);
-        telemetryFeeder(telemetry, packet);
+        //telemetryFeeder(telemetry, packet);
         telemetryShooter(telemetry, packet);
+        telemetryShooting(telemetry, packet);
         telementryRoadRunner(telemetry, packet);
 
         /**Start of Drive Train Information **/
@@ -162,5 +182,18 @@ public class MainV2Red extends MainV1Red {
         double gatePos = robot.feeder.getGatePos();
         telemetry.addData("Gate Pos", gatePos);
         packet.put("Gate Pos", gatePos);
+    }
+
+    public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){
+
+        telemetry.addData("Distance to Tag", robot.getDistanceFromTag());
+        packet.put("Distance to Tag", robot.getDistanceFromTag());
+        telemetry.addData("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+        packet.put("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+
+        telemetry.addData("TagX", robot.getCameraTagX());
+        packet.put("TagX", robot.getCameraTagX());
+        telemetry.addData("TagY", robot.getCameraTagY());
+        packet.put("TagY", robot.getCameraTagY());
     }
 }

@@ -95,7 +95,6 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     feeder.stopfeed();
@@ -172,7 +171,6 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     feeder.stopfeed();
@@ -288,6 +286,10 @@ public abstract class ShooterAbstract {
 
     public void updateShooterPID() {
         setShooterPID(SHOOTER_P, SHOOTER_I, SHOOTER_D, SHOOTER_F);
+
+    }
+
+    public void updateShooterPIDFar() {
 
     }
 
