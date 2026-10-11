@@ -72,10 +72,17 @@ public class ShooterV2 extends ShooterAbstract {
     private class LaunchV2 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            turnToTagStatus(false);
+            updateShooterPID();
             setHold(false);
-            shoot(true, 5);
-            packet.put("Launch V2 Status:", getLaunchState());
-            return getLaunchState() != LaunchState.IDLE;
+            rpmSet(1175.0);
+
+            shoot(true, 10);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
         }
     }
 

@@ -107,8 +107,8 @@ public abstract class ShooterAbstract {
                 if (shotRequested) {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
-                    robot.turnToTag(true);
-                    robot.turnToTag(true);
+                    robot.turnToTag(status);
+                    robot.turnToTag(status);
                     feeder.stopfeed();
                     //intake.hold();
                     readyCount = 0;
@@ -122,8 +122,8 @@ public abstract class ShooterAbstract {
             case FEEDING_WAIT:
 
                 shooter.setVelocity(targetVelocity);
-                robot.turnToTag(true);
-                robot.turnToTag(true);
+                robot.turnToTag(status);
+                robot.turnToTag(status);
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -336,7 +336,11 @@ public abstract class ShooterAbstract {
     public class Launch implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            turnToTagStatus(false);
+            updateShooterPID();
             setHold(false);
+            rpmSet(1175.0);
+
             shoot(true, 12);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
@@ -346,6 +350,13 @@ public abstract class ShooterAbstract {
         }
     }
     public Action launchAction() {return new Launch(); }
+
+    /*if (gamepad2.right_trigger > 0.5) {
+                robot.shooter.turnToTagStatus(false);
+                robot.shooter.updateShooterPID();
+                robot.shooter.rpmSet(1175.0);
+            }
+            robot.shoot(gamepad2.right_trigger > 0.75, 5); */
 
 
 
