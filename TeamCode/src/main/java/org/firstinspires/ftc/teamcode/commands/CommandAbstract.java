@@ -26,21 +26,24 @@ public abstract class CommandAbstract {
     public Arm arm;
 
 
+
+
+
     //private LedController ledController;
 
 
     protected HardwareMap hardwareMap;
     protected boolean isAiming = false;
     protected boolean isBlue = false;
-    public static double TX_TARGET_BLUE = 0;   // This is for close tip shots  //-0.8; //-5.12;
-    public static double TX_TARGET_RED = -3.5; // This is for close tip shots  //3.4 //before 16 may is 0.8  //1.0; //2.8; //2.98;
+    public static double TX_TARGET_BLUE = 2.66;   // This is for close tip shots  //-0.8; //-5.12;
+    public static double TX_TARGET_RED = -2.66; // This is for close tip shots  //3.4 //before 16 may is 0.8  //1.0; //2.8; //2.98;
 
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
 
     public static double TX_TOLERANCE = 0.1; // 0.08
-    public static double ALIGN_KP = 0.05; // 0.01 is old value
-    public static double ALIGN_KF = 0.11; //0.275 //0.11
+    public static double ALIGN_KP = 0.12; // 0.01 is old value
+    public static double ALIGN_KF = 0.12; //0.275 //0.11
 
     public static double ALIGN_KP_Special = 0.005; //auto kp
 
@@ -76,6 +79,7 @@ public abstract class CommandAbstract {
         this.feeder = feeder;
         this.light = light;
         this.shooter = shooter;
+        this.shooter.setRobot(this);
         this.arm = arm;
         //intake = new Intake(hardwareMap);
         //feeder = new Feeder(hardwareMap);
@@ -134,6 +138,7 @@ public abstract class CommandAbstract {
 
     public void setShooter(ShooterAbstract shooter){
         this.shooter = shooter;
+        this.shooter.setRobot(this);
     }
 
     public void setIntake(Intake intake){

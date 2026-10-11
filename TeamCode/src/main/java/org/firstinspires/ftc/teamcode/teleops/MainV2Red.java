@@ -111,18 +111,22 @@ public class MainV2Red extends MainV1Red {
 
 
 
-            if (gamepad2.right_trigger > 0.75) {
+            if (gamepad2.right_trigger > 0.5) {
+                robot.shooter.turnToTagStatus(false);
                 robot.shooter.updateShooterPID();
                 robot.shooter.rpmSet(1175.0);
             }
             robot.shoot(gamepad2.right_trigger > 0.75, 5);
 
-            if (gamepad2.left_trigger > 0.75) {
+            if (gamepad2.left_trigger > 0.5) {
+                robot.shooter.turnToTagStatus(true);
                 robot.shooter.updateShooterPIDFar();
-                robot.turnToTag(true);
-                robot.shooter.rpmSet(1250.0);
+
+
+                robot.shooter.rpmSet(1275.0);
             }
             robot.shoot(gamepad2.left_trigger > 0.75, 5);
+
 
 
 
@@ -133,7 +137,7 @@ public class MainV2Red extends MainV1Red {
 
             if (gamepad2.y) {
                 robot.stopshoot();
-                robot.turnToTag(true);
+                //robot.turnToTag(true);
             }
         }
 

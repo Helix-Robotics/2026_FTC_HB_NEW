@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
+
 @Config
 public abstract class ShooterAbstract {
     //devices
@@ -20,6 +22,9 @@ public abstract class ShooterAbstract {
     public Feeder feeder;
     public Intake intake;
     public Light light;
+
+
+    public CommandAbstract robot;
 
 
 
@@ -40,6 +45,7 @@ public abstract class ShooterAbstract {
     protected double targetVelocity;
     protected double minVelocity;
 
+    protected boolean status;
 
     protected ShooterAbstract.LaunchState launchState = LaunchState.IDLE;
 
@@ -82,6 +88,10 @@ public abstract class ShooterAbstract {
         setCycles();
     }
 
+    public void setRobot(CommandAbstract robot) {
+        this.robot = robot;
+    }
+
     public void setCycles(){
         readyCycles = READY_CYCLES;
         feedDelayCycles = FEED_DELAY_CYCLES;
@@ -97,6 +107,8 @@ public abstract class ShooterAbstract {
                 if (shotRequested) {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
+                    robot.turnToTag(true);
+                    robot.turnToTag(true);
                     feeder.stopfeed();
                     //intake.hold();
                     readyCount = 0;
@@ -110,6 +122,8 @@ public abstract class ShooterAbstract {
             case FEEDING_WAIT:
 
                 shooter.setVelocity(targetVelocity);
+                robot.turnToTag(true);
+                robot.turnToTag(true);
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -135,6 +149,7 @@ public abstract class ShooterAbstract {
 
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
+                robot.turnToTag(false);
                 //intake.hold();
                 feeder.slowfeed();
 
@@ -153,8 +168,10 @@ public abstract class ShooterAbstract {
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
+                        robot.turnToTag(false);
                     } else {
                         shooter.setVelocity(0);
+                        robot.turnToTag(false);
                     }
                     launchState = LaunchState.IDLE;
                 }
@@ -282,6 +299,10 @@ public abstract class ShooterAbstract {
     public void rpmSet(double rpm) {
         this.targetVelocity = rpm;
         this.minVelocity = rpm - 50;
+    }
+
+    public void turnToTagStatus(boolean status) {
+        this.status = status;
     }
 
     public void updateShooterPID() {
