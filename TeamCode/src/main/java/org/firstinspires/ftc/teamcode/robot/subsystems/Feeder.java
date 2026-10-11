@@ -94,6 +94,16 @@ public class Feeder {
         //v1 doesn't have gate
     }
 
+    public void requestFeed(boolean request) {
+
+    }
+    public void outFeed(boolean request) {
+
+    }
+    public void intakeFeed(boolean request) {
+
+    }
+
 
 
     public void veryslowfeed() {

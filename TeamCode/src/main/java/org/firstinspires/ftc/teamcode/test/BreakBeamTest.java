@@ -31,7 +31,7 @@ public class BreakBeamTest extends OpMode {
     @Override
     public void loop() {
 
-        if (breakBeam.getState() == false) {
+        if (!breakBeam.getState()) {
             count = System.currentTimeMillis() + 200;
         }
 

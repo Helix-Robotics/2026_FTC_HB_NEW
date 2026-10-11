@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -20,6 +21,12 @@ public class ShooterV2 extends ShooterAbstract {
 
     public static int V2_READY_CYCLES = 5; //2
     public static int V2_FEED_DELAY_CYCLES = 0;
+    public static double NO_BALL_TIMEOUT_MS = 1000;
+
+    private long lastBallTime = 0;
+    private boolean wasBeamBlocked = false;
+
+    public static double shoot_time_ms = 500;
 
     public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
@@ -71,5 +78,126 @@ public class ShooterV2 extends ShooterAbstract {
     @Override
     public Action launchAction() {
         return new LaunchV2();
+    }
+
+    private boolean noBallTimeout() {
+        boolean beamBlocked = ((FeederV2) feeder).breakBeam.getState();
+        long now = System.currentTimeMillis();
+
+        // detect a new ball entering the beam
+        if (beamBlocked && !wasBeamBlocked) {
+            lastBallTime = now;
+        }
+
+        wasBeamBlocked = beamBlocked;
+
+
+        return lastBallTime != 0
+                && now - lastBallTime >= NO_BALL_TIMEOUT_MS;
+    }
+
+    @Override
+    public void sensorShoot (boolean shotRequested, int shot_count) {
+        if (launchState != LaunchState.IDLE) {
+            light.yellow();
+        }
+
+        //too tired for this bruh
+
+        switch (launchState) {
+            case IDLE:
+                if (shotRequested) {
+                    updateShooterPID();
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(targetVelocity);
+                    feeder.stopfeed();
+                    //intake.hold();
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                    launchState = LaunchState.SPIN_UP;
+                    lastBallTime = 0;
+                    wasBeamBlocked = false;
+
+                }
+                break;
+
+            case SPIN_UP:
+            case FEEDING_WAIT:
+
+                shooter.setVelocity(targetVelocity);
+                boolean isReadyVar = isReady();
+                if (isReadyVar) {
+                    if (readyCount <= readyCycles) {
+                        readyCount++;
+                        feedDelayCount = 0; // don't start feed delay yet
+                    } else {
+                        // Shooter has been in band long enough,
+                        // now count extra cycles as feed delay
+                        launchState = LaunchState.FEEDING_WAIT;
+                        feedDelayCount++;
+                    }
+
+                    if (readyCount >= readyCycles && feedDelayCount >= feedDelayCycles) {
+                        launchState = LaunchState.LAUNCH; //goes back
+                    }
+
+                } else {
+                    // Lost stability - reset both
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(targetVelocity);
+                feeder.slowfeed();
+
+                shootTimer.reset();
+                feederTimer.reset();
+
+                lastBallTime = System.currentTimeMillis();
+                wasBeamBlocked = ((FeederV2) feeder).breakBeam.getState();
+
+                launchState = LaunchState.LAUNCHING;
+                break;
+
+                // i don't feel like writing any more helpful comments =I
+            //don't know if this even works
+
+            case LAUNCHING:
+                shooter.setVelocity(targetVelocity);
+
+                if (noBallTimeout()) {
+                    feeder.stopfeed();
+                    light.green();
+
+                    if (hold) {
+                        shooter.setVelocity(targetVelocity / 1.67);
+                    } else {
+                        shooter.setVelocity(0);
+                    }
+
+                    lastBallTime = 0;
+                    wasBeamBlocked = false;
+                    launchState = LaunchState.IDLE;
+                    break;
+                }
+
+                if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
+                    feeder.stopfeed();
+                    light.green();
+
+                    if (hold) {
+                        shooter.setVelocity(targetVelocity / 1.67);
+                    } else {
+                        shooter.setVelocity(0);
+                    }
+
+                    lastBallTime = 0;
+                    wasBeamBlocked = false;
+                    launchState = LaunchState.IDLE;
+                }
+                break;
+        }
     }
 }

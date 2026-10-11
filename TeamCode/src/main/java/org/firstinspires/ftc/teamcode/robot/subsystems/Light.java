@@ -30,7 +30,7 @@ public class Light {
 
     public void setColour(double colour) {light.setPosition(colour);}
 
-    //public void red() {setColour(red);}
+    public void red() {setColour(red);}
     public void orange() {setColour(orange);}
     public void yellow() {setColour(yellow);}
     public void lgreen() {setColour(lgreen);}

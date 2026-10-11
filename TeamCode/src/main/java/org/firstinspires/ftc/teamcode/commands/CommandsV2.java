@@ -39,4 +39,7 @@ public class CommandsV2 extends CommandAbstract {
         this.setArm(arm);
 
     }
+
+    public void feedOut() {
+    }
 }

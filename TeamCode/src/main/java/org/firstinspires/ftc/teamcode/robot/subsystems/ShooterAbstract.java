@@ -57,7 +57,7 @@ public abstract class ShooterAbstract {
     private double shooterVel = 0.0;
 
 
-    private boolean hold = false;
+    public boolean hold = false;
 
 
 
@@ -344,6 +344,10 @@ public abstract class ShooterAbstract {
 
     public double getTargetVelocity(){
         return targetVelocity;
+    }
+
+    public void sensorShoot(boolean shotRequested, int shot_count) {
+
     }
 
 }
