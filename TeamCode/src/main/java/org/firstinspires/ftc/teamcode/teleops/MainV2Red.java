@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V2 Red Teleop")
+@TeleOp(name = "V2 Red Teleop [Choose This]")
 public class MainV2Red extends MainV1Red {
 
     @Override

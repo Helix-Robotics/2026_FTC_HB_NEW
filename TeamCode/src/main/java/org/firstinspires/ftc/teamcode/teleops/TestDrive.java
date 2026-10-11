@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import java.util.List;
 
 
-@TeleOp(name = "Drive Test 1 Controller")
+//@TeleOp(name = "Drive Test 1 Controller")
 public class TestDrive extends MainV1Red {
 
     Intake intake;
