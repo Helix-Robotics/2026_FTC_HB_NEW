@@ -1,4 +1,4 @@
-// This was ran on scrimmage and worked
+//Worked On Scrimmage
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
