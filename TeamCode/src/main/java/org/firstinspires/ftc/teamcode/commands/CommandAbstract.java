@@ -126,6 +126,10 @@ public abstract class CommandAbstract {
         arm.down();
     }
 
+    public void shootingIntake() {
+        intake.shootingIntake();
+    }
+
     public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}
 
     public void setPower(double power) {
