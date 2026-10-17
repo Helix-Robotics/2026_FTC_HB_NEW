@@ -70,132 +70,35 @@ public class MeepMeepTesting {
 
         /** Second Test Zone Red **/
 
-
-
-//        mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-//                    .strafeToLinearHeading(
-//                            new Vector2d(60, -14.75),
-//                            Math.toRadians(0)
-//                    )
-//
-//
-//
-//
-//
-//                    .strafeToConstantHeading(
-//                            new Vector2d(59.0, -14.75)
-//                    )
-//
-//
-//                    .strafeToLinearHeading(
-//                            new Vector2d(45.5, -14.75),
-//                            Math.toRadians(0)
-//                    )
-//                    .strafeToLinearHeading(
-//                            new Vector2d(60.5, -60.25),
-//                            Math.toRadians(-90.0)
-//                    )
-//
-//
-//
-//                    .strafeToLinearHeading(
-//                            new Vector2d(55.17, -45.25),
-//                            Math.toRadians(-90.0)
-//                    )
-//
-//
-//
-//
-//
-//
-//                    .strafeToLinearHeading(
-//                            new Vector2d(-37, -40),  // -62.5   -8
-//                            Math.toRadians(179.0)
-//                    )
-//                    .strafeToConstantHeading(
-//                            new Vector2d(-51.5, -8)
-//                    ) // middle
-//                    .strafeToConstantHeading(
-//                            new Vector2d(-62.5, -8)
-//                    ) // middle
-//
-//
-//
-//                    .strafeToConstantHeading(
-//                            new Vector2d(-50, -8)
-//                    ) // middle
-//                    .strafeToLinearHeading(
-//                            new Vector2d(-47.5, -57.25),
-//                            Math.toRadians(-90.0)
-//                    )
-
-
-
-
-
-
-//                .build());
-
-
-
         mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                .strafeToLinearHeading(
-                        new Vector2d(-60, 14.75),
-                        Math.toRadians(179)
-                )
 
 
 
+                .strafeToLinearHeading(new Vector2d(-60, 14), Math.toRadians(179))
 
 
-                .strafeToConstantHeading(
-                        new Vector2d(-59.0, 14.75)
-                )
+                .strafeToLinearHeading(new Vector2d(-27, 55), Math.toRadians(90))
 
+                .strafeToConstantHeading(new Vector2d(-20, 45))
 
-                .strafeToLinearHeading(
-                        new Vector2d(-45.5, 14.75),
-                        Math.toRadians(179)
-                )
-                .strafeToLinearHeading(
-                        new Vector2d(-60.5, 60.25),
-                        Math.toRadians(90.0)
-                )
-
-
-
-                .strafeToLinearHeading(
-                        new Vector2d(-55.17, 45.25),
-                        Math.toRadians(90.0)
-                )
-
-
-
-
-
-
-                .strafeToLinearHeading(
-                        new Vector2d(37, 40),  // -62.5   -8
-                        Math.toRadians(0)
-                )
-                .strafeToConstantHeading(
-                        new Vector2d(51.5, 8)
-                ) // middle
-                .strafeToConstantHeading(
-                        new Vector2d(62.5, 8)
-                ) // middle
-
-
+                .strafeToLinearHeading(new Vector2d(-4.5, 62.25), Math.toRadians(179))
 
                 .strafeToConstantHeading(
-                        new Vector2d(50, 8)
-                ) // middle
-                .strafeToLinearHeading(
-                        new Vector2d(47.5, 57.25),
-                        Math.toRadians(90.0)
+                        new Vector2d(4.5, 62.25)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(-5.5, 35)
+                ) // out
+
+                .strafeToConstantHeading(
+                        new Vector2d(-3, 35)
                 )
-
-
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 35)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 53.6)
+                )
 
 
                 .build());
