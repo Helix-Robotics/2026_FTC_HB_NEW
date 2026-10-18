@@ -137,6 +137,10 @@ public abstract class CommandAbstract {
         arm.down();
     }
 
+    public void stopArm() {
+        arm.stopArm();
+    }
+
     public void shootingIntake() {
         intake.shootingIntake();
     }
