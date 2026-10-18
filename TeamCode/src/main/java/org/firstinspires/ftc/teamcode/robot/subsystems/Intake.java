@@ -59,6 +59,7 @@ public class Intake {
     public void hold(){
         setPower(0.6); // 0.75
         intaking = true;
+        outtaking = false;
     }
 
     public void stop(){
@@ -78,6 +79,8 @@ public class Intake {
     }
 
     public void outSlowly() {
+        outtaking = true;
+        intaking = false;
         outtakeTime.reset();
         if (outtakeTime.seconds() < 2.0) {
             setPower(-0.5);

@@ -11,15 +11,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import kotlin._Assertions;
-
 public class FeederV2 extends Feeder{
     public DcMotorEx motorFeeder;
     protected final ElapsedTime breakDelay = new ElapsedTime();
     public Servo gate;
-    public DigitalChannel breakBeam;
+    public DigitalChannel breakBeamStart;
+    public DigitalChannel breakBeamEnd;
 
     public Light light;
+    public Intake intake;
+    public ShooterV2 shooter;
 
     private long count = 0;
     private int breakCycles;
@@ -41,20 +42,69 @@ public class FeederV2 extends Feeder{
     public boolean intakeRequested;
     private long feedStartTime = 0;
 
+    public static int SENSOR_CONFIRM_CYCLES = 5;
 
-    public FeederV2(HardwareMap hw) {
+    private int fullCycles = 0;
+    private int emptyCycles = 0;
+
+
+    public FeederV2(HardwareMap hw, Intake intake) {
         super();
 
-        breakBeam = hw.get(DigitalChannel.class, "breakBeam");
-        breakBeam.setMode(DigitalChannel.Mode.INPUT);
+        this.intake = intake;
+
+        breakBeamStart = hw.get(
+                DigitalChannel.class, "breakbeamstart");
+        breakBeamStart.setMode(DigitalChannel.Mode.INPUT);
+
+        breakBeamEnd = hw.get(
+                DigitalChannel.class, "breakbeamend");
+        breakBeamEnd.setMode(DigitalChannel.Mode.INPUT);
+
         light = new Light(hw);
+
         motorFeeder = hw.get(DcMotorEx.class, "feeder");
         motorFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
+
         hasGate = true;
         gate = hw.get(Servo.class, "gate");
         gate.setDirection(Servo.Direction.REVERSE);
+
         closeGate();
     }
+
+    private StorageState storageState = StorageState.PARTIAL;
+
+    public enum StorageState {
+        EMPTY,
+        PARTIAL,
+        FULL
+    }
+
+    public void updateStorageState() {
+        // assume false means beam blocked (test it later)
+        boolean startBlocked = !breakBeamStart.getState();
+        boolean endBlocked = !breakBeamEnd.getState();
+
+        boolean detectedFull = startBlocked && endBlocked;
+        boolean detectedEmpty = !startBlocked && !endBlocked;
+
+        fullCycles = detectedFull ? fullCycles + 1 : 0;
+        emptyCycles = detectedEmpty ? emptyCycles + 1 : 0;
+
+        if (fullCycles >= SENSOR_CONFIRM_CYCLES) {
+            storageState = StorageState.FULL;
+        } else if (emptyCycles >= SENSOR_CONFIRM_CYCLES) {
+            storageState = StorageState.EMPTY;
+        } else if (!detectedFull && !detectedEmpty) {
+            storageState = StorageState.PARTIAL;
+        }
+    }
+
+    public StorageState getStorageState() {
+        return storageState;
+    }
+
 
     @Override
     public void updateFeedMs(){
@@ -64,7 +114,18 @@ public class FeederV2 extends Feeder{
     @Override
     public void update() {
         setPower(power);
-//      checkBeam();
+        updateStorageState();
+        if (getStorageState() == StorageState.FULL) {
+            intake.stop();
+            light.green();
+        }
+        if (getStorageState() == StorageState.PARTIAL) {
+            light.yellow();
+        }
+        if (getStorageState() == StorageState.EMPTY) {
+            light.red();
+            shooter.stop();
+        }
     }
 
     @Override
@@ -82,6 +143,10 @@ public class FeederV2 extends Feeder{
     public void feed() {
         setPower(1.0);
         openGate();
+    }
+
+    public void setShooter(ShooterV2 shooter) {
+        this.shooter = shooter;
     }
 
 
