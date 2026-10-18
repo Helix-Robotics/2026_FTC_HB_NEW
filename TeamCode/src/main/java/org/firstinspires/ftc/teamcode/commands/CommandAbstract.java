@@ -137,6 +137,14 @@ public abstract class CommandAbstract {
         arm.down();
     }
 
+    public void slowUpArm() {
+        arm.slowUp();
+    }
+
+    public void slowDownArm() {
+        arm.slowDown();
+    }
+
     public void stopArm() {
         arm.stopArm();
     }

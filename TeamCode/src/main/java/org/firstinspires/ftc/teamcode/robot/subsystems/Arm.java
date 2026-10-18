@@ -41,6 +41,16 @@ public class Arm {
         setPower(1.0);
     }
 
+    public void slowDown() {
+
+        setPower(-0.5);
+
+    }
+
+    public void slowUp() {
+        setPower(0.5);
+    }
+
     public void stopArm() {
         setPower(0);
     }

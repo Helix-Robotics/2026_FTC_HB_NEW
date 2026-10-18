@@ -145,13 +145,13 @@ public class MainV2Red extends MainV1Red {
         }
 
         if (gamepad1.y) {
-            robot.downArm();
+            robot.slowDownArm();
         } else {
             robot.stopArm();
         }
 
         if (gamepad1.x) {
-            robot.upArm();
+            robot.slowUpArm();
         } else {
             robot.stopArm();
         }
