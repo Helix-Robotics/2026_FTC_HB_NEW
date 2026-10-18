@@ -110,8 +110,8 @@ public abstract class CommandAbstract {
         vision.update();
     }
 
-    public void shoot(boolean requested, int shot_count) {
-        shooter.shoot(requested, shot_count);
+    public void shoot(boolean requested, int shot_count, boolean alignStatus) {
+        shooter.shoot(requested, shot_count, alignStatus);
     }
 
     public void stopshoot() {

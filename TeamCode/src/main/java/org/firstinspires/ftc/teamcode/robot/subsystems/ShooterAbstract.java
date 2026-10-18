@@ -31,7 +31,7 @@ public abstract class ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static double shoot_time_ms = 500;
+    public static double shoot_time_ms = 700;
 
     protected double targetVelocity;
     protected double minVelocity;
@@ -79,7 +79,7 @@ public abstract class ShooterAbstract {
         feedDelayCycles = FEED_DELAY_CYCLES;
     }
 
-    public void shoot(boolean shotRequested, int shot_count) {
+    public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
         if (launchState != LaunchState.IDLE) {
             light.yellow();
         }
@@ -89,9 +89,9 @@ public abstract class ShooterAbstract {
                 if (shotRequested) {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
-                    robot.shootingIntake();
-                    robot.turnToTag(status);
-                    robot.turnToTag(status);
+                    intake.shootingIntake();
+                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus);
                     feeder.stopfeed();
                     readyCount = 0;
                     feedDelayCount = 0;
@@ -104,9 +104,9 @@ public abstract class ShooterAbstract {
             case FEEDING_WAIT:
 
                 shooter.setVelocity(targetVelocity);
-                robot.shootingIntake();
-                robot.turnToTag(status);
-                robot.turnToTag(status);
+                intake.shootingIntake();
+                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus);
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -132,7 +132,7 @@ public abstract class ShooterAbstract {
 
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
-                robot.shootingIntake();
+                intake.shootingIntake();
                 robot.turnToTag(false);
                 feeder.slowfeed();
                 shootTimer.reset();
@@ -143,18 +143,19 @@ public abstract class ShooterAbstract {
             case LAUNCHING:
 
                 shooter.setVelocity(targetVelocity);
-                robot.shootingIntake();
+                intake.shootingIntake();
 
                 if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
                     feeder.stopfeed();
-                    intake.stop();
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
                         robot.turnToTag(false);
+                        intake.stop();
                     } else {
                         shooter.setVelocity(0);
                         robot.turnToTag(false);
+                        intake.stop();
                     }
                     launchState = LaunchState.IDLE;
                 }
@@ -284,9 +285,9 @@ public abstract class ShooterAbstract {
         this.minVelocity = rpm - 50;
     }
 
-    public void turnToTagStatus(boolean status) {
-        this.status = status;
-    }
+//    public void turnToTagStatus(boolean status) {
+//        this.status = status;
+//    }
 
     public void updateShooterPID() {
         setShooterPID(SHOOTER_P, SHOOTER_I, SHOOTER_D, SHOOTER_F);
@@ -319,12 +320,12 @@ public abstract class ShooterAbstract {
     public class Launch implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            turnToTagStatus(false);
+//            turnToTagStatus(false);
             updateShooterPID();
             setHold(false);
             rpmSet(1175.0);
 
-            shoot(true, 12);
+            shoot(true, 12, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

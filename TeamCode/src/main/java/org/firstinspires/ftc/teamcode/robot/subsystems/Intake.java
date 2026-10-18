@@ -62,7 +62,7 @@ public class Intake {
     }
 
     public void shootingIntake(){
-        setPower(0.5); // 0.75
+        setPower(0.8); // 0.75
         intaking = true;
     }
 

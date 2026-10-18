@@ -168,7 +168,7 @@ public class TestDrive extends MainV1Red {
         }
 
         if (gamepad1.right_trigger > 0.5) {
-            robot.shoot(true, 5);
+            robot.shoot(true, 5, false);
         }
         else if (gamepad1.dpad_down) {robot.reverseFeed();}
 
