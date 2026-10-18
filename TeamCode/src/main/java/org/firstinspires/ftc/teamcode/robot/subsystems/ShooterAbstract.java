@@ -364,4 +364,8 @@ public abstract class ShooterAbstract {
         return targetVelocity;
     }
 
+    public void sensorShoot(boolean shotRequested, int shot_count) {
+
+    }
+
 }
