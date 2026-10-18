@@ -81,24 +81,31 @@ public class ShooterV2 extends ShooterAbstract {
         return ((FeederV2) feeder).getStorageState()
                 == FeederV2.StorageState.EMPTY;
     }
+
+    public void stopShooter() {
+        shooter.setVelocity(0);
+        readyCount = 0;
+        feedDelayCount = 0;
+        launchState = LaunchState.IDLE;
+    }
     @Override
     public void sensorShoot(boolean shotRequested, int shot_count) {
 
-        // stop shooting if feeder empt
-        if (isStorageEmpty()) {
-            if (launchState != LaunchState.IDLE) {
-                stop();
-            } else {
-                feeder.stopfeed();
-            }
+//        // stop shooting if feeder empt
+//        if (isStorageEmpty()) {
+//            if (launchState != LaunchState.IDLE) {
+//                stop();
+//            } else {
+//                feeder.stopfeed();
+//            }
+//
+//            light.green();
+//            return;
+//        }
 
-            light.green();
-            return;
-        }
-
-        if (launchState != LaunchState.IDLE) {
-            light.yellow();
-        }
+//        if (launchState != LaunchState.IDLE) {
+//            light.yellow();
+//        }
 
         switch (launchState) {
 
@@ -164,7 +171,7 @@ public class ShooterV2 extends ShooterAbstract {
                     );
 
                     launchState = LaunchState.IDLE;
-                    light.green();
+                    light.blue();
                 }
                 break;
         }

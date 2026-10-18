@@ -148,17 +148,14 @@ public class Intake {
 
             }
             if (jamCycles > 2) {
-                light.blue();
+                light.purple();
                 jamCycles = 0;
 
 //                if (getVel() < -1200) {
 //                    stop();
 //                }
 
-
-
             }
-
 
         }
 //        if (jamTimer.seconds() > jamDelay) {

@@ -123,8 +123,8 @@ public class FeederV2 extends Feeder{
             light.yellow();
         }
         if (getStorageState() == StorageState.EMPTY) {
-            light.red();
-            shooter.stop();
+            light.blue();
+            shooter.stopShooter();
         }
     }
 
@@ -148,81 +148,6 @@ public class FeederV2 extends Feeder{
     public void setShooter(ShooterV2 shooter) {
         this.shooter = shooter;
     }
-
-
-    //use ts later
-//    public void checkBeam() {
-//        long now = System.currentTimeMillis();
-//        boolean beamBlocked = breakBeam.getState();
-//
-//        boolean requestActive =
-//                feedRequested || outRequested || intakeRequested;
-//
-//        // reset when a new feeding sequence starts
-//        if (requestActive && !previousRequestActive) {
-//            ballsPassed = 0;
-//            lastBallTime = now;
-//            wasBeamBlocked = beamBlocked;
-//        }
-//
-//        previousRequestActive = requestActive;
-//
-//        if (!requestActive) {
-//            stopfeed();
-//            return;
-//        }
-//
-//        // count each new ball entering the beam
-//        if (beamBlocked && !wasBeamBlocked) {
-//            ballsPassed++;
-//            lastBallTime = now;
-//        }
-//
-//        wasBeamBlocked = beamBlocked;
-//
-//        // stop after 3 balls
-//        if (ballsPassed >= MAX_BALLS) {
-//            stopfeed();
-//            return;
-//        }
-//
-//        // stop if another ball doesn't arrive in time
-//        if (now - lastBallTime >= FEED_TIMEOUT_MS) {
-//            stopfeed();
-//            return;
-//        }
-//
-//        // i'm gonna explode if i have to do more comments
-//        if (feedRequested) {
-//            feed();
-//        } else if (outRequested) {
-//            reverseFeed();
-//        } else if (intakeRequested) {
-//            intakeSlowFeed();
-//        }
-//    }
-
-//    public void beamFeed() {
-//        breakCycles = 0;
-//
-//        if (!breakBeam.getState()) {
-//            count = System.currentTimeMillis() + 300;
-//        }
-//
-//        if (System.currentTimeMillis() < count) {
-//            breakCycles++;
-//        }
-//
-//        if (breakCycles < 3) {
-//            setPower(1.0);
-//            openGate();
-//        }
-//        else {
-//            stopfeed();
-//        }
-//
-//
-//    }
 
     @Override
     public void requestFeed(boolean request) {
