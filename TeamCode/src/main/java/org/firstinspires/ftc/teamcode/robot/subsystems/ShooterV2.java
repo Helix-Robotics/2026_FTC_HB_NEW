@@ -183,9 +183,9 @@ public class ShooterV2 extends ShooterAbstract {
                 if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
                     feeder.stopfeed();
 
-                    shooter.setVelocity(
-                            hold ? targetVelocity / 1.67 : 0
-                    );
+//                    shooter.setVelocity(
+//                            hold ? targetVelocity / 1.67 : 0
+//                    );
 
                     launchState = LaunchState.IDLE;
                     light.blue();
