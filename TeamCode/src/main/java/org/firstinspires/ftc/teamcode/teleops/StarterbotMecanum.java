@@ -24,11 +24,8 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
-import static org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation.localizer;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -36,8 +33,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /*
  * This file includes a teleop (driver-controlled) file for the goBILDA® StarterBot with Mecanum
@@ -54,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * we will also need to adjust the "PIDF" coefficients with some that are a better fit for our application.
  */
 
-@TeleOp(name = "Mec BioBuzz StarterBot Teleop", group = "StarterBot")
+//@TeleOp(name = "Mec BioBuzz StarterBot Teleop", group = "StarterBot")
 //@Disabled
-public class StarterbotM extends OpMode {
+public class StarterbotMecanum extends OpMode {
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;

@@ -15,7 +15,13 @@ public class ShooterV2 extends ShooterAbstract {
     public static double V2_SHOOTER_P = 25.0;
     public static double V2_SHOOTER_I = 0.0;
     public static double V2_SHOOTER_D = 1.25;
-    public static double V2_SHOOTER_F = 12.75; //15.67;
+    public static double V2_SHOOTER_F = 12.7; //15.67;
+
+    public static double V2_SHOOTER_P_FAR = 26.5;
+    public static double V2_SHOOTER_I_FAR = 0.0;
+    public static double V2_SHOOTER_D_FAR = 1.5;
+    public static double V2_SHOOTER_F_FAR = 13.0; //15.67;
+
     public static double V2_TARGET_VELOCITY = 1175.0; //  1160.0;
     public static double V2_MIN_VELOCITY = 1125.0; // 1110.0;
 
@@ -33,6 +39,11 @@ public class ShooterV2 extends ShooterAbstract {
     @Override
     public void updateShooterPID() {
         setShooterPID(V2_SHOOTER_P, V2_SHOOTER_I, V2_SHOOTER_D, V2_SHOOTER_F);
+    }
+
+    @Override
+    public void updateShooterPIDFar() {
+        setShooterPID(V2_SHOOTER_P_FAR, V2_SHOOTER_I_FAR, V2_SHOOTER_D_FAR, V2_SHOOTER_F_FAR);
     }
 
     @Override
@@ -65,10 +76,16 @@ public class ShooterV2 extends ShooterAbstract {
     private class LaunchV2 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
             setHold(false);
-            sensorShoot(true, 5);
-            packet.put("Launch V2 Status:", getLaunchState());
-            return getLaunchState() != LaunchState.IDLE;
+            rpmSet(1175.0);
+
+            shoot(true, 10, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
         }
     }
 

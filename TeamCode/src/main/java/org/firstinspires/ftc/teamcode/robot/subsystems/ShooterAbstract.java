@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-//import static org.firstinspires.ftc.teamcode.robot.subsystems.Feeder.feed_ms;
-
 import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -12,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 
 @Config
 public abstract class ShooterAbstract {
@@ -20,13 +18,11 @@ public abstract class ShooterAbstract {
     public Feeder feeder;
     public Intake intake;
     public Light light;
-
-
+    public CommandAbstract robot;
 
     //configurations
     protected final ElapsedTime feederTimer = new ElapsedTime();
     protected final ElapsedTime shootTimer = new ElapsedTime();
-
     public static double TARGET_VELOCITY = 1250; //2678 RPM
     public static double MIN_VELOCITY = 1230; // 1200; //2571 RPM
 
@@ -35,11 +31,11 @@ public abstract class ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static double shoot_time_ms = 500;
+    public static double shoot_time_ms = 700;
 
     protected double targetVelocity;
     protected double minVelocity;
-
+    protected boolean status;
 
     protected ShooterAbstract.LaunchState launchState = LaunchState.IDLE;
 
@@ -51,26 +47,18 @@ public abstract class ShooterAbstract {
 
     protected int readyCycles = 0;
     protected int feedDelayCycles = 0;
-
-    protected int extra_cycles = 5;
-
     private double shooterVel = 0.0;
-
-
-    public boolean hold = false;
+    private boolean hold = false;
 
 
 
     public enum LaunchState {
         IDLE,
         FEEDING_WAIT,
-
         SPIN_UP,
-
         LAUNCH,
         LAUNCHING,
     }
-
 
     public ShooterAbstract(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         shooter = hw.get(DcMotorEx.class, "shooter");
@@ -82,12 +70,16 @@ public abstract class ShooterAbstract {
         setCycles();
     }
 
+    public void setRobot(CommandAbstract robot) {
+        this.robot = robot;
+    }
+
     public void setCycles(){
         readyCycles = READY_CYCLES;
         feedDelayCycles = FEED_DELAY_CYCLES;
     }
 
-    public void shoot(boolean shotRequested, int shot_count) {
+    public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
         if (launchState != LaunchState.IDLE) {
             light.yellow();
         }
@@ -95,11 +87,12 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
+                    intake.shootingIntake();
+                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus);
                     feeder.stopfeed();
-                    //intake.hold();
                     readyCount = 0;
                     feedDelayCount = 0;
                     launchState = LaunchState.SPIN_UP;
@@ -111,6 +104,9 @@ public abstract class ShooterAbstract {
             case FEEDING_WAIT:
 
                 shooter.setVelocity(targetVelocity);
+                intake.shootingIntake();
+                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus);
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -136,9 +132,9 @@ public abstract class ShooterAbstract {
 
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
-                //intake.hold();
+                intake.shootingIntake();
+                robot.turnToTag(false);
                 feeder.slowfeed();
-
                 shootTimer.reset();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;
@@ -147,15 +143,19 @@ public abstract class ShooterAbstract {
             case LAUNCHING:
 
                 shooter.setVelocity(targetVelocity);
+                intake.shootingIntake();
 
                 if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
                     feeder.stopfeed();
-                    //intake.stop();
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
+                        robot.turnToTag(false);
+                        intake.stop();
                     } else {
                         shooter.setVelocity(0);
+                        robot.turnToTag(false);
+                        intake.stop();
                     }
                     launchState = LaunchState.IDLE;
                 }
@@ -172,7 +172,6 @@ public abstract class ShooterAbstract {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {
-                    updateShooterPID();
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     feeder.stopfeed();
@@ -286,8 +285,16 @@ public abstract class ShooterAbstract {
         this.minVelocity = rpm - 50;
     }
 
+//    public void turnToTagStatus(boolean status) {
+//        this.status = status;
+//    }
+
     public void updateShooterPID() {
         setShooterPID(SHOOTER_P, SHOOTER_I, SHOOTER_D, SHOOTER_F);
+
+    }
+
+    public void updateShooterPIDFar() {
 
     }
 
@@ -313,8 +320,12 @@ public abstract class ShooterAbstract {
     public class Launch implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+//            turnToTagStatus(false);
+            updateShooterPID();
             setHold(false);
-            shoot(true, 12);
+            rpmSet(1175.0);
+
+            shoot(true, 12, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;
@@ -323,6 +334,13 @@ public abstract class ShooterAbstract {
         }
     }
     public Action launchAction() {return new Launch(); }
+
+    /*if (gamepad2.right_trigger > 0.5) {
+                robot.shooter.turnToTagStatus(false);
+                robot.shooter.updateShooterPID();
+                robot.shooter.rpmSet(1175.0);
+            }
+            robot.shoot(gamepad2.right_trigger > 0.75, 5); */
 
 
 

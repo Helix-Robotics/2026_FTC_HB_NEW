@@ -62,6 +62,11 @@ public class Intake {
         outtaking = false;
     }
 
+    public void shootingIntake(){
+        setPower(0.8); // 0.75
+        intaking = true;
+    }
+
     public void stop(){
         setPower(0); //0.0
         intaking = false;
@@ -78,16 +83,7 @@ public class Intake {
         setPower(-0.6); // -1.0 // -0.8
     }
 
-    public void outSlowly() {
-        outtaking = true;
-        intaking = false;
-        outtakeTime.reset();
-        if (outtakeTime.seconds() < 2.0) {
-            setPower(-0.5);
-        } else {
-            setPower(0);
-        }
-    }
+
 
     public void in(){
         jamTimer.reset();
@@ -100,11 +96,11 @@ public class Intake {
 
     }
 
-    public void unjamIntake() {
-        out();
-
-        light.purple();
-    }
+//    public void unjamIntake() {
+//        out();
+//
+//        light.purple();
+//    }
 
     public boolean checkIn() {
         return intaking;

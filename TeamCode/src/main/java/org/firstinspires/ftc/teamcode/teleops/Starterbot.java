@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
  * one motor driving an intake roller, and two servos which pull elements out of corners.
  */
 
-@TeleOp(name = "Starterbot code")
+//@TeleOp(name = "Starterbot code")
 //@Disabled
 public class Starterbot extends OpMode {
 

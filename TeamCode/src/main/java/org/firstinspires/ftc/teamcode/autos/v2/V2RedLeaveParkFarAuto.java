@@ -1,6 +1,4 @@
-// Meep meep tested it works
-
-
+//Tested with MeepMeep
 
 
 package org.firstinspires.ftc.teamcode.autos.v2;

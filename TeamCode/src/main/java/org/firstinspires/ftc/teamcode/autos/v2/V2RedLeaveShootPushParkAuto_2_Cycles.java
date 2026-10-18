@@ -1,4 +1,4 @@
-// This ran on the scrimmage make sure check coords for intial
+//Worked On Scrimmage
 
 
 package org.firstinspires.ftc.teamcode.autos.v2;

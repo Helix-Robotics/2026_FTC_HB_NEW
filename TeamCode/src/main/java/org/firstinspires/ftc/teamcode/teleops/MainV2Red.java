@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V2 Red Teleop")
+@TeleOp(name = "V2 Red Teleop [Choose This]")
 public class MainV2Red extends MainV1Red {
 
     @Override
@@ -107,24 +107,60 @@ public class MainV2Red extends MainV1Red {
                 robot.intake.stop();
             }
 
-            robot.shooter.sensorShoot(gamepad2.right_trigger > 0.75, 5);
+
+
+
+
+            if (gamepad2.right_trigger > 0.5) {
+//
+                robot.shooter.updateShooterPID();
+                robot.shooter.rpmSet(1160.0);
+            }
+
+
+            if (gamepad2.left_trigger > 0.5) {
+//
+                robot.shooter.updateShooterPIDFar();
+
+
+                robot.shooter.rpmSet(1200.0);
+            }
+
+            boolean leftShotRequested = gamepad2.left_trigger > 0.75;
+            boolean rightShotRequested = gamepad2.right_trigger > 0.75;
+            robot.shoot(leftShotRequested || rightShotRequested, 5, leftShotRequested);
+
+
+
+
 
             if (gamepad2.xWasPressed()) {  // this unjam feeder
                 robot.shooter.singleShot(true);
             }
 
-            if (gamepad2.left_trigger > 0.75) {
+            if (gamepad2.y) {
                 robot.stopshoot();
+                //robot.turnToTag(true);
             }
         }
 
-        if (gamepad1.yWasPressed()) {
-            robot.feeder.closeGate();
+        if (gamepad1.y) {
+            robot.slowDownArm();
+        } else {
+            robot.stopArm();
         }
 
-        if (gamepad1.xWasPressed()) {
-            robot.feeder.openGate();
+        if (gamepad1.x) {
+            robot.slowUpArm();
+        } else {
+            robot.stopArm();
         }
+
+        if (gamepad1.bWasPressed()) {
+            robot.turnToTag(true);
+        }
+
+
 
 
 
@@ -138,8 +174,9 @@ public class MainV2Red extends MainV1Red {
 
         telemetryEssentials(telemetry, packet);
         telemetryIntake(telemetry, packet);
-        telemetryFeeder(telemetry, packet);
+        //telemetryFeeder(telemetry, packet);
         telemetryShooter(telemetry, packet);
+        telemetryShooting(telemetry, packet);
         telementryRoadRunner(telemetry, packet);
 
         /**Start of Drive Train Information **/
@@ -177,5 +214,18 @@ public class MainV2Red extends MainV1Red {
                 !feeder.breakBeamEnd.getState());
         packet.put("Storage State",
                 feeder.getStorageState());
+    }
+
+    public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){
+
+        telemetry.addData("Distance to Tag", robot.getDistanceFromTag());
+        packet.put("Distance to Tag", robot.getDistanceFromTag());
+        telemetry.addData("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+        packet.put("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+
+        telemetry.addData("TagX", robot.getCameraTagX());
+        packet.put("TagX", robot.getCameraTagX());
+        telemetry.addData("TagY", robot.getCameraTagY());
+        packet.put("TagY", robot.getCameraTagY());
     }
 }

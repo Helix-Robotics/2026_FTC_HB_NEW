@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import java.util.List;
 
 
-@TeleOp(name = "V1 Red Teleop")
+//@TeleOp(name = "V1 Red Teleop")
 public class MainV1Red extends MainV0Red {
 
     Intake intake;
@@ -93,7 +93,7 @@ public class MainV1Red extends MainV0Red {
 
         /** Shooting Related **/
         if (gamepad2.right_trigger > 0.5) {
-            robot.shoot(true, 5);
+            robot.shoot(true, 5, false);
         }
         else {
             robot.stopshoot();

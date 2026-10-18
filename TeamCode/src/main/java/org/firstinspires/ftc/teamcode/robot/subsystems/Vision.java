@@ -198,6 +198,17 @@ public class Vision {
     public double getTa(){return latestResult.getTa();}
 
 
+    public void redMiddleTags() {
+        update();
+        double tagX = getFilteredTagX(34, 33);
+    }
+
+    public void blueMiddleTags() {
+        update();
+        double tagX = getFilteredTagX(41, 42);
+    }
+
+
 
 
 

@@ -1,7 +1,4 @@
-// NO MEEEP YET
-// 0, 0 is measured by the bottom right of robot touching the middle
-
-// WORKS
+//Tested with MeepMeep
 
 package org.firstinspires.ftc.teamcode.autos.v2;
 
