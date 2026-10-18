@@ -114,9 +114,9 @@ public class MainV2Red extends MainV1Red {
             if (gamepad2.right_trigger > 0.5) {
 //
                 robot.shooter.updateShooterPID();
-                robot.shooter.rpmSet(1175.0);
+                robot.shooter.rpmSet(1160.0);
             }
-            robot.shoot(gamepad2.right_trigger > 0.75, 5, false);
+
 
             if (gamepad2.left_trigger > 0.5) {
 //
@@ -125,7 +125,10 @@ public class MainV2Red extends MainV1Red {
 
                 robot.shooter.rpmSet(1275.0);
             }
-            robot.shoot(gamepad2.left_trigger > 0.75, 5, true);
+
+            boolean leftShotRequested = gamepad2.left_trigger > 0.75;
+            boolean rightShotRequested = gamepad2.right_trigger > 0.75;
+            robot.shoot(leftShotRequested || rightShotRequested, 5, leftShotRequested);
 
 
 
@@ -148,6 +151,11 @@ public class MainV2Red extends MainV1Red {
         if (gamepad1.xWasPressed()) {
             robot.upArm();
         }
+
+        if (gamepad1.bWasPressed()) {
+            robot.turnToTag(true);
+        }
+
 
 
 

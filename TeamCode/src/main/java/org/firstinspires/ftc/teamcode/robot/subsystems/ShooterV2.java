@@ -14,7 +14,7 @@ public class ShooterV2 extends ShooterAbstract {
     public static double V2_SHOOTER_P = 25.0;
     public static double V2_SHOOTER_I = 0.0;
     public static double V2_SHOOTER_D = 1.25;
-    public static double V2_SHOOTER_F = 12.75; //15.67;
+    public static double V2_SHOOTER_F = 12.7; //15.67;
 
     public static double V2_SHOOTER_P_FAR = 26.5;
     public static double V2_SHOOTER_I_FAR = 0.0;

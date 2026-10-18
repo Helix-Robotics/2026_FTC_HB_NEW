@@ -42,8 +42,8 @@ public abstract class CommandAbstract {
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
 
     public static double TX_TOLERANCE = 0.1; // 0.08
-    public static double ALIGN_KP = 0.12; // 0.01 is old value
-    public static double ALIGN_KF = 0.12; //0.275 //0.11
+    public static double ALIGN_KP = 0.033; // 0.01 is old value
+    public static double ALIGN_KF = 0.167; //0.275 //0.11
 
     public static double ALIGN_KP_Special = 0.005; //auto kp
 
