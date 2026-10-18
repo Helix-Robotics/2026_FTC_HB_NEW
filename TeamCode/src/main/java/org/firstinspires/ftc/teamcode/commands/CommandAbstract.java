@@ -35,14 +35,25 @@ public abstract class CommandAbstract {
     protected HardwareMap hardwareMap;
     protected boolean isAiming = false;
     protected boolean isBlue = false;
-    public static double TX_TARGET_BLUE = 2.66;   // This is for close tip shots  //-0.8; //-5.12;
-    public static double TX_TARGET_RED = -2.66; // This is for close tip shots  //3.4 //before 16 may is 0.8  //1.0; //2.8; //2.98;
+    public static double TX_TARGET_BLUE_LEFT = 2.5;  // 41
+    public static double TX_TARGET_BLUE_RIGHT = -3.2; // 42
+    public static double TX_TARGET_RED_RIGHT = -3.2; // 34
+    public static double TX_TARGET_RED_LEFT = 2.6347;  // 33
 
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
 
+
+
+
+    
+
+
+
+
+
     public static double TX_TOLERANCE = 0.1; // 0.08
-    public static double ALIGN_KP = 0.033; // 0.01 is old value
+    public static double ALIGN_KP = 0.04; // 0.01 is old value
     public static double ALIGN_KF = 0.167; //0.275 //0.11
 
     public static double ALIGN_KP_Special = 0.005; //auto kp
@@ -247,25 +258,58 @@ public abstract class CommandAbstract {
 
 
 
-    public boolean turnToTagO(){
+    public boolean turnToTagO() {
+        vision.update();
 
-        if (getIsBlue()) {
-            getRedMiddleTags();
+        double tagX = -181;
+        double txTarget = 0;
+
+        if (isBlue) {
+            double blueLeftX = vision.getFilteredTagX(41);
+            double blueRightX = vision.getFilteredTagX(42);
+
+            if (blueLeftX > -180) {
+                tagX = blueLeftX;
+                txTarget = TX_TARGET_BLUE_LEFT;
+            }
+
+            if (blueRightX > -180) {
+                if (tagX < -180) {
+                    tagX = blueRightX;
+                    txTarget = TX_TARGET_BLUE_RIGHT;
+                } else if (Math.abs(blueRightX) < Math.abs(tagX)) {
+                    tagX = blueRightX;
+                    txTarget = TX_TARGET_BLUE_RIGHT;
+                }
+            }
         } else {
-            getBlueMiddleTags();
+
+
+
+
+            double redLeftX = vision.getFilteredTagX(33);
+            double redRightX = vision.getFilteredTagX(34);
+
+            if (redLeftX > -180) {
+                tagX = redLeftX;
+                txTarget = TX_TARGET_RED_LEFT;
+            }
+
+            if (redRightX > -180) {
+                if (tagX < -180) {
+                    tagX = redRightX;
+                    txTarget = TX_TARGET_RED_RIGHT;
+                } else if (Math.abs(redRightX) < Math.abs(tagX)) {
+                    tagX = redRightX;
+                    txTarget = TX_TARGET_RED_RIGHT;
+                }
+            }
         }
-        //hard code pid just for turning
-        double tagX = vision.getTagX();
-        double txTarget = TX_TARGET_RED;
+
         double txTolerance = TX_TOLERANCE;
         double kP = ALIGN_KP;
         double kF = ALIGN_KF;
         double maxTurnPower = ALIGN_CAP_POWER;
-
-        //decide which target to use
-        if (isBlue){
-            txTarget = TX_TARGET_BLUE;
-        }
 
         // invalid result
         if(tagX < -180) {
