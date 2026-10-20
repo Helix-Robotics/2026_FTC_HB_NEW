@@ -74,9 +74,9 @@ public class ShooterV2 extends ShooterAbstract {
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
             setHold(false);
-            rpmSet(1175.0);
+            rpmSet(1150);
 
-            shoot(true, 10, false);
+            shoot(true, 4, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

@@ -22,7 +22,7 @@ public class MainV2Red extends MainV1Red {
     public void init() {
         robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
         robot.feederDirection(true);
-        robot.intakeDirection(true);
+        robot.intakeDirection(false);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
 
@@ -145,15 +145,11 @@ public class MainV2Red extends MainV1Red {
         }
 
         if (gamepad1.y) {
-            robot.slowDownArm();
-        } else {
-            robot.stopArm();
+            robot.downArm();
         }
 
         if (gamepad1.x) {
-            robot.slowUpArm();
-        } else {
-            robot.stopArm();
+            robot.upArm();
         }
 
         if (gamepad1.bWasPressed()) {

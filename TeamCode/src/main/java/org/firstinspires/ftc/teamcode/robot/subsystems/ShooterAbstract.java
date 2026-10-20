@@ -323,9 +323,9 @@ public abstract class ShooterAbstract {
 //            turnToTagStatus(false);
             updateShooterPID();
             setHold(false);
-            rpmSet(1175.0);
+            rpmSet(900);
 
-            shoot(true, 12, false);
+            shoot(true, 4, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

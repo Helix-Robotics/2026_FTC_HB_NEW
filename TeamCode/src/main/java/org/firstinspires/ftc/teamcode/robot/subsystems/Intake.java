@@ -57,12 +57,12 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(0.6); // 0.75
+        setPower(-0.6); // 0.75
         intaking = true;
     }
 
     public void shootingIntake(){
-        setPower(0.8); // 0.75
+        setPower(-0.8); // 0.75
         intaking = true;
     }
 
@@ -79,7 +79,7 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(-0.6); // -1.0 // -0.8
+        setPower(0.6); // -1.0 // -0.8
     }
 
 
@@ -91,7 +91,7 @@ public class Intake {
 
 
 
-        setPower(0.6); //0.6
+        setPower(-0.6); //0.6
 
     }
 
@@ -120,6 +120,19 @@ public class Intake {
 
     public Action spinUpIntake() {
         return new SpinUpIntake();
+    }
+
+    public class SpinUpOuttake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0.8);
+            return false;
+        }
+    }
+
+    public Action spinUpOuttake() {
+        return new SpinUpOuttake();
     }
 
     public class StopIntake implements Action {
