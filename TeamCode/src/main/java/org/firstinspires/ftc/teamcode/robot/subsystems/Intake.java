@@ -56,8 +56,13 @@ public class Intake {
         return power;
     }
 
-    public void hold(){
+    public void unjam(){
         setPower(-0.6); // 0.75
+        intaking = true;
+    }
+
+    public void hold(){
+        setPower(-0.2); // 0.75
         intaking = true;
     }
 

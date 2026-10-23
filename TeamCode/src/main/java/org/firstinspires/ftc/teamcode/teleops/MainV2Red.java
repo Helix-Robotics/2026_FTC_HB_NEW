@@ -93,7 +93,7 @@ public class MainV2Red extends MainV1Red {
 
         if (gamepad2.a) {  // this unjam feeder
             robot.light.pink();
-            robot.intake.hold();
+            robot.intake.unjam();
             robot.feeder.reverseFeed();
 
         } else if (gamepad2.b) { // this unjam intake
@@ -134,8 +134,8 @@ public class MainV2Red extends MainV1Red {
 
 
 
-            if (gamepad2.xWasPressed()) {  // this unjam feeder
-                robot.shooter.singleShot(true);
+            if (gamepad2.xWasPressed()) {
+                robot.shoot(true, 1, false);
             }
 
             if (gamepad2.y) {
@@ -154,6 +154,10 @@ public class MainV2Red extends MainV1Red {
 
         if (gamepad1.bWasPressed()) {
             robot.turnToTag(true);
+        }
+
+        if (gamepad2.dpad_up) {
+            robot.intake.hold();
         }
 
 
