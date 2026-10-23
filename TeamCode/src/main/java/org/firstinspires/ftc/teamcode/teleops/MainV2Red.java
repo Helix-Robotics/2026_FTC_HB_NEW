@@ -18,9 +18,21 @@ import java.util.List;
 @TeleOp(name = "V2 Red Teleop [Choose This]")
 public class MainV2Red extends MainV1Red {
 
+    private boolean slowMode = false;
+
+    private boolean holdIntake = false;
+
+
     @Override
     public void init() {
-        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
+        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0));
+
+        robot.drivetrain.setSlowMode(false);
+
+        slowMode = false;
+
+        holdIntake = false;
+
         robot.feederDirection(true);
         robot.intakeDirection(false);
         //robot.shooterDirection(true);
@@ -83,6 +95,21 @@ public class MainV2Red extends MainV1Red {
                 robot.feeder.stopfeed();
             }
         }
+
+
+        if (gamepad2.dpadUpWasPressed()) {
+
+            if (!robot.intake.holdIntakeCheck()) {
+                robot.intake.hold();
+                robot.feeder.stopfeed();
+            } else {
+                robot.intake.stop();
+                robot.feeder.stopfeed();
+            }
+        }
+
+
+
 
 
 
@@ -152,12 +179,22 @@ public class MainV2Red extends MainV1Red {
             robot.upArm();
         }
 
-        if (gamepad1.bWasPressed()) {
-            robot.turnToTag(true);
+
+
+
+
+        if (gamepad1.b&& slowMode == false) {
+            if (robot.drivetrain.getSlowMode()) {
+                robot.drivetrain.setSlowMode(false);
+            } else {
+                robot.drivetrain.setSlowMode(true);
+            }
         }
 
-        if (gamepad2.dpad_up) {
-            robot.intake.hold();
+        if (gamepad1.b) {
+            slowMode = true;
+        } else {
+            slowMode = false;
         }
 
 

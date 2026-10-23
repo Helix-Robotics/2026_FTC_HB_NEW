@@ -23,6 +23,8 @@ public class Intake {
     private int unjamming;
 
     public static boolean intaking = false;
+
+    public static boolean hold_intaking = false;
     public static boolean outtaking = false;
 
     public static double jamDelay = 0.5;
@@ -62,7 +64,7 @@ public class Intake {
     }
 
     public void hold(){
-        setPower(-0.2); // 0.75
+        setPower(-0.6); // 0.75
         intaking = true;
     }
 
@@ -108,6 +110,10 @@ public class Intake {
 
     public boolean checkIn() {
         return intaking;
+    }
+
+    public boolean holdIntakeCheck() {
+        return hold_intaking;
     }
 
     public boolean checkOut() {
