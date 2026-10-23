@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = " NOT TESTED V3 Blue Leave Shoot Flower Park Passive Side 2 Cycles", group = "Autonomous")
+@Autonomous(name = " IRL TESTED 10/10 V3 Blue Leave Shoot Flower Park Passive Side 2 Cycles", group = "Autonomous")
 public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
     protected CommandAbstract robot;
 
@@ -38,7 +38,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .waitSeconds(10);
+                .strafeToConstantHeading(new Vector2d(-58, -10.0));
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
@@ -50,7 +50,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
 
                 .waitSeconds(1.0)
-                .strafeToLinearHeading(new Vector2d(-56.35, -13.5), Math.toRadians(-164.0))
+                .strafeToLinearHeading(new Vector2d(-57.0, -15.5), Math.toRadians(-164.0))
 
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(-49, -21.5), Math.toRadians(-179.0));
@@ -105,18 +105,20 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
         runActionSafely(
                 new SequentialAction(
+                        trajectoryActionChosen1,
                         robot.vision.checkForBlueSideTag(),
                         robot.shooter.launchAction(),
                         robot.intake.stopIntake(),
+                        trajectoryActionChosen2,
 
                         new ParallelAction(
-
-                                trajectoryActionChosen2,
+                                robot.intake.spinUpIntake(),
                                 robot.arm.armDownAction()
+
+
                         ),
 
 
-                        robot.intake.spinUpIntake(),
                         trajectoryActionChosen3,
 
                         robot.arm.armUpAction(),
@@ -137,7 +139,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
 
 
-                ), 29.5, 27.0);
+                ), 29.5, 26.0);
 
 
 

@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "NOT TESTED V3 Blue Leave Shoot Park Auto 2 Cycles", group = "Autonomous")
+@Autonomous(name = "IRL TESTED GOOD  V3 Blue Leave Shoot Park Auto 2 Cycles", group = "Autonomous")
 public class V3BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -146,6 +146,8 @@ public class V3BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
 
                         trajectoryActionChosen4,
+
+                        robot.vision.checkForBlueSideTag(),
                         robot.feeder.startFeedAction(),
                         robot.shooter.launchAction(),
                         trajectoryActionChosen5
@@ -154,7 +156,7 @@ public class V3BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
                 ),
                 29.5,
-                27.0
+                26.0
         );
     }
 

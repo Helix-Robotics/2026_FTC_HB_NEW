@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "NOT TESTED V3 Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+@Autonomous(name = "IRLED Tested 10/10 V3 Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
 public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -72,10 +72,10 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                         new Vector2d(-7.701, -59)
                 ) // push
                 .strafeToConstantHeading(
-                        new Vector2d(2.299, -32.6)
+                        new Vector2d(2.299, -39)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(-38.201, -32.6)
+                        new Vector2d(-38.201, -39)
                 )
                 .strafeToLinearHeading(
                         new Vector2d(-60, -7.5),
@@ -85,9 +85,12 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(-50, -8)
+                )
                 .strafeToLinearHeading(
-                        new Vector2d(-45.701, -53.6),
-                        Math.toRadians(90)
+                        new Vector2d(-47.5, -57.25),
+                        Math.toRadians(-90.0)
                 );
 
 
@@ -133,7 +136,7 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                         trajectoryActionChosen4,
 
-                        //robot.vision.checkForRedSideTag(),
+                        robot.vision.checkForBlueSideTag(),
 
                         robot.feeder.startFeedAction(),
 
@@ -145,7 +148,7 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                 ),
                 29.5,
-                27
+                26.5
         );
     }
 
@@ -174,9 +177,12 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
+                        .strafeToConstantHeading(
+                                new Vector2d(-50, -8)
+                        )
                         .strafeToLinearHeading(
-                                new Vector2d(-45.701, -53.6),
-                                Math.toRadians(90)
+                                new Vector2d(-47.5, -57.25),
+                                Math.toRadians(-90.0)
                         )
                         .build();
             }

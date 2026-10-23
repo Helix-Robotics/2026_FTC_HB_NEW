@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = " NOT TESTED V3 Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
+@Autonomous(name = " IRL TESTING 10/10  V3 Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
 public class V3RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -36,7 +36,7 @@ public class V3RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
         );
 
         robot = new CommandsV2(hardwareMap, initialPose);
-        robot.setIsBlue(true);
+        robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
@@ -63,11 +63,11 @@ public class V3RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(-4.5, 61.6),
+                        new Vector2d(-4.5, 59),
                         Math.toRadians(179)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(7.701, 61.6)
+                        new Vector2d(7.701, 59)
                 )
                 .waitSeconds(0.1)
                 .strafeToConstantHeading(
@@ -158,10 +158,10 @@ public class V3RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 36.6)
+                                new Vector2d(-45.201, -36.6)
                         )
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 53.6)
+                                new Vector2d(-45.201, -53.6)
                         )
                         .build();
             }
