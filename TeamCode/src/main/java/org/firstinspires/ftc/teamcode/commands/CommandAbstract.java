@@ -35,10 +35,10 @@ public abstract class CommandAbstract {
     protected HardwareMap hardwareMap;
     protected boolean isAiming = false;
     protected boolean isBlue = false;
-    public static double V3_TX_TARGET_BLUE_LEFT = 2.5;  // 41
-    public static double V3_TX_TARGET_BLUE_RIGHT = -3.2; // 42
-    public static double V3_TX_TARGET_RED_RIGHT = -3.2; // 34
-    public static double V3_TX_TARGET_RED_LEFT = 2.6347;  // 33
+    public static double V3_TX_TARGET_BLUE_LEFT = 4.0;  // 41
+    public static double V3_TX_TARGET_BLUE_RIGHT = -4.2; // 42
+    public static double V3_TX_TARGET_RED_RIGHT = -3.5; // 34
+    public static double V3_TX_TARGET_RED_LEFT = 4.0;  // 33
 
     public static double V4_TX_TARGET_BLUE_LEFT = 2.5;  // 41
     public static double V4_TX_TARGET_BLUE_RIGHT = -3.2; // 42

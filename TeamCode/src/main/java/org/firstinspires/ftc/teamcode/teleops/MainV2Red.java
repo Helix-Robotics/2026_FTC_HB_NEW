@@ -150,7 +150,7 @@ public class MainV2Red extends MainV1Red {
                 robot.shooter.updateShooterPIDFar();
 
 
-                robot.shooter.rpmSet(1200.0);
+                robot.shooter.rpmSet(1240.0);
             }
 
             boolean leftShotRequested = gamepad2.left_trigger > 0.75;
