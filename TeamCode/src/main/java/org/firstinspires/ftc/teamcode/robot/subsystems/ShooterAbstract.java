@@ -92,6 +92,9 @@ public abstract class ShooterAbstract {
                     intake.shootingIntake();
                     robot.turnToTag(alignStatus);
                     robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus);
                     feeder.stopfeed();
                     readyCount = 0;
                     feedDelayCount = 0;
@@ -105,6 +108,9 @@ public abstract class ShooterAbstract {
 
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
+                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus);
                 robot.turnToTag(alignStatus);
                 robot.turnToTag(alignStatus);
                 boolean isReadyVar = isReady();
