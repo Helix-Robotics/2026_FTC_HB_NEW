@@ -116,7 +116,6 @@ public class FeederV2 extends Feeder{
         setPower(power);
         updateStorageState();
         if (getStorageState() == StorageState.FULL) {
-            intake.stop();
             light.green();
         }
         if (getStorageState() == StorageState.PARTIAL) {
@@ -124,7 +123,6 @@ public class FeederV2 extends Feeder{
         }
         if (getStorageState() == StorageState.EMPTY) {
             light.blue();
-            shooter.stopShooter();
         }
     }
 

@@ -103,6 +103,7 @@ public class ShooterV2 extends ShooterAbstract {
         shooter.setVelocity(0);
         readyCount = 0;
         feedDelayCount = 0;
+        feeder.closeGate();
         launchState = LaunchState.IDLE;
     }
     @Override
