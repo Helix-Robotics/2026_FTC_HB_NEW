@@ -66,6 +66,7 @@ public class Intake {
     public void hold(){
         setPower(-0.6); // 0.75
         intaking = true;
+        outtaking = false;
     }
 
     public void shootingIntake(){
@@ -77,7 +78,7 @@ public class Intake {
         setPower(0); //0.0
         intaking = false;
         outtaking = false;
-        light.green();
+        //light.green();
     }
     public void setVel(double velocity) {
         intake.setVelocity(velocity);
@@ -167,17 +168,14 @@ public class Intake {
 
             }
             if (jamCycles > 2) {
-                light.blue();
+                //light.purple();
                 jamCycles = 0;
 
 //                if (getVel() < -1200) {
 //                    stop();
 //                }
 
-
-
             }
-
 
         }
 //        if (jamTimer.seconds() > jamDelay) {

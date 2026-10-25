@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -28,6 +29,8 @@ public class ShooterV2 extends ShooterAbstract {
     public static int V2_FEED_DELAY_CYCLES = 0;
 
     public static boolean isV3 = true;
+
+    public static double shoot_time_ms = 500;
 
     public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
@@ -98,5 +101,106 @@ public class ShooterV2 extends ShooterAbstract {
     @Override
     public Action launchAction() {
         return new LaunchV2();
+    }
+
+    private boolean isStorageEmpty() {
+        return ((FeederV2) feeder).getStorageState()
+                == FeederV2.StorageState.EMPTY;
+    }
+
+    public void stopShooter() {
+        shooter.setVelocity(0);
+        readyCount = 0;
+        feedDelayCount = 0;
+        feeder.closeGate();
+        launchState = LaunchState.IDLE;
+    }
+    @Override
+    public void sensorShoot(boolean shotRequested, int shot_count) {
+
+//        // stop shooting if feeder empt
+//        if (isStorageEmpty()) {
+//            if (launchState != LaunchState.IDLE) {
+//                stop();
+//            } else {
+//                feeder.stopfeed();
+//            }
+//
+//            light.green();
+//            return;
+//        }
+
+//        if (launchState != LaunchState.IDLE) {
+//            light.yellow();
+//        }
+
+        switch (launchState) {
+
+            case IDLE:
+                if (shotRequested) {
+                    updateShooterPID();
+
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(targetVelocity);
+
+                    feeder.stopfeed();
+
+                    readyCount = 0;
+                    feedDelayCount = 0;
+
+
+                    launchState = LaunchState.SPIN_UP;
+                }
+                break;
+
+            case SPIN_UP:
+            case FEEDING_WAIT:
+                shooter.setVelocity(targetVelocity);
+
+                if (isReady()) {
+                    if (readyCount < readyCycles) {
+                        readyCount++;
+                        feedDelayCount = 0;
+                    } else {
+                        launchState = LaunchState.FEEDING_WAIT;
+                        feedDelayCount++;
+                    }
+
+                    if (readyCount >= readyCycles
+                            && feedDelayCount >= feedDelayCycles) {
+                        launchState = LaunchState.LAUNCH;
+                    }
+                } else {
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(targetVelocity);
+                feeder.slowfeed();
+
+                shootTimer.reset();
+                feederTimer.reset();
+
+
+                launchState = LaunchState.LAUNCHING;
+                break;
+
+            case LAUNCHING:
+                shooter.setVelocity(targetVelocity);
+
+                if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
+                    feeder.stopfeed();
+
+                    shooter.setVelocity(
+                            hold ? targetVelocity / 1.67 : 0
+                    );
+
+                    launchState = LaunchState.IDLE;
+                    light.blue();
+                }
+                break;
+        }
     }
 }

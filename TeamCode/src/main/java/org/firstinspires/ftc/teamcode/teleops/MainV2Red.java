@@ -236,6 +236,21 @@ public class MainV2Red extends MainV1Red {
         double gatePos = robot.feeder.getGatePos();
         telemetry.addData("Gate Pos", gatePos);
         packet.put("Gate Pos", gatePos);
+        FeederV2 feeder = (FeederV2) robot.feeder;
+
+        telemetry.addData("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        telemetry.addData("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        telemetry.addData("Storage State",
+                feeder.getStorageState());
+
+        packet.put("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        packet.put("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        packet.put("Storage State",
+                feeder.getStorageState());
     }
 
     public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){

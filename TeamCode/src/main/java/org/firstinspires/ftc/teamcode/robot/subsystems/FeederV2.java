@@ -1,41 +1,129 @@
 package org.firstinspires.ftc.teamcode.robot.subsystems;
 
-import static android.os.SystemClock.sleep;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class FeederV2 extends Feeder{
     public DcMotorEx motorFeeder;
-
+    protected final ElapsedTime breakDelay = new ElapsedTime();
     public Servo gate;
+    public DigitalChannel breakBeamStart;
+    public DigitalChannel breakBeamEnd;
+
+    public Light light;
+    public Intake intake;
+    public ShooterV2 shooter;
+
+    private long count = 0;
+    private int breakCycles;
 
     private static double FEED_MS_V2 = 500;
 
     private double gatePos;
 
 
-    public FeederV2(HardwareMap hw) {
+    private static final long FEED_TIMEOUT_MS = 1000;
+    private static final int MAX_BALLS = 3;
+
+    private long lastBallTime = 0;
+    private int ballsPassed = 0;
+    private boolean wasBeamBlocked = false;
+    private boolean previousRequestActive = false;
+    public boolean feedRequested;
+    public boolean outRequested;
+    public boolean intakeRequested;
+    private long feedStartTime = 0;
+
+    public static int SENSOR_CONFIRM_CYCLES = 5;
+
+    private int fullCycles = 0;
+    private int emptyCycles = 0;
+
+
+    public FeederV2(HardwareMap hw, Intake intake) {
         super();
+
+        this.intake = intake;
+
+        breakBeamStart = hw.get(
+                DigitalChannel.class, "breakbeamstart");
+        breakBeamStart.setMode(DigitalChannel.Mode.INPUT);
+
+        breakBeamEnd = hw.get(
+                DigitalChannel.class, "breakbeamend");
+        breakBeamEnd.setMode(DigitalChannel.Mode.INPUT);
+
+        light = new Light(hw);
+
         motorFeeder = hw.get(DcMotorEx.class, "feeder");
         motorFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
+
         hasGate = true;
         gate = hw.get(Servo.class, "gate");
         gate.setDirection(Servo.Direction.REVERSE);
+
         closeGate();
     }
+
+    private StorageState storageState = StorageState.PARTIAL;
+
+    public enum StorageState {
+        EMPTY,
+        PARTIAL,
+        FULL
+    }
+
+    public void updateStorageState() {
+        // assume false means beam blocked (test it later)
+        boolean startBlocked = !breakBeamStart.getState();
+        boolean endBlocked = !breakBeamEnd.getState();
+
+        boolean detectedFull = startBlocked && endBlocked;
+        boolean detectedEmpty = !startBlocked && !endBlocked;
+
+        fullCycles = detectedFull ? fullCycles + 1 : 0;
+        emptyCycles = detectedEmpty ? emptyCycles + 1 : 0;
+
+        if (fullCycles >= SENSOR_CONFIRM_CYCLES) {
+            storageState = StorageState.FULL;
+        } else if (emptyCycles >= SENSOR_CONFIRM_CYCLES) {
+            storageState = StorageState.EMPTY;
+        } else if (!detectedFull && !detectedEmpty) {
+            storageState = StorageState.PARTIAL;
+        }
+    }
+
+    public StorageState getStorageState() {
+        return storageState;
+    }
+
 
     @Override
     public void updateFeedMs(){
         this.feedMs = FEED_MS_V2;
+    }
+
+    @Override
+    public void update() {
+        setPower(power);
+        updateStorageState();
+        if (getStorageState() == StorageState.FULL) {
+            light.green();
+        }
+        if (getStorageState() == StorageState.PARTIAL) {
+            light.yellow();
+        }
+        if (getStorageState() == StorageState.EMPTY) {
+            light.blue();
+        }
     }
 
     @Override
@@ -53,6 +141,24 @@ public class FeederV2 extends Feeder{
     public void feed() {
         setPower(1.0);
         openGate();
+    }
+
+    public void setShooter(ShooterV2 shooter) {
+        this.shooter = shooter;
+    }
+
+    @Override
+    public void requestFeed(boolean request) {
+        feedRequested = request;
+    }
+    @Override
+    public void outFeed(boolean request) {
+        outRequested = request;
+    }
+
+    @Override
+    public void intakeFeed(boolean request) {
+        intakeRequested = request;
     }
 
     @Override
