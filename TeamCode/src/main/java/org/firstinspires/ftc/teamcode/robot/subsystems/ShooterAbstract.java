@@ -79,7 +79,7 @@ public abstract class ShooterAbstract {
         feedDelayCycles = FEED_DELAY_CYCLES;
     }
 
-    // Select the TX target set independently of whether alignment was requested.
+
     protected boolean usesV3Alignment() {
         return true;
     }
