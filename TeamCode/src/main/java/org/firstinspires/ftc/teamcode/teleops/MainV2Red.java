@@ -15,14 +15,26 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V2 Red Teleop [Choose This]")
+@TeleOp(name = "V3 Red Teleop")
 public class MainV2Red extends MainV1Red {
+
+    private boolean slowMode = false;
+
+    private boolean holdIntake = false;
+
 
     @Override
     public void init() {
-        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
+        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0));
+
+        robot.drivetrain.setSlowMode(false);
+
+        slowMode = false;
+
+        holdIntake = false;
+
         robot.feederDirection(true);
-        robot.intakeDirection(true);
+        robot.intakeDirection(false);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
 
@@ -85,6 +97,21 @@ public class MainV2Red extends MainV1Red {
         }
 
 
+        if (gamepad2.dpadUpWasPressed()) {
+
+            if (!robot.intake.holdIntakeCheck()) {
+                robot.intake.hold();
+                robot.feeder.stopfeed();
+            } else {
+                robot.intake.stop();
+                robot.feeder.stopfeed();
+            }
+        }
+
+
+
+
+
 
 
         if (gamepad2.aWasPressed() || gamepad2.bWasPressed()) {
@@ -93,7 +120,7 @@ public class MainV2Red extends MainV1Red {
 
         if (gamepad2.a) {  // this unjam feeder
             robot.light.pink();
-            robot.intake.hold();
+            robot.intake.unjam();
             robot.feeder.reverseFeed();
 
         } else if (gamepad2.b) { // this unjam intake
@@ -134,8 +161,8 @@ public class MainV2Red extends MainV1Red {
 
 
 
-            if (gamepad2.xWasPressed()) {  // this unjam feeder
-                robot.shooter.singleShot(true);
+            if (gamepad2.xWasPressed()) {
+                robot.shoot(true, 1, false);
             }
 
             if (gamepad2.y) {
@@ -145,19 +172,29 @@ public class MainV2Red extends MainV1Red {
         }
 
         if (gamepad1.y) {
-            robot.slowDownArm();
-        } else {
-            robot.stopArm();
+            robot.downArm();
         }
 
         if (gamepad1.x) {
-            robot.slowUpArm();
-        } else {
-            robot.stopArm();
+            robot.upArm();
         }
 
-        if (gamepad1.bWasPressed()) {
-            robot.turnToTag(true);
+
+
+
+
+        if (gamepad1.b&& slowMode == false) {
+            if (robot.drivetrain.getSlowMode()) {
+                robot.drivetrain.setSlowMode(false);
+            } else {
+                robot.drivetrain.setSlowMode(true);
+            }
+        }
+
+        if (gamepad1.b) {
+            slowMode = true;
+        } else {
+            slowMode = false;
         }
 
 

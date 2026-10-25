@@ -28,12 +28,21 @@ public class ShooterV2 extends ShooterAbstract {
     public static int V2_READY_CYCLES = 5; //2
     public static int V2_FEED_DELAY_CYCLES = 0;
 
+    public static boolean isV3 = true;
 
     public static double shoot_time_ms = 500;
 
     public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    @Override
+    protected boolean usesV3Alignment() {
+        return isV3;
+
+
+
     }
 
     @Override
@@ -78,9 +87,9 @@ public class ShooterV2 extends ShooterAbstract {
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
             setHold(false);
-            rpmSet(1175.0);
+            rpmSet(1150);
 
-            shoot(true, 10, false);
+            shoot(true, 4, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

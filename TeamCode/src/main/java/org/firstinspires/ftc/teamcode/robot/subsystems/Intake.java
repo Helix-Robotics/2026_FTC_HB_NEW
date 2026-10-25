@@ -23,6 +23,8 @@ public class Intake {
     private int unjamming;
 
     public static boolean intaking = false;
+
+    public static boolean hold_intaking = false;
     public static boolean outtaking = false;
 
     public static double jamDelay = 0.5;
@@ -56,14 +58,19 @@ public class Intake {
         return power;
     }
 
+    public void unjam(){
+        setPower(-0.6); // 0.75
+        intaking = true;
+    }
+
     public void hold(){
-        setPower(0.6); // 0.75
+        setPower(-0.6); // 0.75
         intaking = true;
         outtaking = false;
     }
 
     public void shootingIntake(){
-        setPower(0.8); // 0.75
+        setPower(-0.8); // 0.75
         intaking = true;
     }
 
@@ -80,7 +87,7 @@ public class Intake {
     public void out(){
         outtaking = true;
         intaking = false;
-        setPower(-0.6); // -1.0 // -0.8
+        setPower(0.6); // -1.0 // -0.8
     }
 
 
@@ -92,7 +99,7 @@ public class Intake {
 
 
 
-        setPower(0.6); //0.6
+        setPower(-0.6); //0.6
 
     }
 
@@ -104,6 +111,10 @@ public class Intake {
 
     public boolean checkIn() {
         return intaking;
+    }
+
+    public boolean holdIntakeCheck() {
+        return hold_intaking;
     }
 
     public boolean checkOut() {
@@ -121,6 +132,19 @@ public class Intake {
 
     public Action spinUpIntake() {
         return new SpinUpIntake();
+    }
+
+    public class SpinUpOuttake implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setPower(0.8);
+            return false;
+        }
+    }
+
+    public Action spinUpOuttake() {
+        return new SpinUpOuttake();
     }
 
     public class StopIntake implements Action {
