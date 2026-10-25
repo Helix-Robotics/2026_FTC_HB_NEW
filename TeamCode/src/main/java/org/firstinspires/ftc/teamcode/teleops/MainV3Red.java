@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V3 Red Teleop [Choose This]")
+@TeleOp(name = "V4 Red Teleop")
 public class MainV3Red extends MainV2Red {
 
     private boolean slowMode = false;

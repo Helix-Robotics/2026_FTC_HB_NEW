@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.List;
 
-@TeleOp(name = "V3 Blue Teleop [Choose This]")
-public class MainV3Blue extends MainV2Red{
+@TeleOp(name = "V4 Blue Teleop")
+public class MainV3Blue extends MainV3Red{
 
     @Override
     public List<Double> bindDriveTrain(){

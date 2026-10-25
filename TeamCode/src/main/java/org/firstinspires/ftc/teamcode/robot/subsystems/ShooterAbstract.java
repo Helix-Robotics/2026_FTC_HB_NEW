@@ -79,6 +79,11 @@ public abstract class ShooterAbstract {
         feedDelayCycles = FEED_DELAY_CYCLES;
     }
 
+    // Select the TX target set independently of whether alignment was requested.
+    protected boolean usesV3Alignment() {
+        return true;
+    }
+
     public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
         if (launchState != LaunchState.IDLE) {
             light.yellow();
@@ -90,11 +95,12 @@ public abstract class ShooterAbstract {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     intake.shootingIntake();
-                    robot.turnToTag(alignStatus);
-                    robot.turnToTag(alignStatus);
-                    robot.turnToTag(alignStatus);
-                    robot.turnToTag(alignStatus);
-                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+
                     feeder.stopfeed();
                     readyCount = 0;
                     feedDelayCount = 0;
@@ -108,11 +114,11 @@ public abstract class ShooterAbstract {
 
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
-                robot.turnToTag(alignStatus);
-                robot.turnToTag(alignStatus);
-                robot.turnToTag(alignStatus);
-                robot.turnToTag(alignStatus);
-                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -139,7 +145,7 @@ public abstract class ShooterAbstract {
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
-                robot.turnToTag(false);
+                robot.turnToTag(false, usesV3Alignment());
                 feeder.slowfeed();
                 shootTimer.reset();
                 feederTimer.reset();
@@ -156,11 +162,11 @@ public abstract class ShooterAbstract {
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
-                        robot.turnToTag(false);
+                        robot.turnToTag(false, usesV3Alignment());
                         intake.stop();
                     } else {
                         shooter.setVelocity(0);
-                        robot.turnToTag(false);
+                        robot.turnToTag(false, usesV3Alignment());
                         intake.stop();
                     }
                     launchState = LaunchState.IDLE;

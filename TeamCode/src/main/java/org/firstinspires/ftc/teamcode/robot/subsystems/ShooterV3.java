@@ -26,11 +26,18 @@ public class ShooterV3 extends ShooterAbstract {
 
     public static int V3_READY_CYCLES = 5; //2
     public static int V3_FEED_DELAY_CYCLES = 0;
+
+    public static boolean isV3 = false;
     
 
     public ShooterV3(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    @Override
+    protected boolean usesV3Alignment() {
+        return isV3;
     }
 
     @Override
