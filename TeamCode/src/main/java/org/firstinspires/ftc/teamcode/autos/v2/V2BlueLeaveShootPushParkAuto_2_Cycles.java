@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V2 Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
+//@Autonomous(name = "V2 Blue Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
 public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;

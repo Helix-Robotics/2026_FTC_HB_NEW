@@ -48,7 +48,7 @@ public abstract class ShooterAbstract {
     protected int readyCycles = 0;
     protected int feedDelayCycles = 0;
     private double shooterVel = 0.0;
-    private boolean hold = false;
+    public boolean hold = false;
 
 
 
@@ -79,6 +79,11 @@ public abstract class ShooterAbstract {
         feedDelayCycles = FEED_DELAY_CYCLES;
     }
 
+    // Select the TX target set independently of whether alignment was requested.
+    protected boolean usesV3Alignment() {
+        return true;
+    }
+
     public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
         if (launchState != LaunchState.IDLE) {
             light.yellow();
@@ -90,8 +95,12 @@ public abstract class ShooterAbstract {
                     shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     shooter.setVelocity(targetVelocity);
                     intake.shootingIntake();
-                    robot.turnToTag(alignStatus);
-                    robot.turnToTag(alignStatus);
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+                    robot.turnToTag(alignStatus, usesV3Alignment());
+
                     feeder.stopfeed();
                     readyCount = 0;
                     feedDelayCount = 0;
@@ -105,8 +114,11 @@ public abstract class ShooterAbstract {
 
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
-                robot.turnToTag(alignStatus);
-                robot.turnToTag(alignStatus);
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.turnToTag(alignStatus, usesV3Alignment());
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -133,7 +145,7 @@ public abstract class ShooterAbstract {
             case LAUNCH:
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
-                robot.turnToTag(false);
+                robot.turnToTag(false, usesV3Alignment());
                 feeder.slowfeed();
                 shootTimer.reset();
                 feederTimer.reset();
@@ -150,11 +162,11 @@ public abstract class ShooterAbstract {
                     light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
-                        robot.turnToTag(false);
+                        robot.turnToTag(false, usesV3Alignment());
                         intake.stop();
                     } else {
                         shooter.setVelocity(0);
-                        robot.turnToTag(false);
+                        robot.turnToTag(false, usesV3Alignment());
                         intake.stop();
                     }
                     launchState = LaunchState.IDLE;
@@ -163,84 +175,6 @@ public abstract class ShooterAbstract {
         }
     }
 
-
-    public void singleShot(boolean shotRequested) {
-        if (launchState != LaunchState.IDLE) {
-            light.yellow();
-        }
-
-        switch (launchState) {
-            case IDLE:
-                if (shotRequested) {
-                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    shooter.setVelocity(targetVelocity);
-                    feeder.stopfeed();
-                    intake.hold();
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                    launchState = LaunchState.SPIN_UP;
-
-                }
-                break;
-
-            case SPIN_UP:
-            case FEEDING_WAIT:
-
-                shooter.setVelocity(targetVelocity);
-                boolean isReadyVar = isReady();
-                if (isReadyVar) {
-                    if (readyCount <= readyCycles) {
-                        readyCount++;
-                        feedDelayCount = 0; // don't start feed delay yet
-                    } else {
-                        // Shooter has been in band long enough,
-                        // now count extra cycles as feed delay
-                        launchState = LaunchState.FEEDING_WAIT;
-                        feedDelayCount++;
-                    }
-
-                    if (readyCount >= readyCycles && feedDelayCount >= feedDelayCycles) {
-                        launchState = LaunchState.LAUNCH; //goes back
-                    }
-
-                } else {
-                    // Lost stability - reset both
-                    readyCount = 0;
-                    feedDelayCount = 0;
-                }
-                break;
-
-            case LAUNCH:
-                shooter.setVelocity(targetVelocity);
-                intake.hold();
-                feederTimer.reset();
-                feeder.slowfeed();
-                if (feederTimer.milliseconds() > 250) {
-                    feeder.stopfeed();
-                    launchState = LaunchState.LAUNCHING;
-                    break;
-                }
-
-
-
-            case LAUNCHING:
-
-                shooter.setVelocity(targetVelocity);
-
-
-                feeder.stopfeed();
-                intake.stop();
-                light.green();
-                if (hold) {
-                    shooter.setVelocity(targetVelocity / 1.67);
-                } else {
-                    shooter.setVelocity(0);
-                }
-                launchState = LaunchState.IDLE;
-                break;
-            }
-
-        }
 
 
 
@@ -323,9 +257,9 @@ public abstract class ShooterAbstract {
 //            turnToTagStatus(false);
             updateShooterPID();
             setHold(false);
-            rpmSet(1175.0);
+            rpmSet(900);
 
-            shoot(true, 12, false);
+            shoot(true, 4, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

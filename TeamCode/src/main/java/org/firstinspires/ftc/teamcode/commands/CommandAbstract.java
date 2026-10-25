@@ -35,10 +35,15 @@ public abstract class CommandAbstract {
     protected HardwareMap hardwareMap;
     protected boolean isAiming = false;
     protected boolean isBlue = false;
-    public static double TX_TARGET_BLUE_LEFT = 2.5;  // 41
-    public static double TX_TARGET_BLUE_RIGHT = -3.2; // 42
-    public static double TX_TARGET_RED_RIGHT = -3.2; // 34
-    public static double TX_TARGET_RED_LEFT = 2.6347;  // 33
+    public static double V3_TX_TARGET_BLUE_LEFT = 2.5;  // 41
+    public static double V3_TX_TARGET_BLUE_RIGHT = -3.2; // 42
+    public static double V3_TX_TARGET_RED_RIGHT = -3.2; // 34
+    public static double V3_TX_TARGET_RED_LEFT = 2.6347;  // 33
+
+    public static double V4_TX_TARGET_BLUE_LEFT = 2.5;  // 41
+    public static double V4_TX_TARGET_BLUE_RIGHT = -3.2; // 42
+    public static double V4_TX_TARGET_RED_RIGHT = -3.2; // 34
+    public static double V4_TX_TARGET_RED_LEFT = 5.0;  // 33
 
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
@@ -137,17 +142,7 @@ public abstract class CommandAbstract {
         arm.down();
     }
 
-    public void slowUpArm() {
-        arm.slowUp();
-    }
 
-    public void slowDownArm() {
-        arm.slowDown();
-    }
-
-    public void stopArm() {
-        arm.stopArm();
-    }
 
     public void shootingIntake() {
         intake.shootingIntake();
@@ -270,7 +265,7 @@ public abstract class CommandAbstract {
 
 
 
-    public boolean turnToTagO() {
+    public boolean turnToTagO(boolean v3) {
         vision.update();
 
         double tagX = -181;
@@ -282,16 +277,29 @@ public abstract class CommandAbstract {
 
             if (blueLeftX > -180) {
                 tagX = blueLeftX;
-                txTarget = TX_TARGET_BLUE_LEFT;
+                if (v3) {
+                    txTarget = V3_TX_TARGET_BLUE_LEFT;
+                } else {
+                    txTarget = V4_TX_TARGET_BLUE_LEFT;
+                }
+
             }
 
             if (blueRightX > -180) {
                 if (tagX < -180) {
                     tagX = blueRightX;
-                    txTarget = TX_TARGET_BLUE_RIGHT;
+                    if (v3) {
+                        txTarget = V3_TX_TARGET_BLUE_RIGHT;
+                    } else {
+                        txTarget = V4_TX_TARGET_BLUE_RIGHT;
+                    }
                 } else if (Math.abs(blueRightX) < Math.abs(tagX)) {
                     tagX = blueRightX;
-                    txTarget = TX_TARGET_BLUE_RIGHT;
+                    if (v3) {
+                        txTarget = V3_TX_TARGET_BLUE_RIGHT;
+                    } else {
+                        txTarget = V4_TX_TARGET_BLUE_RIGHT;
+                    }
                 }
             }
         } else {
@@ -304,16 +312,33 @@ public abstract class CommandAbstract {
 
             if (redLeftX > -180) {
                 tagX = redLeftX;
-                txTarget = TX_TARGET_RED_LEFT;
+                if (v3) {
+                    txTarget = V3_TX_TARGET_RED_LEFT;
+                } else {
+                    txTarget = V4_TX_TARGET_RED_LEFT;
+                }
             }
 
             if (redRightX > -180) {
                 if (tagX < -180) {
                     tagX = redRightX;
-                    txTarget = TX_TARGET_RED_RIGHT;
+
+
+                    if (v3) {
+                        txTarget = V3_TX_TARGET_RED_RIGHT;
+                    } else {
+                        txTarget = V4_TX_TARGET_RED_RIGHT;
+                    }
+
+
                 } else if (Math.abs(redRightX) < Math.abs(tagX)) {
                     tagX = redRightX;
-                    txTarget = TX_TARGET_RED_RIGHT;
+
+                    if (v3) {
+                        txTarget = V3_TX_TARGET_RED_RIGHT;
+                    } else {
+                        txTarget = V4_TX_TARGET_RED_RIGHT;
+                    }
                 }
             }
         }
@@ -346,7 +371,7 @@ public abstract class CommandAbstract {
         return false;
     }
 
-    public void turnToTag(boolean startTurn){
+    public void turnToTag(boolean startTurn, boolean Isv3){ //V3 Acutal robot
         switch(alignStatus){
             case PENDING:
                 if (startTurn){
@@ -355,7 +380,14 @@ public abstract class CommandAbstract {
                 break;
             case START:
             case IN_PROGRESS:
-                boolean finished = turnToTagO();
+                //boolean finished = turnToTagO();
+                boolean finished;
+
+                if (Isv3) {
+                    finished = turnToTagO(true);
+                } else {
+                    finished = turnToTagO(false);
+                }
                 if (finished){
                     alignStatus = ALIGN_STATUS.FINISH;
                 } else {
