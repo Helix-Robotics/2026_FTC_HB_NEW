@@ -161,7 +161,7 @@ public class Arm {
 
     public void down() {
 
-        setPosition(0.3);
+        setPosition(0.2);
 
     }
 
@@ -178,7 +178,7 @@ public class Arm {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            arm.setPosition(0.3);
+            arm.setPosition(0.2);
             return false;
         }
 
