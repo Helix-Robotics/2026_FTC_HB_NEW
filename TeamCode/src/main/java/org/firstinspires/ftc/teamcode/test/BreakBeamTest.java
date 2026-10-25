@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Break Beam Test")
+//@TeleOp(name = "Break Beam Test")
 public class BreakBeamTest extends OpMode {
     DigitalChannel breakBeam;
 
@@ -31,7 +31,7 @@ public class BreakBeamTest extends OpMode {
     @Override
     public void loop() {
 
-        if (breakBeam.getState() == false) {
+        if (!breakBeam.getState()) {
             count = System.currentTimeMillis() + 200;
         }
 

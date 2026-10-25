@@ -2,6 +2,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
@@ -42,13 +43,20 @@ public class MeepMeepTesting {
 
         /** First Test Zone **/
 
-        myFirstBot.runAction(myFirstBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-                .strafeToLinearHeading(new Vector2d(13, 61.5), Math.toRadians(0))
+        myFirstBot.runAction(myFirstBot.getDrive().actionBuilder(new Pose2d(-59, 14.75, Math.toRadians(0)))
+                .strafeToLinearHeading(new Vector2d(-60, 14.75), Math.toRadians(-179))
+                .strafeToConstantHeading(new Vector2d(-59.0, 14.75))
+                .strafeToLinearHeading(new Vector2d(-45.5, 14.75), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(-58.5, 62.25), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-55.17, 45.25), Math.toRadians(90))
+                .strafeToConstantHeading(new Vector2d(-32.5, 45.25))
+                .strafeToLinearHeading(new Vector2d(-4.5, 62.25), Math.toRadians(-179))
+                .strafeToConstantHeading(new Vector2d(4.5, 62.25))
+                .strafeToConstantHeading(new Vector2d(-5.5, 54.25))
+                .strafeToConstantHeading(new Vector2d(32.0, 34.25))
+                .strafeToLinearHeading(new Vector2d(62.5, 8.25), Math.toRadians(-179))
+                .strafeToLinearHeading(new Vector2d(47.5, 57.25), Math.toRadians(90))
                 .build());
-
-
-
-
 
 
 
@@ -60,34 +68,44 @@ public class MeepMeepTesting {
                 .build();
 
 
-
-
-
-
         /** Second Test Zone Red **/
 
-
         mySecondBot.runAction(mySecondBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.toRadians(0)))
-                //.strafeToConstantHeading(new Vector2d(-60.0, -16.0))
-                //.strafeToLinearHeading(new Vector2d(59, 10), Math.toRadians(0))
-                .strafeToLinearHeading(new Vector2d(-60, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-59, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-45, 14.75), Math.toRadians(179.9))
-                .strafeToLinearHeading(new Vector2d(-60.5, 60), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-61.5, 60.6), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-30, 45), Math.toRadians(89.9))
-                .strafeToLinearHeading(new Vector2d(-5, 60.6), Math.toRadians(179.9))
 
 
 
+                .strafeToLinearHeading(new Vector2d(-60, 14), Math.toRadians(179))
 
 
+                .strafeToLinearHeading(new Vector2d(-27, 55), Math.toRadians(90))
 
+                .strafeToConstantHeading(new Vector2d(-20, 45))
 
+                .strafeToLinearHeading(new Vector2d(-4.5, 62.25), Math.toRadians(179))
 
+                .strafeToConstantHeading(
+                        new Vector2d(4.5, 62.25)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(-5.5, 35)
+                ) // out
+
+                .strafeToConstantHeading(
+                        new Vector2d(-3, 35)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 35)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 53.6)
+                )
 
 
                 .build());
+
+
+
+
 
 
 
@@ -117,7 +135,7 @@ public class MeepMeepTesting {
                     .setDarkMode(true)
                     .setBackgroundAlpha(0.95f)
                     // Add both of our declared bot entities
-                    .addEntity(myFirstBot)
+                    //.addEntity(myFirstBot)
                     .addEntity(mySecondBot)
                     .start();
 
@@ -128,7 +146,8 @@ public class MeepMeepTesting {
                     .setBackgroundAlpha(0.95f)
                     // Add both of our declared bot entities
                     .addEntity(myFirstBot)
-                    .addEntity(mySecondBot)
+                    // take out second robot for now
+                    // .addEntity(mySecondBot)
                     .start();
         }
     }

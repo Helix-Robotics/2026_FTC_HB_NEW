@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.CommandsV1;
@@ -16,13 +15,28 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-@TeleOp(name = "V2 Teleop")
+@TeleOp(name = "V3 Red Teleop")
 public class MainV2Red extends MainV1Red {
+
+    private boolean slowMode = false;
+
+    private boolean holdIntake = false;
+
 
     @Override
     public void init() {
-        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0)) ;
+        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0));
+
+        robot.drivetrain.setSlowMode(false);
+
+        slowMode = false;
+
+        holdIntake = false;
+
         robot.feederDirection(true);
+        robot.intakeDirection(false);
+        //robot.shooterDirection(true);
+        robot.shooter.setHold(true);
 
         stateMachine = StateMachine.WAITING_FOR_START;
     }
@@ -31,7 +45,6 @@ public class MainV2Red extends MainV1Red {
     public void loop() {
         // keep subsystems updated
         robot.update();
-        robot.intake.update();
         robot.feeder.update();
 
         /** Driver Operations **/
@@ -43,8 +56,6 @@ public class MainV2Red extends MainV1Red {
         /**Above is only for testing**/
         robot.fieldRelativeDrive(driveValues.get(1), driveValues.get(0), driveValues.get(2));
 
-        ElapsedTime timer = new ElapsedTime();
-
         /** Bind Drivetrain **/
         //binding Drive train
         if (gamepad1.aWasPressed()) {
@@ -54,45 +65,145 @@ public class MainV2Red extends MainV1Red {
         /** Intake Related **/
         if (gamepad2.rightBumperWasPressed())
         {
-            if (!outtaking)
+            if (!robot.intake.checkOut())
             {
-                intaking = false;
-                outtaking = true;
                 robot.intake.out();
                 robot.feeder.reverseFeed();
             }
             else
             {
-                outtaking = false;
                 robot.intake.stop();
                 robot.feeder.stopfeed();
+
             }
         }
+
+
+
+
+
+
         if (gamepad2.leftBumperWasPressed()) {
-            if (!intaking) {
-                intaking = true;
-                outtaking = false;
+            robot.light.blue();
+            if (!robot.intake.checkIn())
+            {
                 robot.intake.in();
                 robot.feeder.intakeSlowFeed();
-            } else {
-                intaking = false;
+            }
+            else {
                 robot.intake.stop();
                 robot.feeder.stopfeed();
             }
         }
 
-        // test gate
 
+        if (gamepad2.dpadUpWasPressed()) {
 
-        /** Shooting Related **/
-        if (gamepad2.right_trigger > 0.5) {
-            robot.shoot(true, 5);
+            if (!robot.intake.holdIntakeCheck()) {
+                robot.intake.hold();
+                robot.feeder.stopfeed();
+            } else {
+                robot.intake.stop();
+                robot.feeder.stopfeed();
+            }
         }
-        if (gamepad2.left_trigger > 0.5){
-            //Comment out fo debug
-            //We dont kjnow what is impact
+
+
+
+
+
+
+
+        if (gamepad2.aWasPressed() || gamepad2.bWasPressed()) {
             robot.stopshoot();
         }
+
+        if (gamepad2.a) {  // this unjam feeder
+            robot.light.pink();
+            robot.intake.unjam();
+            robot.feeder.reverseFeed();
+
+        } else if (gamepad2.b) { // this unjam intake
+            robot.light.purple();
+            robot.intake.out();
+            robot.feeder.intakeSlowFeed();
+
+        } else {
+            if (gamepad2.aWasReleased() || gamepad2.bWasReleased()) {
+                robot.feeder.stopfeed();
+                robot.intake.stop();
+            }
+
+
+
+
+
+            if (gamepad2.right_trigger > 0.5) {
+//
+                robot.shooter.updateShooterPID();
+                robot.shooter.rpmSet(1160.0);
+            }
+
+
+            if (gamepad2.left_trigger > 0.5) {
+//
+                robot.shooter.updateShooterPIDFar();
+
+
+                robot.shooter.rpmSet(1240.0);
+            }
+
+            boolean leftShotRequested = gamepad2.left_trigger > 0.75;
+            boolean rightShotRequested = gamepad2.right_trigger > 0.75;
+            robot.shoot(leftShotRequested || rightShotRequested, 5, leftShotRequested);
+
+
+
+
+
+            if (gamepad2.xWasPressed()) {
+                robot.shoot(true, 1, false);
+            }
+
+            if (gamepad2.y) {
+                robot.stopshoot();
+                //robot.turnToTag(true);
+            }
+        }
+
+        if (gamepad1.y) {
+            robot.downArm();
+        }
+
+        if (gamepad1.x) {
+            robot.upArm();
+        }
+
+
+
+
+
+        if (gamepad1.b&& slowMode == false) {
+            if (robot.drivetrain.getSlowMode()) {
+                robot.drivetrain.setSlowMode(false);
+            } else {
+                robot.drivetrain.setSlowMode(true);
+            }
+        }
+
+        if (gamepad1.b) {
+            slowMode = true;
+        } else {
+            slowMode = false;
+        }
+
+
+
+
+
+
+
+
 
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
@@ -100,13 +211,17 @@ public class MainV2Red extends MainV1Red {
 
         telemetryEssentials(telemetry, packet);
         telemetryIntake(telemetry, packet);
-        telemetryFeeder(telemetry, packet);
+        //telemetryFeeder(telemetry, packet);
         telemetryShooter(telemetry, packet);
+        telemetryShooting(telemetry, packet);
         telementryRoadRunner(telemetry, packet);
 
         /**Start of Drive Train Information **/
         //telemetryDrivetrain(telemetry, packet);
         /**End of Drive Train Information**/
+
+        telemetry.addData("Intake Velocity", robot.intake.getVel());
+        packet.put("Intake Vel", robot.intake.getVel());
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
@@ -121,5 +236,33 @@ public class MainV2Red extends MainV1Red {
         double gatePos = robot.feeder.getGatePos();
         telemetry.addData("Gate Pos", gatePos);
         packet.put("Gate Pos", gatePos);
+        FeederV2 feeder = (FeederV2) robot.feeder;
+
+        telemetry.addData("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        telemetry.addData("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        telemetry.addData("Storage State",
+                feeder.getStorageState());
+
+        packet.put("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        packet.put("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        packet.put("Storage State",
+                feeder.getStorageState());
+    }
+
+    public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){
+
+        telemetry.addData("Distance to Tag", robot.getDistanceFromTag());
+        packet.put("Distance to Tag", robot.getDistanceFromTag());
+        telemetry.addData("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+        packet.put("Distance to Tag PODS", robot.getDistanceFromTagPODS());
+
+        telemetry.addData("TagX", robot.getCameraTagX());
+        packet.put("TagX", robot.getCameraTagX());
+        telemetry.addData("TagY", robot.getCameraTagY());
+        packet.put("TagY", robot.getCameraTagY());
     }
 }

@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import java.util.List;
 
 
-@TeleOp(name = "Drive Test 1 Controller")
+//@TeleOp(name = "Drive Test 1 Controller")
 public class TestDrive extends MainV1Red {
 
     Intake intake;
@@ -168,7 +168,7 @@ public class TestDrive extends MainV1Red {
         }
 
         if (gamepad1.right_trigger > 0.5) {
-            robot.shoot(true, 5);
+            robot.shoot(true, 5, false);
         }
         else if (gamepad1.dpad_down) {robot.reverseFeed();}
 

@@ -52,7 +52,7 @@ public class Light {
         // actions are formatted via telemetry packets as below
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            red();
+            //red();
             return false;
         }
 

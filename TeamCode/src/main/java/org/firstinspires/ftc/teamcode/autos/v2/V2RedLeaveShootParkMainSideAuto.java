@@ -1,9 +1,6 @@
-//MeepMeep done
+//Worked On Scrimmage
 
-
-
-
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v2;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -19,51 +16,69 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Blue Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
+//@Autonomous(name = "V2 Red Leave Shoot Park Main Side Auto", group = "Autonomous")
+public class V2RedLeaveShootParkMainSideAuto extends LinearOpMode {
+
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(179.0));
 
-        robot = new CommandsV1(hardwareMap, initialPose);
-        robot.setIsBlue(false);
+        Pose2d initialPose = new Pose2d(
+                -60,
+                14,
+                Math.toRadians(179)
+        );
+
+        robot = new CommandsV2(hardwareMap, initialPose);
+        robot.setIsBlue(true);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
 
-
-
-
-
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
-                .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0));
+                .strafeToLinearHeading(
+                        new Vector2d(-45.5, 14),
+                        Math.toRadians(179)
+                )
+                .strafeToLinearHeading(
+                        new Vector2d(-60.17, 62),
+                        Math.toRadians(90)
+                );
 
 
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(
+                        new Vector2d(-55.17, 44),
+                        Math.toRadians(90)
+                );
 
 
-
-
-
-
-
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
+                .strafeToLinearHeading(
+                        new Vector2d(25, 54),
+                        Math.toRadians(0)
+                );
 
 
         while (!isStopRequested() && !opModeIsActive()) {
+
             localizer.update();
             Pose2d position = localizer.getPose();
 
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
             telemetry.update();
         }
 
@@ -73,33 +88,44 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
         Action trajectoryActionChosen2 = tab2.build();
-
-
+        Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
 
 
         runActionSafely(
                 new SequentialAction(
-                        robot.vision.checkForBlueSideTag(),
+
                         robot.shooter.launchAction(),
-                        trajectoryActionChosen2
-                        //robot.intake.spinUpIntake()
+
+                        new ParallelAction(
+                                robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
+                                trajectoryActionChosen2
+                        ),
+
+                        trajectoryActionChosen3,
+
+                        new ParallelAction(
+                                robot.intake.stopIntake(),
+                                robot.feeder.stopFeedAction()
+                        ),
 
 
-                        // if there is 25s left in the auto, just make a thing to make it park
+                        trajectoryActionChosen4
 
-
-
-
-
-
-
-                ), 30.0, 25.0);
-
-
-
+                ),
+                29.5,
+                27.0
+        );
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
+
+    private void runActionSafely(
+            Action action,
+            double timeoutSeconds,
+            double goHome
+    ) {
+
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
         boolean goingHome = false;
@@ -107,10 +133,10 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
 
             if (!goingHome && timer.seconds() > goHome) {
+
                 goingHome = true;
 
                 robot.stopshoot();
-
                 robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
@@ -119,8 +145,10 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToConstantHeading(new Vector2d(-60.0, -16.0))
-                        .strafeToLinearHeading(new Vector2d(-55.5, -65.0), Math.toRadians(90.0))
+                        .strafeToLinearHeading(
+                                new Vector2d(25, 54),
+                                Math.toRadians(0)
+                        )
                         .build();
             }
 
@@ -128,14 +156,10 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
                 break;
             }
 
-
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
             idle();
         }
-
-
-
 
 
         robot.stopshoot();
@@ -149,5 +173,4 @@ public class BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
                 )
         );
     }
-
 }

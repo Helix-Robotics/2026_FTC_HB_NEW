@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 
-@Autonomous(name = "auto square")
+//@Autonomous(name = "auto square")
 public class AutoSquare extends LinearOpMode {
 
     

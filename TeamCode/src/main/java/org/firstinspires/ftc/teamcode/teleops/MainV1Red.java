@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import java.util.List;
 
 
-@TeleOp(name = "V1 Teleop")
+//@TeleOp(name = "V1 Red Teleop")
 public class MainV1Red extends MainV0Red {
 
     Intake intake;
@@ -62,41 +62,49 @@ public class MainV1Red extends MainV0Red {
         }
 
         /** Intake Related **/
-        if (gamepad2.rightBumperWasPressed())
-        {
-            if (!outtaking)
-            {
-                intaking = false;
-                outtaking = true;
-                robot.intake.in();
-                robot.feeder.slowfeed();
-            }
-            else
-            {
-                outtaking = false;
-                robot.intake.stop();
-                robot.feeder.stopfeed();
-            }
-        }
-        if (gamepad2.leftBumperWasPressed()) {
-            if (!intaking) {
-                intaking = true;
-                outtaking = false;
-                robot.intake.out();
-                robot.feeder.reverseFeed();
-            } else {
-                intaking = false;
-                robot.intake.stop();
-                robot.feeder.stopfeed();
-            }
-        }
+//        if (gamepad2.rightBumperWasPressed())
+//        {
+//            if (!outtaking)
+//            {
+//                intaking = false;
+//                outtaking = true;
+//                robot.intake.in();
+//                robot.feeder.slowfeed();
+//            }
+//            else
+//            {
+//                outtaking = false;
+//                robot.intake.stop();
+//                robot.feeder.stopfeed();
+//            }
+//        }
+//        if (gamepad2.leftBumperWasPressed()) {
+//            if (!intaking) {
+//                intaking = true;
+//                outtaking = false;
+//                robot.intake.out();
+//                robot.feeder.reverseFeed();
+//            } else {
+//                intaking = false;
+//                robot.intake.stop();
+//                robot.feeder.stopfeed();
+//            }
+//        }
 
         /** Shooting Related **/
         if (gamepad2.right_trigger > 0.5) {
-            robot.shoot(true, 5);
+            robot.shoot(true, 5, false);
         }
         else {
             robot.stopshoot();
+        }
+
+        if (gamepad1.xWasPressed()) {
+            robot.upArm();
+        }
+
+        if (gamepad1.yWasPressed()) {
+            robot.downArm();
         }
 
         // telemetry

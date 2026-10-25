@@ -1,7 +1,8 @@
-//NO MEEEP YET
-// 0, 0 is measured by the bottom right of robot touching the middle
+//Worked On Scrimmage
 
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.v2;
+
+import static java.lang.Math.abs;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -17,44 +18,51 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Leave Shoot Park Main Side Auto", group = "Autonomous")
-public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
+//@Autonomous(name = "V2 Blue Leave Shoot Park Main Side Auto", group = "Autonomous")
+public class V2BlueLeaveShootParkMainSideAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-67.5, 5.0, Math.toRadians(-179.0));
+        Pose2d initialPose = new Pose2d(60, -14.75, Math.toRadians(0));
 
-        robot = new CommandsV1(hardwareMap, initialPose);
+
+
+
+        robot = new CommandsV2(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+                .strafeToConstantHeading(new Vector2d(59, -14.75));
 
 
 
 
 
+        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(45.5, -14.75))
+                .strafeToLinearHeading(new Vector2d(60.5, -60.0), Math.toRadians(-90))
+
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(61.5, -60.6));
 
 
-        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(-53.0, 5.0), Math.toRadians(-179.0))
-                .strafeToLinearHeading(new Vector2d(-67.67, 53.0), Math.toRadians(90.0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .waitSeconds(0.25)
-                .strafeToLinearHeading(new Vector2d(-62.67, 35.0), Math.toRadians(90.0));
+                .strafeToConstantHeading(new Vector2d(40, -45));
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(15.0, 45.0), Math.toRadians(0.0));
+                .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0));
 
 
 
@@ -72,9 +80,27 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
             localizer.update();
             Pose2d position = localizer.getPose();
 
+            double positionx = position.position.x;
+            double positiony = position.position.y;
+            double heading = Math.toDegrees(position.heading.toDouble());
+
+            double targetx = -47.5;
+            double targety = -57.25;
+            double targetheading = -90.0;
+
+            double errorx = abs(targetx - positionx);
+            double errory = abs(targety - positiony);
+            double headingError = abs(targetheading - heading);
+
             telemetry.addData("X", position.position.x);
             telemetry.addData("Y", position.position.y);
-            telemetry.addData("deg", Math.toDegrees(position.heading.toDouble()));
+            telemetry.addData(
+                    "deg",
+                    Math.toDegrees(position.heading.toDouble())
+            );
+            telemetry.addData("X Error", errorx);
+            telemetry.addData("Y Error", errory);
+            telemetry.addData("Heading Error", headingError);
             telemetry.update();
         }
 
@@ -82,28 +108,37 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
-        Action trajectoryActionChosen2 = tab2.build();
-        Action trajectoryActionChosen3 = tab3.build();
-        Action trajectoryActionChosen4 = tab4.build();
+        Action action1 = tab1.build();
+        Action action2 = tab2.build();
+        Action action3 = tab3.build();
+        Action action4 = tab4.build();
 
 
 
         runActionSafely(
                 new SequentialAction(
-
+                        action1,
                         robot.shooter.launchAction(),
                         new ParallelAction(
                                 robot.intake.spinUpIntake(),
-                                trajectoryActionChosen2
+                                robot.feeder.startFeedAction(),
+
+                                action2
                         ),
-                        trajectoryActionChosen3,
-                        robot.intake.stopIntake(),
-                        trajectoryActionChosen4
+
+                        action3,
+                        new ParallelAction(
+                                robot.intake.stopIntake(),
+                                robot.feeder.stopFeedAction()
+
+                        ),
+
+
+                        action4
 
 
 
-                ), 30.0, 25.0);
+                ), 29.5, 27.0);
 
 
 
@@ -129,8 +164,7 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(-62.67, 35.0), Math.toRadians(90.0))
-                        .strafeToLinearHeading(new Vector2d(15.0, 45.0), Math.toRadians(0.0))
+                        .strafeToLinearHeading(new Vector2d(-25, -56), Math.toRadians(0))
                         .build();
             }
 
@@ -159,6 +193,5 @@ public class RedLeaveShootParkMainSideAuto extends LinearOpMode {
                 )
         );
     }
-
 
 }
