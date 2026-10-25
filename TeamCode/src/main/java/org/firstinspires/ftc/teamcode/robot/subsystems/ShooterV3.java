@@ -19,7 +19,7 @@ public class ShooterV3 extends ShooterAbstract {
     public static double V3_SHOOTER_P_FAR = 27.0;
     public static double V3_SHOOTER_I_FAR = 0.0;
     public static double V3_SHOOTER_D_FAR = 1.6;
-    public static double V3_SHOOTER_F_FAR = 14.5; //15.67;
+    public static double V3_SHOOTER_F_FAR = 14.15; //15.67;
 
     public static double V3_TARGET_VELOCITY = 1175.0; //  1160.0;
     public static double V3_MIN_VELOCITY = 1125.0; // 1110.0;

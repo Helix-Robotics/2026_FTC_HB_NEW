@@ -43,7 +43,7 @@ public abstract class CommandAbstract {
     public static double V4_TX_TARGET_BLUE_LEFT = 2.5;  // 41
     public static double V4_TX_TARGET_BLUE_RIGHT = -3.2; // 42
     public static double V4_TX_TARGET_RED_RIGHT = -3.2; // 34
-    public static double V4_TX_TARGET_RED_LEFT = 2.6347;  // 33
+    public static double V4_TX_TARGET_RED_LEFT = 5.0;  // 33
 
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
