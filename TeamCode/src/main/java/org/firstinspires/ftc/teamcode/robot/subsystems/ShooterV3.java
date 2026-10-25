@@ -26,11 +26,7 @@ public class ShooterV3 extends ShooterAbstract {
 
     public static int V3_READY_CYCLES = 5; //2
     public static int V3_FEED_DELAY_CYCLES = 0;
-
-    public static double TX_TARGET_BLUE_LEFT = 2.5;  // 41
-    public static double TX_TARGET_BLUE_RIGHT = -3.2; // 42
-    public static double TX_TARGET_RED_RIGHT = -3.2; // 34
-    public static double TX_TARGET_RED_LEFT = 2.6347;  // 33
+    
 
     public ShooterV3(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
