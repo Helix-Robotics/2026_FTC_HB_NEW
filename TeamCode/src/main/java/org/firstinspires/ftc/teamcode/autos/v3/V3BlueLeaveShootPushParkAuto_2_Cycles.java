@@ -148,7 +148,7 @@ public class V3BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                 ),
                 29.5,
-                26.5
+                25.5
         );
     }
 
