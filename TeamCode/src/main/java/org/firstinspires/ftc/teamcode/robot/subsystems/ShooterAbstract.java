@@ -163,7 +163,7 @@ public abstract class ShooterAbstract {
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
                         robot.turnToTag(false, usesV3Alignment());
-                        intake.stop();
+                        intake.in();
                     } else {
                         shooter.setVelocity(0);
                         robot.turnToTag(false, usesV3Alignment());
