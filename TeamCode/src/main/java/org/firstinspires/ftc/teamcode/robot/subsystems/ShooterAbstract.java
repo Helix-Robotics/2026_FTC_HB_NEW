@@ -85,9 +85,9 @@ public abstract class ShooterAbstract {
     }
 
     public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
-        if (launchState != LaunchState.IDLE) {
-            light.yellow();
-        }
+//        if (launchState != LaunchState.IDLE) {
+//            light.yellow();
+//        }
 
         switch (launchState) {
             case IDLE:
@@ -159,7 +159,7 @@ public abstract class ShooterAbstract {
 
                 if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
                     feeder.stopfeed();
-                    light.green();
+                    //light.green();
                     if (hold) {
                         shooter.setVelocity(targetVelocity / 1.67);
                         robot.turnToTag(false, usesV3Alignment());
