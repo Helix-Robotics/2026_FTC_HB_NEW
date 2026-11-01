@@ -8,8 +8,26 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 public class Light {
     public Servo light;
+    private Intake intake;
+    private double requestedColour;
+
+    public void setIntake(Intake intake) {
+        this.intake = intake;
+    }
+
+    public void update() {
+        if (intake != null) {
+            if (intake.isJammed()) {
+                light.setPosition(pink);
+                return;
+            }
+        }
+
+        light.setPosition(requestedColour);
+    }
 
     public final double red = 0.277;
     public final double orange = 0.333;
@@ -20,15 +38,19 @@ public class Light {
     public final double blue = 0.611;
     public final double indigo = 0.666;
     public final double purple = 0.722;
-    public final double pink = 0.820;
+    public final double pink = 0.720;
     public final double white = 1.000;
 
 
     public Light(HardwareMap hw) {
         light = hw.get(Servo.class, "light");
+        requestedColour = light.getPosition();
     }
 
-    public void setColour(double colour) {light.setPosition(colour);}
+    public void setColour(double colour) {
+        requestedColour = colour;
+        update();
+    }
 
     public void red() {setColour(red);}
     public void orange() {setColour(orange);}

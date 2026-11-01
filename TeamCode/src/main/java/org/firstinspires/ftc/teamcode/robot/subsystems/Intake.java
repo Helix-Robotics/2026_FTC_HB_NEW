@@ -19,7 +19,6 @@ public class Intake {
     public Light light;
     private double power = 0;
 
-    private int jamCycles;
     private int unjamming;
 
     public static boolean intaking = false;
@@ -35,14 +34,22 @@ public class Intake {
         intake = hw.get(DcMotorEx.class, "intake");
 
         light = new Light(hw);
+        light.setIntake(this);
 
         //intake.setDirection(DcMotorSimple.Direction.REVERSE); //not for new intake position
     }
 
 
     private void setPower(double power) {
+
+        if (power < 0 && this.power >= 0) {
+            jamTimer.reset();
+        }
         this.power = power;
         intake.setPower(power);
+        if (power >= 0) {
+            clearJam();
+        }
     }
 
     public void setReverse(boolean reverse) {
@@ -58,49 +65,45 @@ public class Intake {
         return power;
     }
 
-    public void unjam(){
-        setPower(-0.6); // 0.75
-        intaking = true;
-    }
-
-    public void hold(){
-        setPower(-0.6); // 0.75
+    public void unjam() {
         intaking = true;
         outtaking = false;
+        setPower(-0.6);
     }
 
-    public void shootingIntake(){
-        setPower(-0.8); // 0.75
+    public void hold() {
         intaking = true;
+        outtaking = false;
+        setPower(-0.6);
     }
 
-    public void stop(){
-        setPower(0); //0.0
+    public void shootingIntake() {
+        intaking = true;
+        outtaking = false;
+        setPower(-0.8);
+    }
+
+    public void stop() {
         intaking = false;
         outtaking = false;
-        //light.green();
+        setPower(0);
     }
     public void setVel(double velocity) {
         intake.setVelocity(velocity);
     }
 
-    public void out(){
-        outtaking = true;
+    public void out() {
         intaking = false;
-        setPower(0.6); // -1.0 // -0.8
+        outtaking = true;
+        setPower(0.6);
     }
 
 
 
-    public void in(){
-        jamTimer.reset();
+    public void in() {
         intaking = true;
         outtaking = false;
-
-
-
-        setPower(-0.6); //0.6
-
+        setPower(-0.6);
     }
 
 //    public void unjamIntake() {
@@ -125,6 +128,8 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            intaking = true;
+            outtaking = false;
             setPower(-0.8);
             return false;
         }
@@ -138,6 +143,8 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            intaking = false;
+            outtaking = true;
             setPower(0.8);
             return false;
         }
@@ -151,42 +158,34 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            intaking = false;
+            outtaking = false;
             setPower(0);
             return false;
         }
     }
 
     public double getVel() {
-        return intake.getVelocity();
+        return Math.abs(intake.getVelocity());
     }
 
 
+    public boolean isJammed() {
+
+        return intaking && power < 0 && jamTimer.seconds() >= jamDelay && getVel() <50.0;
+
+    }
+
+
+
+
+
+    private void clearJam() {
+        light.update();
+    }
+
     public void checkJam() {
-        if (jamTimer.seconds() > jamDelay) {
-            if (intaking && getVel() < 50) {
-                jamCycles++;
-
-            }
-            if (jamCycles > 2) {
-                //light.purple();
-                jamCycles = 0;
-
-//                if (getVel() < -1200) {
-//                    stop();
-//                }
-
-            }
-
-        }
-//        if (jamTimer.seconds() > jamDelay) {
-//            if (intaking && getVel() < 10) {
-//
-//
-//                unjamIntake();
-//
-//                }
-
-
+        light.update();
     }
 
     public Action stopIntake() {
