@@ -161,12 +161,12 @@ public class Arm {
 
     public void down() {
 
-        setPosition(0.2);
+        setPosition(0.067);
 
     }
 
     public void up() {
-        setPosition(0.6);
+        setPosition(0.99);
     }
 
     public class ArmDownAction implements Action {
