@@ -8,11 +8,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV3;
 
-public class CommandsV3 extends CommandAbstract {
+public class CommandsV4 extends CommandAbstract {
 
 
     @Override
@@ -20,11 +18,11 @@ public class CommandsV3 extends CommandAbstract {
 
     }
 
-    public CommandsV3(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV3 shooter, Arm arm) {
+    public CommandsV4(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV3 shooter, Arm arm) {
         super(hardwareMap, initialPose, intake, feeder, light, shooter, arm);
     }
 
-    public CommandsV3(HardwareMap hardwareMap, Pose2d initialPose){
+    public CommandsV4(HardwareMap hardwareMap, Pose2d initialPose){
         super(hardwareMap, initialPose);
 
         Intake intake = new Intake(hardwareMap);

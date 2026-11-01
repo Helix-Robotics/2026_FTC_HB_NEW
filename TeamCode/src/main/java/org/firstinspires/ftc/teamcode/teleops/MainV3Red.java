@@ -3,16 +3,9 @@ package org.firstinspires.ftc.teamcode.teleops;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
-import org.firstinspires.ftc.teamcode.commands.CommandsV3;
-import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
+import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 
 import java.util.List;
 
@@ -26,7 +19,7 @@ public class MainV3Red extends MainV2Red {
 
     @Override
     public void init() {
-        robot = new CommandsV3(hardwareMap, new Pose2d(0, 0, 0));
+        robot = new CommandsV4(hardwareMap, new Pose2d(0, 0, 0));
 
         robot.drivetrain.setSlowMode(false);
 
