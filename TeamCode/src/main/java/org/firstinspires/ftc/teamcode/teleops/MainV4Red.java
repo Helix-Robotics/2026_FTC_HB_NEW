@@ -149,7 +149,7 @@ public class MainV4Red extends MainV3Red {
 
             boolean leftShotRequested = gamepad2.left_trigger > 0.75;
             boolean rightShotRequested = gamepad2.right_trigger > 0.75;
-            robot.shoot(leftShotRequested || rightShotRequested, 5, leftShotRequested);
+            robot.shoot(leftShotRequested || rightShotRequested, 4, leftShotRequested);
 
 
 
