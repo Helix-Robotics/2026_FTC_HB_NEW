@@ -15,7 +15,7 @@ import java.util.List;
 
 
 //@TeleOp(name = "Drive Test 1 Controller")
-public class TestDrive extends MainV1Red {
+public class TestDrive extends MainV2Red {
 
     Intake intake;
     boolean intaking = false;

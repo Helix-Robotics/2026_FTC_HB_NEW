@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import java.util.List;
 
-//@TeleOp(name = "Main V0 Blue (Don't Use!!!)")
-public class MainV0Blue extends MainV0Red{
+//@TeleOp(name = "V4 Blue Teleop")
+public class MainV4Blue extends MainV4Red {
 
     @Override
     public List<Double> bindDriveTrain(){
