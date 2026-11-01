@@ -20,7 +20,7 @@ public class FeederV2 extends Feeder{
 
     public Light light;
     public Intake intake;
-    public ShooterV2 shooter;
+    public ShooterV3 shooter;
 
     private long count = 0;
     private int breakCycles;
@@ -143,7 +143,7 @@ public class FeederV2 extends Feeder{
         openGate();
     }
 
-    public void setShooter(ShooterV2 shooter) {
+    public void setShooter(ShooterV3 shooter) {
         this.shooter = shooter;
     }
 

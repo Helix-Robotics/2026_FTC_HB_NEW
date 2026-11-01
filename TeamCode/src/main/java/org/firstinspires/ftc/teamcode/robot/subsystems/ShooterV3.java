@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
-public class ShooterV2 extends ShooterAbstract {
+public class ShooterV3 extends ShooterAbstract {
 
     public static double V2_SHOOTER_P = 25.0;
     public static double V2_SHOOTER_I = 0.0;
@@ -32,7 +32,7 @@ public class ShooterV2 extends ShooterAbstract {
 
     public static double shoot_time_ms = 500;
 
-    public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
+    public ShooterV3(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
     }

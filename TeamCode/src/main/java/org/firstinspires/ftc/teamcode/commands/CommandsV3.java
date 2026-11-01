@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV3;
 
 public class CommandsV3 extends CommandAbstract {
 
@@ -18,7 +18,7 @@ public class CommandsV3 extends CommandAbstract {
 
     }
 
-    public CommandsV3(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV2 shooter, Arm arm) {
+    public CommandsV3(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV3 shooter, Arm arm) {
         super(hardwareMap, initialPose, intake, feeder, light, shooter, arm);
     }
 
@@ -28,7 +28,7 @@ public class CommandsV3 extends CommandAbstract {
         Intake intake = new Intake(hardwareMap);
         FeederV2 feeder = new FeederV2(hardwareMap, intake);
         Light light = intake.light;
-        ShooterV2 shooter = new ShooterV2(hardwareMap, feeder, intake, light);
+        ShooterV3 shooter = new ShooterV3(hardwareMap, feeder, intake, light);
         Arm arm = new Arm(hardwareMap);
 
         this.setIntake(intake);
