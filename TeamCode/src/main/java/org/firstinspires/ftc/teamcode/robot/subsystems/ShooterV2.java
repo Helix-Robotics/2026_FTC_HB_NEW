@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
-public class Shooter extends ShooterAbstract {
+public class ShooterV2 extends ShooterAbstract {
 
     public static double TARGET_VELOCITY = -1250.0;
     public static double MIN_VELOCITY = -1200.0;
@@ -17,7 +17,7 @@ public class Shooter extends ShooterAbstract {
     public static int READY_CYCLES = 2;
     public static int FEED_DELAY_CYCLES = 0;
 
-    public Shooter(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
+    public ShooterV2(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
     }
 
