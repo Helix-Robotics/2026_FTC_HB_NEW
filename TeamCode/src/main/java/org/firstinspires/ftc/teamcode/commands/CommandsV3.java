@@ -29,7 +29,7 @@ public class CommandsV3 extends CommandAbstract {
 
         Intake intake = new Intake(hardwareMap);
         FeederV2 feeder = new FeederV2(hardwareMap, intake);
-        Light light = new Light(hardwareMap);
+        Light light = intake.light;
         ShooterV3 shooter = new ShooterV3(hardwareMap, feeder, intake, light);
         Arm arm = new Arm(hardwareMap);
 

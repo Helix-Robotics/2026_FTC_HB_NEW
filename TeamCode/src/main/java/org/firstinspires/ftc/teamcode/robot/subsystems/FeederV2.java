@@ -61,7 +61,7 @@ public class FeederV2 extends Feeder{
                 DigitalChannel.class, "breakbeamend");
         breakBeamEnd.setMode(DigitalChannel.Mode.INPUT);
 
-        light = new Light(hw);
+        light = intake.light;
 
         motorFeeder = hw.get(DcMotorEx.class, "feeder");
         motorFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
