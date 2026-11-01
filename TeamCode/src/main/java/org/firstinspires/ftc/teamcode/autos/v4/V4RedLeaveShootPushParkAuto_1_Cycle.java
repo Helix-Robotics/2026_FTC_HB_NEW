@@ -11,19 +11,17 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = " IRL Tested 10/10 V4 Blue Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
-public class V3BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
+//@Autonomous(name = " IRL TESTING 10/10  V4 Red Leave Shoot Push Park Auto 1 Cycle", group = "Autonomous")
+public class V4RedLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
 
@@ -31,9 +29,9 @@ public class V3BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(
-                59.799,
-                -13.6,
-                Math.toRadians(0)
+                -59.799,
+                13.6,
+                Math.toRadians(179)
         );
 
         robot = new CommandsV3(hardwareMap, initialPose);
@@ -45,40 +43,40 @@ public class V3BlueLeaveShootPushParkAuto_1_Cycle extends LinearOpMode {
 
         TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
                 .strafeToLinearHeading(
-                        new Vector2d(45.299, -13.6),
-                        Math.toRadians(0)
+                        new Vector2d(-45.299, 13.6),
+                        Math.toRadians(179)
                 )
                 .strafeToLinearHeading(
-                        new Vector2d(59.969, -61.6),
-                        Math.toRadians(-90)
+                        new Vector2d(-59.969, 61.6),
+                        Math.toRadians(90)
                 );
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToLinearHeading(
-                        new Vector2d(30.969, -40),
-                        Math.toRadians(-90)
+                        new Vector2d(-30.969, 40),
+                        Math.toRadians(90)
                 );
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(4.5, -61.6),
-                        Math.toRadians(0)
+                        new Vector2d(-4.5, 59),
+                        Math.toRadians(179)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(-7.701, -61.6)
+                        new Vector2d(7.701, 59)
                 )
                 .waitSeconds(0.1)
                 .strafeToConstantHeading(
-                        new Vector2d(3, -36.6)
+                        new Vector2d(-3, 36.6)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(-45.201, -36.6)
+                        new Vector2d(45.201, 36.6)
                 )
                 .strafeToConstantHeading(
-                        new Vector2d(-45.201, -53.6)
+                        new Vector2d(45.201, 53.6)
                 );
 
 

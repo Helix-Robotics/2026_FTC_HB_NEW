@@ -11,28 +11,26 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = " IRL WORKS 10/10 V4 Blue Leave and Park Far Auto", group = "Autonomous")
-public class V3BlueLeaveParkFarAuto extends LinearOpMode {
+//@Autonomous(name = "IRL WORKED 10/10 V4 Red Leave and Park Far Auto", group = "Autonomous")
+public class V4RedLeaveParkFarAuto extends LinearOpMode {
 
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(38, -60.25, Math.toRadians(90.0));
+        Pose2d initialPose = new Pose2d(-36, 60.25, Math.toRadians(-90.0));
 
         robot = new CommandsV3(hardwareMap, initialPose);
-        robot.setIsBlue(false);
+        robot.setIsBlue(true);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
@@ -44,8 +42,8 @@ public class V3BlueLeaveParkFarAuto extends LinearOpMode {
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
-                .strafeToConstantHeading(new Vector2d(38, -45.0))
-                .strafeToLinearHeading(new Vector2d(-28.4, -55.25), Math.toRadians(0));
+                .strafeToConstantHeading(new Vector2d(-36, 45.0))
+                .strafeToLinearHeading(new Vector2d(28.4, 55.25), Math.toRadians(0));
 
 
 

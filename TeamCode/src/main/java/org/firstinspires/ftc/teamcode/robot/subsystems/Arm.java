@@ -178,7 +178,7 @@ public class Arm {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            arm.setPosition(0.2);
+            arm.setPosition(0.067);
             return false;
         }
 
@@ -195,7 +195,7 @@ public class Arm {
         // actions are formatted via telemetry packets as below
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            arm.setPosition(0.6);
+            arm.setPosition(0.99);
             return false;
         }
 

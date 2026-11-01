@@ -1,4 +1,5 @@
-//Worked On Scrimmage
+//Tested with MeepMeep
+
 
 package org.firstinspires.ftc.teamcode.autos.v4;
 
@@ -10,24 +11,23 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "IRL WORKED 10/10 V4 Blue Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class V3BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
+//@Autonomous(name = " IRL WORKS 10/10 V4 Blue Leave and Park Far Auto", group = "Autonomous")
+public class V4BlueLeaveParkFarAuto extends LinearOpMode {
+
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(179.0));
+        Pose2d initialPose = new Pose2d(38, -60.25, Math.toRadians(90.0));
 
         robot = new CommandsV3(hardwareMap, initialPose);
         robot.setIsBlue(false);
@@ -40,9 +40,12 @@ public class V3BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
 
 
-        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
-                .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0));
+        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+                //.strafeToLinearHeading(new Vector2d(3.0, 0.0), Math.toRadians(-18.0))
+                .strafeToConstantHeading(new Vector2d(38, -45.0))
+                .strafeToLinearHeading(new Vector2d(-28.4, -55.25), Math.toRadians(0));
+
+
 
 
 
@@ -68,83 +71,47 @@ public class V3BlueLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
-        Action trajectoryActionChosen2 = tab2.build();
-
-
+        Action trajectoryActionChosen = tab1.build();
 
 
         runActionSafely(
                 new SequentialAction(
-                        robot.vision.checkForBlueSideTag(),
-                        robot.shooter.launchAction(),
-                        trajectoryActionChosen2
-                        //robot.intake.spinUpIntake()
+                        trajectoryActionChosen
 
-
-                        // if there is 25s left in the auto, just make a thing to make it park
-
-
-
-
-
-
-
-                ), 29.5, 27.0);
+                ), 30.0);
 
 
 
     }
 
-    private void runActionSafely(Action action, double timeoutSeconds, double goHome) {
+    private void runActionSafely(Action action, double timeoutSeconds) {
         ElapsedTime timer = new ElapsedTime();
         TelemetryPacket packet = new TelemetryPacket();
-        boolean goingHome = false;
+
+        timer.reset();
 
         while (opModeIsActive() && timer.seconds() < timeoutSeconds) {
+            boolean stillRunning = action.run(packet);
 
-            if (!goingHome && timer.seconds() > goHome) {
-                goingHome = true;
-
-                robot.stopshoot();
-
-                robot.intake.stop();
-
-                MecanumDrive md = robot.drivetrain;
-                Localizer localizer = md.getLocalizer();
-                localizer.update();
-
-                action = robot.drivetrain
-                        .actionBuilder(localizer.getPose())
-                        .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
-                        .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0))
-                        .build();
-            }
-
-            if (!action.run(packet)) {
+            if (!stillRunning) {
                 break;
             }
 
-
+            telemetry.addData("RoadRunner", "Running");
             telemetry.addData("Time", timer.seconds());
             telemetry.update();
+
             idle();
         }
 
-
-
-
-
-        robot.stopshoot();
-        robot.setPower(0);
-        robot.intake.stop();
-
+        // Final safety stop
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(
                         new Vector2d(0, 0),
                         0
                 )
         );
+
     }
 
 }

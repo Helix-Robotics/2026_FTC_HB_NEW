@@ -1,5 +1,4 @@
-//Worked On Scrimmage  // needs to be quicker to get last cycle
-
+//Tested with MeepMeep
 
 package org.firstinspires.ftc.teamcode.autos.v4;
 
@@ -12,19 +11,17 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "IRL Tested MIGHT NEED TO REDUCE TIME V4 Red Leave Shoot Push Park Auto 2 Cycles", group = "Autonomous")
-public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
+//@Autonomous(name = "IRL TESTED GOOD  V4 Blue Leave Shoot Park Auto 2 Cycles", group = "Autonomous")
+public class V4BlueLeaveShootParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;
 
@@ -32,75 +29,75 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(
-                -60,
-                14.75,
-                Math.toRadians(179)
+                60,
+                -14.75,
+                Math.toRadians(0)
         );
 
         robot = new CommandsV3(hardwareMap, initialPose);
-        robot.setIsBlue(true);
+        robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+
+        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
                 .strafeToConstantHeading(
-                        new Vector2d(-59.0, 14.75)
-                );
-
-
-        TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(
-                        new Vector2d(-45.5, 14.75),
-                        Math.toRadians(179)
+                        new Vector2d(59.0, -14.75)
                 )
+
                 .strafeToLinearHeading(
-                        new Vector2d(-58.5, 62.25),
-                        Math.toRadians(90.0)
+                        new Vector2d(45.5, -14.75),
+                        Math.toRadians(0)
+                )
+
+                .strafeToLinearHeading(
+                        new Vector2d(60.5, -60.25),
+                        Math.toRadians(-90.0)
                 );
+
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .waitSeconds(0.25)
                 .strafeToLinearHeading(
-                        new Vector2d(-55.17, 45.25),
-                        Math.toRadians(90.0)
-                )
-                .strafeToConstantHeading(
-                        new Vector2d(-32.5, 45.25)
+                        new Vector2d(55.17, -45.25),
+                        Math.toRadians(-90.0)
                 );
+
+
+
 
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
                 .strafeToLinearHeading(
-                        new Vector2d(-4.5, 60),
+                        new Vector2d(-37, -40),  // -62.5   -8
                         Math.toRadians(179)
                 )
+
+
                 .strafeToConstantHeading(
-                        new Vector2d(4.5, 60)
-                ) // push
+                        new Vector2d(-51.5, -8)
+                ) // middle\
+
                 .strafeToConstantHeading(
-                        new Vector2d(-5.5, 34.25)
-                ) // out
-                .strafeToConstantHeading(
-                        new Vector2d(42.0, 35.25)
-                ) // middle
-                .strafeToLinearHeading(
-                        new Vector2d(52.5, 8),
-                        Math.toRadians(0)
-                )
-                .strafeToConstantHeading(
-                        new Vector2d(62.5, 8)
-                );
+                        new Vector2d(-62.5, -8)
+                ); // middle
+
 
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
                 .strafeToConstantHeading(
-                        new Vector2d(50, 8)
-                )
+                        new Vector2d(-50, -8)
+                ) // middle
+
+
+
                 .strafeToLinearHeading(
-                        new Vector2d(47.5, 57.25),
-                        Math.toRadians(90.0)
+                        new Vector2d(-47.5, -57.25),
+                        Math.toRadians(-90.0)
                 );
+
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -122,7 +119,6 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
         if (isStopRequested()) return;
 
 
-        Action trajectoryActionChosen = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
@@ -131,8 +127,6 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
-
-                        trajectoryActionChosen,
 
                         robot.shooter.launchAction(),
 
@@ -144,24 +138,24 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
 
                         trajectoryActionChosen3,
 
-                        robot.intake.stopIntake(),
-                        robot.feeder.stopFeedAction(),
+                        new ParallelAction(
+                                robot.intake.stopIntake(),
+                                robot.feeder.stopFeedAction()
+                        ),
+
 
                         trajectoryActionChosen4,
 
+                        robot.vision.checkForBlueSideTag(),
                         robot.feeder.startFeedAction(),
-
-                        robot.vision.checkForRedSideTag(),
-
                         robot.shooter.launchAction(),
-
-                        robot.feeder.stopFeedAction(),
-
                         trajectoryActionChosen5
+
+
 
                 ),
                 29.5,
-                25.5
+                26.0
         );
     }
 
@@ -183,6 +177,7 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                 goingHome = true;
 
                 robot.stopshoot();
+                robot.intake.stop();
 
                 MecanumDrive md = robot.drivetrain;
                 Localizer localizer = md.getLocalizer();
@@ -191,12 +186,16 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToConstantHeading(
-                                new Vector2d(50, 8)
-                        )
+                                new Vector2d(-50, -8)
+                        ) // middle
+
+
+
                         .strafeToLinearHeading(
-                                new Vector2d(47.5, 57.25),
-                                Math.toRadians(90.0)
+                                new Vector2d(-47.5, -57.25),
+                                Math.toRadians(-90.0)
                         )
+
                         .build();
             }
 
@@ -209,7 +208,10 @@ public class V3RedLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
             idle();
         }
 
+
         robot.stopshoot();
+        robot.setPower(0);
+        robot.intake.stop();
 
         robot.drivetrain.setDrivePowers(
                 new PoseVelocity2d(

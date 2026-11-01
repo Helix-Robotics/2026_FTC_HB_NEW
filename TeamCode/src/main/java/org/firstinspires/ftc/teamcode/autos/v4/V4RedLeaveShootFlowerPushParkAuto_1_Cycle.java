@@ -1,28 +1,27 @@
-//Worked On Scrimmage
+//IRL TESTED Flower collects 2-3 balls october 20
 
 package org.firstinspires.ftc.teamcode.autos.v4;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = " IRL WORKED 10/10 V4 Red Leave Shoot Park Passive Side Auto", group = "Autonomous")
-public class V3RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
+//@Autonomous(name = "IRL WORKED BUT NEED MORE TESTING V4 Red Leave Shoot Flower Push Park Auto 1 Cycle", group = "Autonomous")
+public class V4RedLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
 
@@ -30,9 +29,9 @@ public class V3RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
     public void runOpMode() {
 
         Pose2d initialPose = new Pose2d(
-                60,
-                9,
-                Math.toRadians(0)
+                -60,
+                14,
+                Math.toRadians(179)
         );
 
         robot = new CommandsV3(hardwareMap, initialPose);
@@ -41,17 +40,47 @@ public class V3RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+                .strafeToConstantHeading(new Vector2d(-59, 14));
 
-        TrajectoryActionBuilder tab2 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(
-                        new Vector2d(48, 9)
-                )
+        TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-35, 35), Math.toRadians(105));
 
+        TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-12, 56.8), Math.toRadians(105));
+
+
+        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+                .waitSeconds(1.5)
+                .strafeToConstantHeading(new Vector2d(-20, 45));
+
+
+        TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
 
                 .strafeToLinearHeading(
-                        new Vector2d(35.5, 59.0),
-                        Math.toRadians(90.0)
+                        new Vector2d(-4.5, 60),
+                        Math.toRadians(179)
                 );
+
+        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
+                .strafeToConstantHeading(
+                        new Vector2d(4.5, 60)
+                ) // push
+                .strafeToConstantHeading(
+                        new Vector2d(-5.5, 35)
+                ) // out
+
+                .strafeToConstantHeading(
+                        new Vector2d(-3, 35)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 35)
+                )
+                .strafeToConstantHeading(
+                        new Vector2d(45.201, 53.6)
+                );
+
+
 
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -72,21 +101,51 @@ public class V3RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
+        Action trajectoryActionChosen1 = tab1.build();
+        Action trajectoryActionChosen1_2 = tab1_2.build();
         Action trajectoryActionChosen2 = tab2.build();
+        Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen4 = tab4.build();
+        Action trajectoryActionChosen5 = tab5.build();
 
 
         runActionSafely(
                 new SequentialAction(
-
-                        robot.vision.checkForRedSideTag(),
+                        trajectoryActionChosen1,
                         robot.shooter.launchAction(),
-                        trajectoryActionChosen2
 
-                        // robot.intake.spinUpIntake()
+                        trajectoryActionChosen1_2,
 
-                        // if there is 25s left in the auto,
-                        // just make a thing to make it park
+
+//
+                        new ParallelAction(
+
+                                trajectoryActionChosen2,
+                                robot.arm.armDownAction(),
+                                robot.intake.spinUpIntake()
+                        ),
+
+
+
+
+                        //arm down sequence
+
+                        new ParallelAction(
+
+                                trajectoryActionChosen3,
+                                robot.arm.armUpAction(),
+
+                                robot.feeder.stopFeedAction()
+                        ),
+                        trajectoryActionChosen4,
+                        robot.arm.armUpAction(),
+                        robot.intake.stopIntake(),
+
+
+
+
+
+                        trajectoryActionChosen5
 
                 ),
                 29.5,
@@ -121,13 +180,10 @@ public class V3RedLeaveShootParkPassiveSideAuto extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToConstantHeading(
-                                new Vector2d(48, 9)
+                                new Vector2d(45.201, 35)
                         )
-
-
-                        .strafeToLinearHeading(
-                                new Vector2d(35.5, 59.0),
-                                Math.toRadians(90.0)
+                        .strafeToConstantHeading(
+                                new Vector2d(45.201, 53.6)
                         )
                         .build();
             }
