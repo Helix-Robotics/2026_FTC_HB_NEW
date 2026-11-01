@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
-public class ShooterV3 extends ShooterAbstract {
+public class ShooterV4 extends ShooterAbstract {
 
     public static double V3_SHOOTER_P = 25.45;
     public static double V3_SHOOTER_I = 0.0;
@@ -30,7 +30,7 @@ public class ShooterV3 extends ShooterAbstract {
     public static boolean isV3 = false;
     
 
-    public ShooterV3(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
+    public ShooterV4(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
         shooter.setDirection(DcMotorSimple.Direction.FORWARD);
     }
