@@ -31,7 +31,7 @@ public abstract class ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static double shoot_time_ms = 700;
+    public static double shoot_time_ms = 500; //700 3
 
     protected double targetVelocity;
     protected double minVelocity;

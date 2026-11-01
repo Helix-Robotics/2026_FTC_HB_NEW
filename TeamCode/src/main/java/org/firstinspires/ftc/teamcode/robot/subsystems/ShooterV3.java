@@ -5,30 +5,32 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class ShooterV3 extends ShooterAbstract {
 
-    public static double V3_SHOOTER_P = 25.45;
-    public static double V3_SHOOTER_I = 0.0;
-    public static double V3_SHOOTER_D = 1.5;
-    public static double V3_SHOOTER_F = 14.12; //15.67;
+    public static double V2_SHOOTER_P = 25.0;
+    public static double V2_SHOOTER_I = 0.0;
+    public static double V2_SHOOTER_D = 1.25;
+    public static double V2_SHOOTER_F = 12.7; //15.67;
 
-    public static double V3_SHOOTER_P_FAR = 27.0;
-    public static double V3_SHOOTER_I_FAR = 0.0;
-    public static double V3_SHOOTER_D_FAR = 1.6;
-    public static double V3_SHOOTER_F_FAR = 14.16; //15.67;
+    public static double V2_SHOOTER_P_FAR = 26.5;
+    public static double V2_SHOOTER_I_FAR = 0.0;
+    public static double V2_SHOOTER_D_FAR = 1.5;
+    public static double V2_SHOOTER_F_FAR = 13.05; //15.67;
 
-    public static double V3_TARGET_VELOCITY = 1175.0; //  1160.0;
-    public static double V3_MIN_VELOCITY = 1125.0; // 1110.0;
+    public static double V2_TARGET_VELOCITY = 1175.0; //  1160.0;
+    public static double V2_MIN_VELOCITY = 1125.0; // 1110.0;
 
-    public static int V3_READY_CYCLES = 5; //2
-    public static int V3_FEED_DELAY_CYCLES = 0;
+    public static int V2_READY_CYCLES = 5; //2
+    public static int V2_FEED_DELAY_CYCLES = 0;
 
-    public static boolean isV3 = false;
-    
+    public static boolean isV3 = true;
+
+    public static double shoot_time_ms = 500;
 
     public ShooterV3(HardwareMap hw, Feeder feeder, Intake intake, Light light) {
         super(hw, feeder, intake, light);
@@ -38,31 +40,34 @@ public class ShooterV3 extends ShooterAbstract {
     @Override
     protected boolean usesV3Alignment() {
         return isV3;
+
+
+
     }
 
     @Override
     public void updateShooterPID() {
-        setShooterPID(V3_SHOOTER_P, V3_SHOOTER_I, V3_SHOOTER_D, V3_SHOOTER_F);
+        setShooterPID(V2_SHOOTER_P, V2_SHOOTER_I, V2_SHOOTER_D, V2_SHOOTER_F);
     }
 
     @Override
     public void updateShooterPIDFar() {
-        setShooterPID(V3_SHOOTER_P_FAR, V3_SHOOTER_I_FAR, V3_SHOOTER_D_FAR, V3_SHOOTER_F_FAR);
+        setShooterPID(V2_SHOOTER_P_FAR, V2_SHOOTER_I_FAR, V2_SHOOTER_D_FAR, V2_SHOOTER_F_FAR);
     }
 
     @Override
     public void setShooterVelocity() {
-        this.targetVelocity = V3_TARGET_VELOCITY;
-        this.minVelocity = V3_MIN_VELOCITY;
+        this.targetVelocity = V2_TARGET_VELOCITY;
+        this.minVelocity = V2_MIN_VELOCITY;
     }
 
     @Override
     public void setCycles(){
-        readyCycles = V3_READY_CYCLES;
-        feedDelayCycles = V3_FEED_DELAY_CYCLES;
+        readyCycles = V2_READY_CYCLES;
+        feedDelayCycles = V2_FEED_DELAY_CYCLES;
     }
 
-
+ 
 
     @Override
     public boolean isReady() {
@@ -77,7 +82,7 @@ public class ShooterV3 extends ShooterAbstract {
         return isReadyVal;
     }
 
-    private class LaunchV3 implements Action {
+    private class LaunchV2 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
@@ -95,6 +100,107 @@ public class ShooterV3 extends ShooterAbstract {
 
     @Override
     public Action launchAction() {
-        return new LaunchV3();
+        return new LaunchV2();
+    }
+
+    private boolean isStorageEmpty() {
+        return ((FeederV2) feeder).getStorageState()
+                == FeederV2.StorageState.EMPTY;
+    }
+
+    public void stopShooter() {
+        shooter.setVelocity(0);
+        readyCount = 0;
+        feedDelayCount = 0;
+        feeder.closeGate();
+        launchState = LaunchState.IDLE;
+    }
+    @Override
+    public void sensorShoot(boolean shotRequested, int shot_count) {
+
+//        // stop shooting if feeder empt
+//        if (isStorageEmpty()) {
+//            if (launchState != LaunchState.IDLE) {
+//                stop();
+//            } else {
+//                feeder.stopfeed();
+//            }
+//
+//            light.green();
+//            return;
+//        }
+
+//        if (launchState != LaunchState.IDLE) {
+//            light.yellow();
+//        }
+
+        switch (launchState) {
+
+            case IDLE:
+                if (shotRequested) {
+                    updateShooterPID();
+
+                    shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    shooter.setVelocity(targetVelocity);
+
+                    feeder.stopfeed();
+
+                    readyCount = 0;
+                    feedDelayCount = 0;
+
+
+                    launchState = LaunchState.SPIN_UP;
+                }
+                break;
+
+            case SPIN_UP:
+            case FEEDING_WAIT:
+                shooter.setVelocity(targetVelocity);
+
+                if (isReady()) {
+                    if (readyCount < readyCycles) {
+                        readyCount++;
+                        feedDelayCount = 0;
+                    } else {
+                        launchState = LaunchState.FEEDING_WAIT;
+                        feedDelayCount++;
+                    }
+
+                    if (readyCount >= readyCycles
+                            && feedDelayCount >= feedDelayCycles) {
+                        launchState = LaunchState.LAUNCH;
+                    }
+                } else {
+                    readyCount = 0;
+                    feedDelayCount = 0;
+                }
+                break;
+
+            case LAUNCH:
+                shooter.setVelocity(targetVelocity);
+                feeder.slowfeed();
+
+                shootTimer.reset();
+                feederTimer.reset();
+
+
+                launchState = LaunchState.LAUNCHING;
+                break;
+
+            case LAUNCHING:
+                shooter.setVelocity(targetVelocity);
+
+                if (shootTimer.milliseconds() >= shot_count * shoot_time_ms) {
+                    feeder.stopfeed();
+
+//                    shooter.setVelocity(
+//                            hold ? targetVelocity / 1.67 : 0
+//                    );
+
+                    launchState = LaunchState.IDLE;
+                    light.blue();
+                }
+                break;
+        }
     }
 }

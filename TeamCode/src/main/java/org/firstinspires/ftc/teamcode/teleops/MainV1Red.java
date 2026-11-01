@@ -1,204 +1,257 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import static org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation.localizer;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 
+import java.util.ArrayList;
 import java.util.List;
 
+//@TeleOp(name = "Main V0 Red (Don't Use!!!)")
+public class MainV1Red extends OpMode {
 
-//@TeleOp(name = "V1 Red Teleop")
-public class MainV1Red extends MainV0Red {
+    enum StateMachine {
+        WAITING_FOR_START,
+        AT_TARGET,
+        DRIVE_TO_TARGET_1,
+    }
 
-    Intake intake;
-    boolean intaking = false;
+    StateMachine stateMachine ;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
-    boolean outtaking = false;
-    public double intakePower = 0;
+    static final Pose2D TARGET_1 = new Pose2D(DistanceUnit.MM,0,0,AngleUnit.DEGREES,0);
 
+    protected CommandAbstract robot;
 
+    double gyroRadians = 0;
 
-
-  
     @Override
     public void init() {
         // tune inPerTick for ur drivetrain encoders
-        robot = new CommandsV1(hardwareMap, new Pose2d(0, 0, 0));
-        stateMachine = StateMachine.WAITING_FOR_START;
-        robot.pink();
 
+        //robot = new CommandsV0(hardwareMap, new Pose2d(0, 0, 0));
+        //stateMachine = StateMachine.WAITING_FOR_START;
+    }
+
+    public void bindCommonDriveTrain(){
+        if (gamepad1.a) {
+            robot.drivetrain.resetImu();
+        }
+
+        /*if (gamepad1.b) {
+            robot.turnToTag();
+        }*/
+
+        //if(gamepad1.x){
+            //robot.drivetrain.setSlowMode(true);
+        //}
+
+        //if(gamepad1.y){
+            //robot.drivetrain.setSlowMode(false);
+        //}
+    }
+
+    /**Change this function for your different main function**/
+    public List<Double> bindDriveTrain(){
+        return bindRedDriveTrain();
+    }
+
+    public List<Double> bindRedDriveTrain(){
+        double forward = gamepad1.left_stick_x;
+        double right = gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+
+        List<Double> doubleList = new ArrayList<>();
+
+        // Add Double values to the list
+        doubleList.add(forward);
+        doubleList.add(right);
+        doubleList.add(turn);
+
+        robot.setIsBlue(false);
+
+        // Return the populated list
+        return doubleList;
+    }
+    public List<Double> bindBlueDriveTrain(){
+        double forward = -gamepad1.left_stick_x;
+        double right = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+
+        List<Double> doubleList = new ArrayList<>();
+
+        // Add Double values to the list
+        doubleList.add(forward);
+        doubleList.add(right);
+        doubleList.add(turn);
+
+        robot.setIsBlue(true);
+
+        // Return the populated list
+        return doubleList;
+
+    }
+    public void bindShooter(){
+        // shooter spin
+        // Hold speed when trigger   is held
+        //We should not do the spin
+        /*if (gamepad2.right_trigger > 0.2){
+            robot.shooter.setHold(true);
+        }else if (gamepad2.left_trigger > 0.2){
+            robot.shooter.setHold(false);
+        }*/
+
+        /**
+        if (gamepad2.right_trigger > 0.2){
+            robot.shooter.setBurstShotsRequested(2);
+        }else if (gamepad2.left_trigger > 0.2){
+            robot.shooter.setBurstShotsRequested(1);
+        } **/
+
+        /**
+        if (gamepad2.y){
+            robot.shooter.setHold(true);
+            robot.shooter.spinUpShooter(1180);
+        }
+         **/
+
+        /**if (gamepad2.right_bumper){
+            robot.shooter.setBurstShotsRequested(3);
+            //robot.shooter.setHold(true);
+            //robot.shooter.spinUpShooter();
+        } else if (gamepad2.left_bumper){
+            robot.shooter.setHold(false);
+            robot.shooter.stopShooter();
+        } **/
+
+        /**
+        if (gamepad2.aWasPressed()) {
+            robot.shooter.maxSpeed();
+        }
+
+        if (gamepad2.bWasPressed()) {
+            robot.shooter.maxNegativeSpeed();
+        }
+         **/
+
+        // Single-shot request on bumper press
+        //robot.launch(gamepad1.rightBumperWasPressed());
+
+        // Always update the shooter state machine each loop
+
+
+        //if (gamepad2.xWasPressed()) {robot.shooter.updateShooterPID();}
+    }
+
+    public void bindHood(){
+
+        //if (gamepad1.dpad_down) {robot.stowHood();}
+        //if (gamepad1.dpad_left) {robot.setHoodPIDF();}
     }
 
     @Override
     public void loop() {
         // keep subsystems updated
         robot.update();
-        robot.intake.update();
 
         /** Driver Operations **/
         // drivetrain
         bindCommonDriveTrain();
         List<Double> driveValues = bindDriveTrain();
 
-        //binding
         /**Above is only for testing**/
         robot.fieldRelativeDrive(driveValues.get(1), driveValues.get(0), driveValues.get(2));
 
-        ElapsedTime timer = new ElapsedTime();
+        bindShooter();
 
-        /** Bind Drivetrain **/
-        //binding Drive train
-        if (gamepad1.aWasPressed()) {
-            bindCommonDriveTrain();
-        }
+        /**Testing for Driver Train**/
+        /**We disable b binding**/
+        /*
+        switch (stateMachine) {
+            case WAITING_FOR_START:
+                if (gamepad1.b){
+                    stateMachine = StateMachine.DRIVE_TO_TARGET_1;
+                }
+                break;
 
-        /** Intake Related **/
-//        if (gamepad2.rightBumperWasPressed())
-//        {
-//            if (!outtaking)
-//            {
-//                intaking = false;
-//                outtaking = true;
-//                robot.intake.in();
-//                robot.feeder.slowfeed();
-//            }
-//            else
-//            {
-//                outtaking = false;
-//                robot.intake.stop();
-//                robot.feeder.stopfeed();
-//            }
-//        }
-//        if (gamepad2.leftBumperWasPressed()) {
-//            if (!intaking) {
-//                intaking = true;
-//                outtaking = false;
-//                robot.intake.out();
-//                robot.feeder.reverseFeed();
-//            } else {
-//                intaking = false;
-//                robot.intake.stop();
-//                robot.feeder.stopfeed();
-//            }
-//        }
+            case DRIVE_TO_TARGET_1:
+                Pose2D pose2D = robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getPosition();
+                if(robot.drivetrain.driveTo(pose2D, TARGET_1, 0.7, 0)){
+                    telemetry.addLine("At Position 1 - ZERO");
+                    stateMachine = StateMachine.AT_TARGET;
+                }
+                break;
 
-        /** Shooting Related **/
-        if (gamepad2.right_trigger > 0.5) {
-            robot.shoot(true, 5, false);
-        }
-        else {
-            robot.stopshoot();
-        }
+            case AT_TARGET:
+                telemetry.addData("Finish Position:", robot.getPodPose());
+                break;
 
-        if (gamepad1.xWasPressed()) {
-            robot.upArm();
-        }
-
-        if (gamepad1.yWasPressed()) {
-            robot.downArm();
-        }
+        }*/
+        /**End of testing**/
 
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
         FtcDashboard dashboard = FtcDashboard.getInstance();
 
-        telemetryEssentials(telemetry, packet);
-        telemetryIntake(telemetry, packet);
-        telemetryFeeder(telemetry, packet);
-        telemetryShooter(telemetry, packet);
-        telementryRoadRunner(telemetry, packet);
-
-
+        //extraTelemtry(telemetry);
+        /** End of Shooter Information **/
+        //telemetryShooting(telemetry, packet);
+        telemetryHood(telemetry, packet, 0, 0, 0);
 
         /**Start of Drive Train Information **/
-        //telemetryDrivetrain(telemetry, packet);
+        telemetryDrivetrain(telemetry, packet);
         /**End of Drive Train Information**/
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
     }
 
-
-    public  void telemetryEssentials(Telemetry telemetry, TelemetryPacket packet){
-
+    protected void telemetryHood(Telemetry telemtry, TelemetryPacket packet, double distance, double hoodTarget, double rpmTarget){
+        //do nothing for v0
     }
 
-    public void telemetryIntake(Telemetry telemetry, TelemetryPacket packet) {
-        double intakePower = robot.intake.getPower();
-        telemetry.addData("Intake Power", intakePower);
-        packet.put("Intake Power", intakePower);
-    }
-
-    public void telemetryFeeder(Telemetry telemetry, TelemetryPacket packet) {
-        double feederPower = robot.feeder.getPower();
-        telemetry.addData("Feeder Power", feederPower);
-        packet.put("Feeder Power", feederPower);
-    }
-
-    public void telemetryShooter(Telemetry telemetry, TelemetryPacket packet) {
-        double shootvel = robot.shooter.getGetVelocity();
-        telemetry.addData("Shooter Velocity", shootvel);
-        packet.put("Shooter Velocity", shootvel);
-
-        double svel = robot.shooter.getVelocity();
-        telemetry.addData("Shooter Velocity 2", svel);
-        packet.put("Shooter Velocity 2", svel);
-
-        ShooterAbstract.LaunchState state = robot.shooter.getLaunchState();
-        telemetry.addData("Shooter State", state);
-        packet.put("Shooter State", state);
 
 
-        int readyCount = robot.shooter.getReadyCount();
-        telemetry.addData("Shooter Ready Count", readyCount);
-        packet.put("Shooter Ready Count", readyCount);
 
-        int feedDelayCount = robot.shooter.getFeedDelayCount();
-        telemetry.addData("Shooter Feed Count", feedDelayCount);
-        packet.put("Shooter Feed Count", feedDelayCount);
+    public void telemetryDrivetrain(Telemetry telemtry, TelemetryPacket packet){
+        telemetry.addData("FR Power", robot.getFRPower());
+        packet.put("FR Power", robot.getFRPower());
+        telemetry.addData("FL Power", robot.getFLPower());
+        packet.put("FL Power", robot.getFLPower());
+        telemetry.addData("BR Power", robot.getBRPower());
+        packet.put("BR Power", robot.getBRPower());
+        telemetry.addData("BL Power", robot.getBLPower());
+        packet.put("BL Power", robot.getBLPower());
+        telemetry.addData("GyroAngle(radians)", robot.drivetrain.getGyroRadians());
+        Pose2d pPose = robot.getPodPose();
+        //please note for the pod, x in the direction of robt, y in the direction of per to robot
+        //telemetry.addData("Robot Pod POS", pPose.toString());
+        telemetry.addData("Robot Pos X (mm):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getPosX(DistanceUnit.MM));
+        telemetry.addData("Robot Pos Y (mm):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getPosY(DistanceUnit.MM));
+        telemetry.addData("Robot Heading (degrees):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getHeading(AngleUnit.DEGREES));
 
-        double minVelocity = robot.shooter.getMinVelocity();
-        telemetry.addData("Shooter Min V", minVelocity);
-        packet.put("Shooter Min V", minVelocity);
+        //packet.put("Robot Pod POS", pPose.toString());
+        packet.put("Robot Pos X (mm):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getPosX(DistanceUnit.MM));
+        packet.put("Robot Pos Y (mm):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getPosY(DistanceUnit.MM));
+        packet.put("Robot Heading (degrees):", robot.drivetrain.getHelixLocalizer().getLocalizer().driver.getHeading(AngleUnit.DEGREES));
 
-        double targetVelocity = robot.shooter.getTargetVelocity();
-        telemetry.addData("Shooter Target V", targetVelocity);
-        packet.put("Shooter Target V", targetVelocity);
-
-        //boolean isReadyVal = robot.shooter.isReady();
-        //telemetry.addData("Shooter Ready", isReadyVal);
-        //packet.put("Shooter Ready", isReadyVal);
-
-    }
-
-    public void telementryRoadRunner(Telemetry telemetry, TelemetryPacket packet) {
-        Pose2d pose = localizer.getPose();
-
-        telemetry.addData("Robot X inch", pose.position.x);
-        packet.put("Robot X inch", pose.position.x);
-
-        telemetry.addData("Robot Y inches", pose.position.y);
-        packet.put("Robot Y inches", pose.position.y);
-
-        int ticksX = localizer.driver.getEncoderX();
-        int ticksY = localizer.driver.getEncoderY();
-        telemetry.addData("Robot X ticks", ticksX);
-        packet.put("Robot X ticks", ticksX);
-        telemetry.addData("Robot Y ticks", ticksY);
-        packet.put("Robot Y ticks", ticksY);
-
-        double headingDegrees = Math.toDegrees(pose.heading.toDouble());
-
-        telemetry.addData("Heading", headingDegrees);
-        packet.put("Heading", headingDegrees);
+        telemetry.addData("Robot Slow Mode", robot.drivetrain.getSlowMode());
+        packet.put("Robot Slow Mode", robot.drivetrain.getSlowMode());
+        /*
+        Pose2d vPose = robot.getVisionPose();
+        if (vPose == null){
+            telemetry.addData("Robot Vision POS", "null");
+        } else {
+            telemetry.addData("Robot Vision POS", vPose.toString());
+        }
+        */
     }
 }

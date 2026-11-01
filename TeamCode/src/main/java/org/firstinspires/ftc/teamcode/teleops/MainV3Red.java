@@ -6,17 +6,12 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
 import java.util.List;
 
-//@TeleOp(name = "V4 Red Teleop")
+@TeleOp(name = "V3 Red Teleop")
 public class MainV3Red extends MainV2Red {
 
     private boolean slowMode = false;
@@ -142,7 +137,7 @@ public class MainV3Red extends MainV2Red {
             if (gamepad2.right_trigger > 0.5) {
 //
                 robot.shooter.updateShooterPID();
-                robot.shooter.rpmSet(1140.0);
+                robot.shooter.rpmSet(1160.0);
             }
 
 
@@ -151,12 +146,12 @@ public class MainV3Red extends MainV2Red {
                 robot.shooter.updateShooterPIDFar();
 
 
-                robot.shooter.rpmSet(1260.0);
+                robot.shooter.rpmSet(1240.0);
             }
 
             boolean leftShotRequested = gamepad2.left_trigger > 0.75;
             boolean rightShotRequested = gamepad2.right_trigger > 0.75;
-            robot.shoot(leftShotRequested || rightShotRequested, 5, leftShotRequested);
+            robot.shoot(leftShotRequested || rightShotRequested, 4, leftShotRequested);
 
 
 
@@ -237,6 +232,21 @@ public class MainV3Red extends MainV2Red {
         double gatePos = robot.feeder.getGatePos();
         telemetry.addData("Gate Pos", gatePos);
         packet.put("Gate Pos", gatePos);
+        FeederV2 feeder = (FeederV2) robot.feeder;
+
+        telemetry.addData("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        telemetry.addData("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        telemetry.addData("Storage State",
+                feeder.getStorageState());
+
+        packet.put("Start Beam Blocked",
+                !feeder.breakBeamStart.getState());
+        packet.put("End Beam Blocked",
+                !feeder.breakBeamEnd.getState());
+        packet.put("Storage State",
+                feeder.getStorageState());
     }
 
     public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){

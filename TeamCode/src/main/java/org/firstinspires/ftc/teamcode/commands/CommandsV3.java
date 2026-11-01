@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
 import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV3;
 
 public class CommandsV3 extends CommandAbstract {
@@ -38,6 +36,10 @@ public class CommandsV3 extends CommandAbstract {
         this.setLight(light);
         this.setShooter(shooter);
         this.setArm(arm);
+        feeder.setShooter(shooter);
 
+    }
+
+    public void feedOut() {
     }
 }

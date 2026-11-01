@@ -10,12 +10,11 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV2;
+import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
@@ -34,7 +33,7 @@ public class V2BlueLeaveShootPushParkAuto_2_Cycles extends LinearOpMode {
                 Math.toRadians(0)
         );
 
-        robot = new CommandsV2(hardwareMap, initialPose);
+        robot = new CommandsV3(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;

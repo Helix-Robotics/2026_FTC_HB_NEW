@@ -5,20 +5,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robot.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
-import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterV2;
 
+
 public class CommandsV2 extends CommandAbstract {
-
-
-    @Override
-    public void createShooterInstances() {
-
-    }
-
     public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, ShooterV2 shooter, Arm arm) {
         super(hardwareMap, initialPose, intake, feeder, light, shooter, arm);
     }
@@ -27,7 +19,7 @@ public class CommandsV2 extends CommandAbstract {
         super(hardwareMap, initialPose);
 
         Intake intake = new Intake(hardwareMap);
-        FeederV2 feeder = new FeederV2(hardwareMap, intake);
+        Feeder feeder = new Feeder(hardwareMap);
         Light light = intake.light;
         ShooterV2 shooter = new ShooterV2(hardwareMap, feeder, intake, light);
         Arm arm = new Arm(hardwareMap);
@@ -37,10 +29,14 @@ public class CommandsV2 extends CommandAbstract {
         this.setLight(light);
         this.setShooter(shooter);
         this.setArm(arm);
-        feeder.setShooter(shooter);
+
+    }
+    @Override
+    public void createShooterInstances() {
 
     }
 
-    public void feedOut() {
-    }
+
+
+
 }

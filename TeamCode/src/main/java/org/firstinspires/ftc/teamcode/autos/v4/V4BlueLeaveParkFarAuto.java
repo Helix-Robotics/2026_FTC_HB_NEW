@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV3;
+import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
@@ -29,7 +29,7 @@ public class V4BlueLeaveParkFarAuto extends LinearOpMode {
     public void runOpMode() {
         Pose2d initialPose = new Pose2d(38, -60.25, Math.toRadians(90.0));
 
-        robot = new CommandsV3(hardwareMap, initialPose);
+        robot = new CommandsV4(hardwareMap, initialPose);
         robot.setIsBlue(false);
 
         MecanumDrive md = robot.drivetrain;
