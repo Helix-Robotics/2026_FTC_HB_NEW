@@ -10,12 +10,12 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.Light;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Shooter;
 
 
-public class CommandsV1 extends CommandAbstract {
-    public CommandsV1(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, Shooter shooter, Arm arm) {
+public class CommandsV2 extends CommandAbstract {
+    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose, Intake intake, Feeder feeder, Light light, Shooter shooter, Arm arm) {
         super(hardwareMap, initialPose, intake, feeder, light, shooter, arm);
     }
 
-    public CommandsV1(HardwareMap hardwareMap, Pose2d initialPose){
+    public CommandsV2(HardwareMap hardwareMap, Pose2d initialPose){
         super(hardwareMap, initialPose);
 
         Intake intake = new Intake(hardwareMap);

@@ -5,11 +5,10 @@ import static org.firstinspires.ftc.teamcode.robot.subsystems.HelixLocalisation.
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.CommandsV1;
+import org.firstinspires.ftc.teamcode.commands.CommandsV2;
 import org.firstinspires.ftc.teamcode.robot.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract;
 
@@ -32,7 +31,7 @@ public class MainV1Red extends MainV0Red {
     @Override
     public void init() {
         // tune inPerTick for ur drivetrain encoders
-        robot = new CommandsV1(hardwareMap, new Pose2d(0, 0, 0));
+        robot = new CommandsV2(hardwareMap, new Pose2d(0, 0, 0));
         stateMachine = StateMachine.WAITING_FOR_START;
         robot.pink();
 
