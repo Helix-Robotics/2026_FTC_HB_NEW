@@ -146,7 +146,14 @@ public abstract class ShooterAbstract {
                 shooter.setVelocity(targetVelocity);
                 intake.shootingIntake();
                 robot.turnToTag(false, usesV3Alignment());
-                feeder.slowfeed();
+
+                if (usesV3Alignment()) {
+                    feeder.slowfeed();
+                } else {
+                    feeder.V4ExtraSlowFeed();
+                }
+
+
                 shootTimer.reset();
                 feederTimer.reset();
                 launchState = LaunchState.LAUNCHING;

@@ -61,6 +61,10 @@ public class Feeder {
         setPower(0.5);
     }
 
+    public void V4ExtraSlowFeed() {
+
+    }
+
     public void stopfeed() {
         setPower(0);
     }
