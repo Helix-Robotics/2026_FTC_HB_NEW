@@ -127,17 +127,29 @@ public class V3RedLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpM
 
                         ),
 
+                        robot.intake.spinUpIntake(),
+
 
                         trajectoryActionChosen3,
 
+                        robot.intake.spinUpIntake(),
+
                         new ParallelAction(
                             robot.shooter.launchAction(),
+
+                                robot.intake.spinUpIntake(),
 
 
                                 robot.arm.armUpAction()
                         ),
 
-                        trajectoryActionChosen4
+                        robot.intake.spinUpIntake(),
+
+                        trajectoryActionChosen4,
+
+                        robot.intake.stopIntake()
+
+
 
 
 
