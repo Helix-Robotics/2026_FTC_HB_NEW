@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = "IRL WORKED 10/10 V3 Red Leave and Park Far Auto", group = "Autonomous")
+@Autonomous(name = "IRL WORKED 10/10 V3 Red Leave and Park Far Auto", group = "Autonomous")
 public class V3RedLeaveParkFarAuto extends LinearOpMode {
 
     protected CommandAbstract robot;

@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Red Main Side Flower with PUSH", group = "Autonomous")
+@Autonomous(name = "3. Red Main Side Flower with PUSH", group = "Autonomous")
 public class V3RedLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
