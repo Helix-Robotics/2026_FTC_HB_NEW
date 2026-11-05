@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,13 +22,13 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-//@Autonomous(name = " IRL TESTED 10/10 V3 Blue Leave Shoot Flower Park Passive Side 2 Cycles", group = "Autonomous")
+@Autonomous(name = "Blue Secondary Position Flower", group = "Autonomous")
 public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOpMode {
     protected CommandAbstract robot;
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(-179.0));
+        Pose2d initialPose = new Pose2d(-59, -10.0, Math.toRadians(-179.9));
 
         robot = new CommandsV3(hardwareMap, initialPose);
         robot.setIsBlue(true);
@@ -37,31 +38,40 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-58, -10.0));
+                .strafeToConstantHeading(new Vector2d(-58, -12));
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 // -10 x y 10
                 .strafeToConstantHeading(new Vector2d(-50, -10.0))
-                .strafeToLinearHeading(new Vector2d(-46.0, -25.5), Math.toRadians(-179.0));
+                .strafeToLinearHeading(new Vector2d(-46.0, -26.5), Math.toRadians(-179.9));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
 
                 .waitSeconds(1.0)
-                .strafeToLinearHeading(new Vector2d(-57.0, -15.5), Math.toRadians(-164.0))
 
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(-49, -21.5), Math.toRadians(-179.0));
+
+                .strafeToLinearHeading(new Vector2d(-55.5, -17), Math.toRadians(-170))
+
+
+                .strafeToConstantHeading(new Vector2d(-56.5, -17))
+                .waitSeconds(0.2)
+                .strafeToConstantHeading(new Vector2d(-55, -17))
+
+                .waitSeconds(0.5)
+                .strafeToConstantHeading(new Vector2d(-56.5, -17))
+
+
+
+                .waitSeconds(1.0)
+                .strafeToLinearHeading(new Vector2d(-53.5, -21.5), Math.toRadians(-170));
 
         TrajectoryActionBuilder tab4 = tab3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-46, -23.58), Math.toRadians(-179.0))
-                .strafeToConstantHeading(new Vector2d(-50, -10.0))
-                .strafeToLinearHeading(new Vector2d(-59, -10), Math.toRadians(-179.0));
+                .strafeToLinearHeading(new Vector2d(-45, -57.5), Math.toRadians(-179.9));
 
-        TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
-                .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0));
+
+
 
 
 
@@ -95,7 +105,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
         Action trajectoryActionChosen4 = tab4.build();
-        Action trajectoryActionChosen5 = tab5.build();
+
 
 
 
@@ -120,12 +130,16 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
                         trajectoryActionChosen3,
 
-                        robot.arm.armUpAction(),
-                        robot.feeder.startFeedAction(),
-                        trajectoryActionChosen4,
-                        robot.shooter.launchAction(),
-                        robot.feeder.stopFeedAction(),
-                        trajectoryActionChosen5
+                        new ParallelAction(
+                                robot.shooter.launchAction(),
+
+
+                                robot.arm.armUpAction()
+                        ),
+
+                        trajectoryActionChosen4
+
+
 
                         //robot.intake.spinUpIntake()
 
@@ -138,7 +152,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
 
 
-                ), 29.5, 26.0);
+                ), 29.0, 25.0);
 
 
 
@@ -166,8 +180,7 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         //HOME
-                        .strafeToConstantHeading(new Vector2d(-47.5, -10.0))
-                        .strafeToLinearHeading(new Vector2d(-43.7, -56.9), Math.toRadians(0))
+                        .strafeToLinearHeading(new Vector2d(-45, -57.5), Math.toRadians(-179.9))
                         .build();
             }
 
