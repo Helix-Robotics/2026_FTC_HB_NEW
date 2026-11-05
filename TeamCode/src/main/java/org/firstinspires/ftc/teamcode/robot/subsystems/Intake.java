@@ -130,7 +130,7 @@ public class Intake {
         public boolean run(@NonNull TelemetryPacket packet) {
             intaking = true;
             outtaking = false;
-            setPower(-0.8);
+            setPower(-1.0);
             return false;
         }
     }

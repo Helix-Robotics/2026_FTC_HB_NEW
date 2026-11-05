@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 
 import java.util.List;
 
-@TeleOp(name = "Dont use V4 Red Teleop")
+//@TeleOp(name = "Dont use V4 Red Teleop")
 public class MainV4Red extends MainV3Red {
 
     private boolean slowMode = false;

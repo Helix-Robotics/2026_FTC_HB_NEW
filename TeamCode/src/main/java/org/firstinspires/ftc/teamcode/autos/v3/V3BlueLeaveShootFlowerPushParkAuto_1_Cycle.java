@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V3 Blue Leave Shoot Flower Push Park Auto 1 Cycle", group = "Autonomous")
+@Autonomous(name = "Blue Main Side Flower with PUSH", group = "Autonomous")
 public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -168,7 +168,7 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
                         trajectoryActionChosen5
 
                 ),
-                29.5,
+                29.0,
                 27.0
         );
     }
@@ -200,10 +200,10 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 35)
+                                new Vector2d(-45.201, -35)
                         )
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 53.6)
+                                new Vector2d(-45.201, -53.6)
                         )
                         .build();
             }
