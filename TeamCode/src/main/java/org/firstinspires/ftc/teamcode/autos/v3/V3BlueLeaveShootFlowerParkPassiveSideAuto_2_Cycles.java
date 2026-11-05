@@ -38,12 +38,12 @@ public class V3BlueLeaveShootFlowerParkPassiveSideAuto_2_Cycles extends LinearOp
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-58, -12));
+                .strafeToConstantHeading(new Vector2d(-58, -12.5));
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 // -10 x y 10
-                .strafeToConstantHeading(new Vector2d(-50, -10.0))
+                .strafeToConstantHeading(new Vector2d(-50, -12.5))
                 .strafeToLinearHeading(new Vector2d(-46.0, -26.5), Math.toRadians(-179.9));
 
 
