@@ -103,6 +103,28 @@ public class ShooterV3 extends ShooterAbstract {
         return new LaunchV3();
     }
 
+
+    private class closeLaunchV3 implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            rpmSet(1135);
+
+            shoot(true, 4, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Action closeLaunchAction() {
+        return new closeLaunchV3();
+    }
+
     private boolean isStorageEmpty() {
         return ((FeederV2) feeder).getStorageState()
                 == FeederV2.StorageState.EMPTY;

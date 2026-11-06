@@ -276,6 +276,27 @@ public abstract class ShooterAbstract {
     }
     public Action launchAction() {return new Launch(); }
 
+    private class closeLaunch implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            rpmSet(1100);
+
+            shoot(true, 4, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+    public Action closeLaunchAction() {
+        return new closeLaunch();
+    }
+
     /*if (gamepad2.right_trigger > 0.5) {
                 robot.shooter.turnToTagStatus(false);
                 robot.shooter.updateShooterPID();
