@@ -174,6 +174,12 @@ public class FeederV2 extends Feeder{
     }
 
     @Override
+    public void V4ExtraSlowFeed() {
+        setPower(0.35);
+        openGate();
+    }
+
+    @Override
     public void veryslowfeed() {
         setPower(0.3);
         openGate();

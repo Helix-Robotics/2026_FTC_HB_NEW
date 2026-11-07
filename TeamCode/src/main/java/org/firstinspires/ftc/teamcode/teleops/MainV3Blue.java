@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.util.List;
 
-@TeleOp(name = "V3 Blue Teleop")
+@TeleOp(name = "V3 Blue Teleop Regionals")
 public class MainV3Blue extends MainV3Red {
 
     @Override

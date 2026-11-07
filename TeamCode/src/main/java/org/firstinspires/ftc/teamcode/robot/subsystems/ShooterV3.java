@@ -82,7 +82,7 @@ public class ShooterV3 extends ShooterAbstract {
         return isReadyVal;
     }
 
-    private class LaunchV2 implements Action {
+    private class LaunchV3 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
@@ -100,7 +100,29 @@ public class ShooterV3 extends ShooterAbstract {
 
     @Override
     public Action launchAction() {
-        return new LaunchV2();
+        return new LaunchV3();
+    }
+
+
+    private class closeLaunchV3 implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            rpmSet(1135);
+
+            shoot(true, 4, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Action closeLaunchAction() {
+        return new closeLaunchV3();
     }
 
     private boolean isStorageEmpty() {

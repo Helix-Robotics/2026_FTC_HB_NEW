@@ -11,15 +11,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class ShooterV4 extends ShooterAbstract {
 
-    public static double V3_SHOOTER_P = 25.45;
+    public static double V3_SHOOTER_P = 25.0;
     public static double V3_SHOOTER_I = 0.0;
-    public static double V3_SHOOTER_D = 1.5;
-    public static double V3_SHOOTER_F = 14.12; //15.67;
+    public static double V3_SHOOTER_D = 1.25;
+    public static double V3_SHOOTER_F = 12.7; //15.67;
 
-    public static double V3_SHOOTER_P_FAR = 27.0;
+    public static double V3_SHOOTER_P_FAR = 26.5;
     public static double V3_SHOOTER_I_FAR = 0.0;
-    public static double V3_SHOOTER_D_FAR = 1.6;
-    public static double V3_SHOOTER_F_FAR = 14.16; //15.67;
+    public static double V3_SHOOTER_D_FAR = 1.5;
+    public static double V3_SHOOTER_F_FAR = 13.05; //15.67;
 
     public static double V3_TARGET_VELOCITY = 1175.0; //  1160.0;
     public static double V3_MIN_VELOCITY = 1125.0; // 1110.0;
@@ -77,7 +77,7 @@ public class ShooterV4 extends ShooterAbstract {
         return isReadyVal;
     }
 
-    private class LaunchV3 implements Action {
+    private class LaunchV4 implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
@@ -95,6 +95,6 @@ public class ShooterV4 extends ShooterAbstract {
 
     @Override
     public Action launchAction() {
-        return new LaunchV3();
+        return new LaunchV4();
     }
 }

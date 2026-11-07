@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "V3 Blue Leave Shoot Flower Push Park Auto 1 Cycle", group = "Autonomous")
+@Autonomous(name = "6. Blue Main Side Flower with PUSH", group = "Autonomous")
 public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -45,10 +45,25 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
                 .strafeToConstantHeading(new Vector2d(59, -14));
 
         TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(35, -35), Math.toRadians(-75));
+
+                .strafeToConstantHeading(new Vector2d(40, -14));
 
         TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(12, -56.8), Math.toRadians(-75));
+                .strafeToLinearHeading(new Vector2d(16,  -54.5), Math.toRadians(-75))
+                //.strafeToConstantHeading(new Vector2d(-14, 54.5))
+                .strafeToLinearHeading(new Vector2d(14,  -54.5), Math.toRadians(-80))
+                .strafeToConstantHeading(new Vector2d(14, -56.5))
+                .waitSeconds(0.2)
+                .strafeToConstantHeading(new Vector2d(14, -54))
+
+                .waitSeconds(0.5)
+                .strafeToConstantHeading(new Vector2d(14, -53))
+                .strafeToConstantHeading(new Vector2d(14, -56.5))
+                .waitSeconds(0.5)
+                .strafeToConstantHeading(new Vector2d(14, -53))
+                .strafeToConstantHeading(new Vector2d(14, -56.5))
+                .waitSeconds(0.5)
+                .strafeToConstantHeading(new Vector2d(14, -53));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
@@ -112,6 +127,7 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
+                        robot.arm.armUpAction(),
                         trajectoryActionChosen1,
                         robot.shooter.launchAction(),
 
@@ -123,24 +139,27 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
 
                                 trajectoryActionChosen2,
                                 robot.arm.armDownAction(),
-                                robot.intake.spinUpIntake()
+                                robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction()
                         ),
 
 
-
+                        robot.intake.spinUpIntake(),
+                        robot.feeder.startFeedAction(),
 
                         //arm down sequence
 
-                        new ParallelAction(
 
-                                trajectoryActionChosen3,
-                                robot.arm.armUpAction(),
 
-                                robot.feeder.stopFeedAction()
-                        ),
+                        trajectoryActionChosen3,
+
+                        robot.intake.spinUpIntake(),
+                        robot.feeder.startFeedAction(),
+
                         trajectoryActionChosen4,
-                        robot.arm.armUpAction(),
+
                         robot.intake.stopIntake(),
+                        robot.arm.armUpAction(),
 
 
 
@@ -149,7 +168,7 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
                         trajectoryActionChosen5
 
                 ),
-                29.5,
+                29.0,
                 27.0
         );
     }
@@ -181,10 +200,10 @@ public class V3BlueLeaveShootFlowerPushParkAuto_1_Cycle extends LinearOpMode {
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 35)
+                                new Vector2d(-45.201, -35)
                         )
                         .strafeToConstantHeading(
-                                new Vector2d(45.201, 53.6)
+                                new Vector2d(-45.201, -53.6)
                         )
                         .build();
             }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.FeederV2;
 
 import java.util.List;
 
-@TeleOp(name = "V3 Red Teleop")
+@TeleOp(name = "V3 Red Teleop Regionals")
 public class MainV3Red extends MainV2Red {
 
     private boolean slowMode = false;
