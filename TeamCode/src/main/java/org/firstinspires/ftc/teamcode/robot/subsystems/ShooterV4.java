@@ -11,10 +11,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class ShooterV4 extends ShooterAbstract {
 
-    public static double V3_SHOOTER_P = 25.0;
+    public static double V3_SHOOTER_P = 30.0;
     public static double V3_SHOOTER_I = 0.0;
-    public static double V3_SHOOTER_D = 1.25;
-    public static double V3_SHOOTER_F = 12.7; //15.67;
+    public static double V3_SHOOTER_D = 1.5;
+    public static double V3_SHOOTER_F = 12.9; //15.67;
 
     public static double V3_SHOOTER_P_FAR = 26.5;
     public static double V3_SHOOTER_I_FAR = 0.0;
@@ -24,7 +24,7 @@ public class ShooterV4 extends ShooterAbstract {
     public static double V3_TARGET_VELOCITY = 1175.0; //  1160.0;
     public static double V3_MIN_VELOCITY = 1125.0; // 1110.0;
 
-    public static int V3_READY_CYCLES = 5; //2
+    public static int V3_READY_CYCLES = 2; //2
     public static int V3_FEED_DELAY_CYCLES = 0;
 
     public static boolean isV3 = false;

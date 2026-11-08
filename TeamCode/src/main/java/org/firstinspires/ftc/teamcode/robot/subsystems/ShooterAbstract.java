@@ -196,6 +196,10 @@ public abstract class ShooterAbstract {
         return feedDelayCount;
     }
 
+    public void setVelocity(double targetVelocity) {
+        shooter.setVelocity(targetVelocity);
+    }
+
     public abstract boolean isReady();
     /*public boolean isReady() {
 

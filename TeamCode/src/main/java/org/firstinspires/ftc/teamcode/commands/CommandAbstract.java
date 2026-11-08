@@ -45,6 +45,20 @@ public abstract class CommandAbstract {
     public static double V4_TX_TARGET_RED_RIGHT = -3.2; // 34
     public static double V4_TX_TARGET_RED_LEFT = 5.0;  // 33
 
+
+
+
+    public static double V3_STRAIGHT_TX_TARGET_BLUE_LEFT = 0;  // 41
+    public static double V3_STRAIGHT_TX_TARGET_BLUE_RIGHT = 0; // 42
+    public static double V3_STRAIGHT_TX_TARGET_RED_RIGHT = 0; // 34
+    public static double V3_STRAIGHT_TX_TARGET_RED_LEFT = 0;  // 33
+
+    public static double V4_STRAIGHT_TX_TARGET_BLUE_LEFT = 0;  // 41
+    public static double V4_STRAIGHT_TX_TARGET_BLUE_RIGHT = 0; // 42
+    public static double V4_STRAIGHT_TX_TARGET_RED_RIGHT = 0; // 34
+    public static double V4_STRAIGHT_TX_TARGET_RED_LEFT = 0;  // 33
+
+
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
     public static double TX_TARGET_BLUE_Special = -2.0; // This is for auto
 
@@ -146,6 +160,10 @@ public abstract class CommandAbstract {
 
     public void shootingIntake() {
         intake.shootingIntake();
+    }
+
+    public void setShooterVelocity(double targetVelocity) {
+        shooter.setVelocity(targetVelocity);
     }
 
     public void shooterDirection(boolean reverse) {shooter.setReverse(reverse);}
@@ -387,6 +405,149 @@ public abstract class CommandAbstract {
                     finished = turnToTagO(true);
                 } else {
                     finished = turnToTagO(false);
+                }
+                if (finished){
+                    alignStatus = ALIGN_STATUS.FINISH;
+                } else {
+                    alignStatus = ALIGN_STATUS.IN_PROGRESS;
+                }
+                break;
+            case FINISH:
+                drivetrain.drive(0, 0, 0);
+                alignStatus = ALIGN_STATUS.PENDING;
+                break;
+        }
+    }
+
+
+
+
+
+    public boolean straightTurnToTagO(boolean v3) {
+        vision.update();
+
+        double tagX = -181;
+        double txTarget = 0;
+
+        if (isBlue) {
+            double blueLeftX = vision.getFilteredTagX(40);
+            double blueRightX = vision.getFilteredTagX(44);
+
+            if (blueLeftX > -180) {
+                tagX = blueLeftX;
+                if (v3) {
+                    txTarget = V3_STRAIGHT_TX_TARGET_BLUE_LEFT;
+                } else {
+                    txTarget = V4_STRAIGHT_TX_TARGET_BLUE_LEFT;
+                }
+
+            }
+
+            if (blueRightX > -180) {
+                if (tagX < -180) {
+                    tagX = blueRightX;
+                    if (v3) {
+                        txTarget = V3_STRAIGHT_TX_TARGET_BLUE_RIGHT;
+                    } else {
+                        txTarget = V4_STRAIGHT_TX_TARGET_BLUE_RIGHT;
+                    }
+                } else if (Math.abs(blueRightX) < Math.abs(tagX)) {
+                    tagX = blueRightX;
+                    if (v3) {
+                        txTarget = V3_STRAIGHT_TX_TARGET_BLUE_RIGHT;
+                    } else {
+                        txTarget = V4_STRAIGHT_TX_TARGET_BLUE_RIGHT;
+                    }
+                }
+            }
+        } else {
+
+
+
+
+            double redLeftX = vision.getFilteredTagX(32);
+            double redRightX = vision.getFilteredTagX(36);
+
+            if (redLeftX > -180) {
+                tagX = redLeftX;
+                if (v3) {
+                    txTarget = V3_STRAIGHT_TX_TARGET_RED_LEFT;
+                } else {
+                    txTarget = V4_STRAIGHT_TX_TARGET_RED_LEFT;
+                }
+            }
+
+            if (redRightX > -180) {
+                if (tagX < -180) {
+                    tagX = redRightX;
+
+
+                    if (v3) {
+                        txTarget = V3_STRAIGHT_TX_TARGET_RED_RIGHT;
+                    } else {
+                        txTarget = V4_STRAIGHT_TX_TARGET_RED_RIGHT;
+                    }
+
+
+                } else if (Math.abs(redRightX) < Math.abs(tagX)) {
+                    tagX = redRightX;
+
+                    if (v3) {
+                        txTarget = V3_STRAIGHT_TX_TARGET_RED_RIGHT;
+                    } else {
+                        txTarget = V4_STRAIGHT_TX_TARGET_RED_RIGHT;
+                    }
+                }
+            }
+        }
+
+        double txTolerance = TX_TOLERANCE;
+        double kP = ALIGN_KP;
+        double kF = ALIGN_KF;
+        double maxTurnPower = ALIGN_CAP_POWER;
+
+        // invalid result
+        if(tagX < -180) {
+            drivetrain.drive(0, 0, 0);
+            return true;
+        }
+
+        double error = tagX - txTarget;
+        //if under tolerance, return
+        if(Math.abs(error) < txTolerance) {
+            drivetrain.drive(0, 0, 0);
+            return true;
+        }
+
+        //calculate turn power using P and F , we wont use D as it will be small angle
+        //we can just use small P
+        double turnPower = kP*error + kF*error/Math.abs(error);
+        if (Math.abs(turnPower) > maxTurnPower) {
+            turnPower = maxTurnPower * turnPower / Math.abs(turnPower);
+        }
+        drivetrain.drive(0, 0, turnPower);
+        return false;
+    }
+
+
+
+
+    public void straightTurnToTag(boolean startTurn, boolean Isv3){ //V3 Acutal robot
+        switch(alignStatus){
+            case PENDING:
+                if (startTurn){
+                    alignStatus = ALIGN_STATUS.START;
+                }
+                break;
+            case START:
+            case IN_PROGRESS:
+                //boolean finished = turnToTagO();
+                boolean finished;
+
+                if (Isv3) {
+                    finished = straightTurnToTagO(true);
+                } else {
+                    finished = straightTurnToTagO(false);
                 }
                 if (finished){
                     alignStatus = ALIGN_STATUS.FINISH;
