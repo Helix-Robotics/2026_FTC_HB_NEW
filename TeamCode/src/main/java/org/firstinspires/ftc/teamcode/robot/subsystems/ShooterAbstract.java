@@ -163,7 +163,7 @@ public abstract class ShooterAbstract {
                 if (usesV3Alignment()) {
                     feeder.slowfeed();
                 } else {
-                    feeder.V4ExtraSlowFeed();
+                    feeder.startV4ExtraSlowFeed();
                 }
 
 
@@ -190,6 +190,8 @@ public abstract class ShooterAbstract {
                         intake.stop();
                     }
                     launchState = LaunchState.IDLE;
+                } else if (!usesV3Alignment()) {
+                    feeder.V4ExtraSlowFeed();
                 }
                 break;
         }
