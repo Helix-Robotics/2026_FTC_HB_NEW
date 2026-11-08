@@ -189,13 +189,13 @@ public class FeederV2 extends Feeder{
         if (rampdownFeeder.milliseconds() < 49) {
             setPower(1.0);
         } else if (rampdownFeeder.milliseconds() < 99) {
-            setPower(0.825);
+            setPower(0.775);
 
         } else if (rampdownFeeder.milliseconds() < 149) {
-            setPower(0.675);
+            setPower(0.525);
 
         } else {
-            setPower(0.5);
+            setPower(0.4);
         }
 
         openGate();
