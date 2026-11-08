@@ -84,7 +84,7 @@ public class ShooterV4 extends ShooterAbstract {
             setHold(false);
             rpmSet(1150);
 
-            shoot(true, 4, false);
+            shoot(true, 4, false, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

@@ -48,15 +48,15 @@ public abstract class CommandAbstract {
 
 
 
-    public static double V3_STRAIGHT_TX_TARGET_BLUE_LEFT = 0;  // 41
-    public static double V3_STRAIGHT_TX_TARGET_BLUE_RIGHT = 0; // 42
-    public static double V3_STRAIGHT_TX_TARGET_RED_RIGHT = 0; // 34
-    public static double V3_STRAIGHT_TX_TARGET_RED_LEFT = 0;  // 33
+    public static double V3_STRAIGHT_TX_TARGET_BLUE_LEFT = 2.5;  // 41
+    public static double V3_STRAIGHT_TX_TARGET_BLUE_RIGHT = 2.5; // 42
+    public static double V3_STRAIGHT_TX_TARGET_RED_RIGHT = 2.5; // 34
+    public static double V3_STRAIGHT_TX_TARGET_RED_LEFT = 2.5;  // 33
 
-    public static double V4_STRAIGHT_TX_TARGET_BLUE_LEFT = 0;  // 41
-    public static double V4_STRAIGHT_TX_TARGET_BLUE_RIGHT = 0; // 42
-    public static double V4_STRAIGHT_TX_TARGET_RED_RIGHT = 0; // 34
-    public static double V4_STRAIGHT_TX_TARGET_RED_LEFT = 0;  // 33
+    public static double V4_STRAIGHT_TX_TARGET_BLUE_LEFT = 2.5;  // 41
+    public static double V4_STRAIGHT_TX_TARGET_BLUE_RIGHT = 2.5; // 42
+    public static double V4_STRAIGHT_TX_TARGET_RED_RIGHT = 2.5; // 34
+    public static double V4_STRAIGHT_TX_TARGET_RED_LEFT = 2.5;  // 33
 
 
     public static double TX_TARGET_RED_Special = 0.5; // This is for auto  // 3.9 furthest to the right position for red in the teleop
@@ -140,8 +140,8 @@ public abstract class CommandAbstract {
         vision.update();
     }
 
-    public void shoot(boolean requested, int shot_count, boolean alignStatus) {
-        shooter.shoot(requested, shot_count, alignStatus);
+    public void shoot(boolean requested, int shot_count, boolean alignStatus, boolean straightAlign) {
+        shooter.shoot(requested, shot_count, alignStatus, straightAlign);
     }
 
     public void stopshoot() {

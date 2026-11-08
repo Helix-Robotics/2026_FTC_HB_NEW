@@ -84,7 +84,7 @@ public abstract class ShooterAbstract {
         return true;
     }
 
-    public void shoot(boolean shotRequested, int shot_count, boolean alignStatus) {
+    public void shoot(boolean shotRequested, int shot_count, boolean alignStatus, boolean straightAlign) {
 //        if (launchState != LaunchState.IDLE) {
 //            light.yellow();
 //        }
@@ -100,6 +100,13 @@ public abstract class ShooterAbstract {
                     robot.turnToTag(alignStatus, usesV3Alignment());
                     robot.turnToTag(alignStatus, usesV3Alignment());
                     robot.turnToTag(alignStatus, usesV3Alignment());
+
+
+                    robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                    robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                    robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                    robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                    robot.straightTurnToTag(straightAlign, usesV3Alignment());
 
                     feeder.stopfeed();
                     readyCount = 0;
@@ -119,6 +126,12 @@ public abstract class ShooterAbstract {
                 robot.turnToTag(alignStatus, usesV3Alignment());
                 robot.turnToTag(alignStatus, usesV3Alignment());
                 robot.turnToTag(alignStatus, usesV3Alignment());
+                robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                robot.straightTurnToTag(straightAlign, usesV3Alignment());
+                robot.straightTurnToTag(straightAlign, usesV3Alignment());
+
                 boolean isReadyVar = isReady();
                 if (isReadyVar) {
                     if (readyCount <= readyCycles) {
@@ -270,7 +283,7 @@ public abstract class ShooterAbstract {
             setHold(false);
             rpmSet(900);
 
-            shoot(true, 4, false);
+            shoot(true, 4, false, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;
@@ -287,7 +300,7 @@ public abstract class ShooterAbstract {
             setHold(false);
             rpmSet(1100);
 
-            shoot(true, 4, false);
+            shoot(true, 4, false, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;
