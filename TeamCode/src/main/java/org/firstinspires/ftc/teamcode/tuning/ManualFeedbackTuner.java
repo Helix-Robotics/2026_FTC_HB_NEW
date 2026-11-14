@@ -8,7 +8,9 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.utils.TwoDeadWheelLocalizer;
 
-public final class ManualFeedbackTuner extends LinearOpMode {
+public final class
+
+ManualFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
 
     @Override

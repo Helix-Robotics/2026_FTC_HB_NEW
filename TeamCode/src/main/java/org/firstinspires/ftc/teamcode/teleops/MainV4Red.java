@@ -29,7 +29,7 @@ public class MainV4Red extends MainV3Red {
         holdIntake = false;
 
         robot.feederDirection(true);
-        robot.intakeDirection(true);
+        robot.intakeDirection(false);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
 
