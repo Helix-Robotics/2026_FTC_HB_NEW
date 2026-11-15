@@ -138,7 +138,7 @@ public class ShooterSpinUpTuner extends OpMode {
 
         telemetry.addData("Status", status);
         if (selected.equals("F")) {
-            telemetry.addData("K value", "KF = %.2f", F);
+            telemetry.addData("K value", "KF = %.3f", F);
             telemetry.addData("KF Speed", "%.1f ticks/s", TARGET_TPS);
         } else if (selected.equals("D")) {
             telemetry.addData("K value", "KD = %.2f", D);
