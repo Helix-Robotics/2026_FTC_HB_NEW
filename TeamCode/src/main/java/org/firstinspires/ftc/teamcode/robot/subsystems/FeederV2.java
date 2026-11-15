@@ -186,21 +186,21 @@ public class FeederV2 extends Feeder{
     public void V4ExtraSlowFeed() {
 
 
-        if (rampdownFeeder.milliseconds() < 50) {
-            setPower(0.99);
-        } else if (rampdownFeeder.milliseconds() < 100) {
-            setPower(0.7);
+//        if (rampdownFeeder.milliseconds() < 50) {
+//            setPower(0.99);
+//        } else if (rampdownFeeder.milliseconds() < 100) {
+//            setPower(0.7);
+//
+//        } else if (rampdownFeeder.milliseconds() < 150) {
+//            setPower(0.5);
+//
+//        } else {
+//            setPower(0.35);
+//        }
 
-        } else if (rampdownFeeder.milliseconds() < 150) {
-            setPower(0.5);
-
-        } else {
-            setPower(0.35);
-        }
 
 
-
-        //setPower(0.8);
+        setPower(0.99);
         openGate();
     }
 
