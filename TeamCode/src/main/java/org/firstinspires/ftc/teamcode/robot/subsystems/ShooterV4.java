@@ -82,7 +82,9 @@ public class ShooterV4 extends ShooterAbstract {
         public boolean run(@NonNull TelemetryPacket packet) {
             updateShooterPID();
             setHold(false);
-            rpmSet(1150);
+            robot.intakeDirection(true);
+            robot.feederDirection(true);
+            rpmSet(1145.0);
 
             shoot(true, 4, false, false);
             packet.put("Launch Status:", launchState);

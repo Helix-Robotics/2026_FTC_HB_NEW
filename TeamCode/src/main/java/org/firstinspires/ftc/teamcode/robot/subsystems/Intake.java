@@ -130,7 +130,7 @@ public class Intake {
         public boolean run(@NonNull TelemetryPacket packet) {
             intaking = true;
             outtaking = false;
-            setPower(-1.0);
+            setPower(1.0);
             return false;
         }
     }
@@ -145,7 +145,7 @@ public class Intake {
         public boolean run(@NonNull TelemetryPacket packet) {
             intaking = false;
             outtaking = true;
-            setPower(0.8);
+            setPower(-1.0);
             return false;
         }
     }
