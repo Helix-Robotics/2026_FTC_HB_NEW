@@ -167,11 +167,11 @@ public class MainV4Red extends MainV3Red {
         }
 
         if (gamepad1.y) {
-            robot.downArm();
+            robot.upArm();
         }
 
         if (gamepad1.x) {
-            robot.upArm();
+            robot.downArm();
         }
 
 
