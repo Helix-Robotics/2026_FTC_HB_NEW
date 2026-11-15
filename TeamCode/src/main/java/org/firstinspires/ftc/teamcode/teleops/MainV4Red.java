@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 
 import java.util.List;
 
-//@TeleOp(name = "Dont use V4 Red Teleop")
+@TeleOp(name = "Dont use V4 Red Teleop")
 public class MainV4Red extends MainV3Red {
 
     private boolean slowMode = false;
@@ -28,8 +28,8 @@ public class MainV4Red extends MainV3Red {
 
         holdIntake = false;
 
-        robot.feederDirection(true);
-        robot.intakeDirection(false);
+        robot.feederDirection(false);
+        robot.intakeDirection(true);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
 
@@ -136,7 +136,7 @@ public class MainV4Red extends MainV3Red {
             if (gamepad2.right_trigger > 0.5) {
 //
                 robot.shooter.updateShooterPID();
-                robot.shooter.rpmSet(1160.0);
+                robot.shooter.rpmSet(1145.0);
             }
 
 
@@ -150,14 +150,14 @@ public class MainV4Red extends MainV3Red {
 
             boolean leftShotRequested = gamepad2.left_trigger > 0.75;
             boolean rightShotRequested = gamepad2.right_trigger > 0.75;
-            robot.shoot(leftShotRequested || rightShotRequested, 4, leftShotRequested);
+            robot.shoot(leftShotRequested || rightShotRequested, 4, leftShotRequested, false);
 
 
 
 
 
             if (gamepad2.xWasPressed()) {
-                robot.shoot(true, 1, false);
+                robot.setShooterVelocity(1100);
             }
 
             if (gamepad2.y) {

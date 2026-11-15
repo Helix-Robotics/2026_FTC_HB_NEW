@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class FeederV2 extends Feeder{
     public DcMotorEx motorFeeder;
     protected final ElapsedTime breakDelay = new ElapsedTime();
+
+    protected final ElapsedTime rampdownFeeder = new ElapsedTime();
     public Servo gate;
     public DigitalChannel breakBeamStart;
     public DigitalChannel breakBeamEnd;
@@ -174,8 +176,31 @@ public class FeederV2 extends Feeder{
     }
 
     @Override
+    public void startV4ExtraSlowFeed() {
+
+        rampdownFeeder.reset();
+        V4ExtraSlowFeed();
+    }
+
+    @Override
     public void V4ExtraSlowFeed() {
-        setPower(0.35);
+
+
+//        if (rampdownFeeder.milliseconds() < 50) {
+//            setPower(0.99);
+//        } else if (rampdownFeeder.milliseconds() < 100) {
+//            setPower(0.7);
+//
+//        } else if (rampdownFeeder.milliseconds() < 150) {
+//            setPower(0.5);
+//
+//        } else {
+//            setPower(0.35);
+//        }
+
+
+
+        setPower(0.99);
         openGate();
     }
 

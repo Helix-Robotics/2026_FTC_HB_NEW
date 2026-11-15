@@ -149,6 +149,7 @@ public class Arm {
 
     public Arm(HardwareMap hw){
         arm = hw.get(Servo.class, "arm");
+        arm.setDirection(Servo.Direction.REVERSE);
 
     }
 
@@ -161,7 +162,7 @@ public class Arm {
 
     public void down() {
 
-        setPosition(0.067);
+        setPosition(0.01);
 
     }
 
@@ -178,7 +179,7 @@ public class Arm {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            arm.setPosition(0.067);
+            arm.setPosition(0.01);
             return false;
         }
 
