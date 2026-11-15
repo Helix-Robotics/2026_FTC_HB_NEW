@@ -162,12 +162,12 @@ public class Arm {
 
     public void down() {
 
-        setPosition(0.01);
+        setPosition(0.95);
 
     }
 
     public void up() {
-        setPosition(0.99);
+        setPosition(0.01);
     }
 
     public class ArmDownAction implements Action {
@@ -179,7 +179,7 @@ public class Arm {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
 
-            arm.setPosition(0.01);
+            down();
             return false;
         }
 
@@ -196,7 +196,7 @@ public class Arm {
         // actions are formatted via telemetry packets as below
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            arm.setPosition(0.99);
+            up();
             return false;
         }
 
