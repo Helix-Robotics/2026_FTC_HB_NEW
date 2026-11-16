@@ -1,25 +1,31 @@
 
 
-package org.firstinspires.ftc.teamcode.autos.v4_Sydney_Regional;
+package org.firstinspires.ftc.teamcode.autos.v4_Sydney_Regional.important_autos;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.AngularVelConstraint;
+import com.acmerobotics.roadrunner.MecanumKinematics;
+import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
-import org.firstinspires.ftc.teamcode.commands.CommandsV3;
 import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
+
+import java.util.Arrays;
 
 @Config
 @Autonomous(name = "AUTO FOR THE 6 TIP Goal", group = "Autonomous")
@@ -39,29 +45,48 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
 
         robot = new CommandsV4(hardwareMap, initialPose);
         robot.setIsBlue(false);
+        robot.intakeDirection(true);
+        robot.feederDirection(false);
 
         MecanumDrive md = robot.drivetrain;
         Localizer localizer = md.getLocalizer();
 
+
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-59, 11.2845));
+                .strafeToConstantHeading(new Vector2d(-59, 11.2845),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
 
         TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
 
 
-                .strafeToLinearHeading(new Vector2d(-21.616,  50.58), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-21.616,  50.58), Math.toRadians(90),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
 
         TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725))
+                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025))
-                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725))
+                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, -53.5025))
-                .strafeToConstantHeading(new Vector2d(21.7575, 55.1725))
+                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025));
+                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
 
 
 
@@ -70,7 +95,9 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .strafeToLinearHeading(
                         new Vector2d(37.699, 36.4782),
-                        Math.toRadians(0)
+                        Math.toRadians(0),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 );
 
 
@@ -78,13 +105,17 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
 
                 .strafeToLinearHeading(
                         new Vector2d(61, 9.34),
-                        Math.toRadians(0)
+                        Math.toRadians(0),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 );
 
         TrajectoryActionBuilder tab5 = tab4.endTrajectory().fresh()
                 .strafeToLinearHeading(
                         new Vector2d(45, 60),
-                        Math.toRadians(90)
+                        Math.toRadians(90),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 );
 
 
@@ -153,7 +184,8 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
 
                         new ParallelAction(
                                 trajectoryActionChosen4,
-                                robot.arm.armUpAction()
+                                robot.arm.armUpAction(),
+                                robot.shooter.spinUpShooterAuto()
 
                         ),
                         robot.vision.checkForRedSideTag(),
@@ -177,6 +209,16 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
         );
     }
 
+
+    // Use the same wheel and angular constraint combination as MecanumDrive.
+    private VelConstraint pathVelocity(double maxWheelVel, double maxAngVel) {
+        MecanumKinematics kinematics = new MecanumKinematics(
+                MecanumDrive.PARAMS.inPerTick * MecanumDrive.PARAMS.trackWidthTicks,
+                MecanumDrive.PARAMS.inPerTick / MecanumDrive.PARAMS.lateralInPerTick);
+        return new MinVelConstraint(Arrays.asList(
+                kinematics.new WheelVelConstraint(maxWheelVel),
+                new AngularVelConstraint(maxAngVel)));
+    }
 
     private void runActionSafely(
             Action action,
@@ -205,7 +247,9 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
                         .actionBuilder(localizer.getPose())
                         .strafeToLinearHeading(
                                 new Vector2d(25, 56),
-                                Math.toRadians(0)
+                                Math.toRadians(0),
+                                pathVelocity(40, Math.PI * 1.25),
+                                new ProfileAccelConstraint(-30, 40)
                         )
                         .build();
             }
