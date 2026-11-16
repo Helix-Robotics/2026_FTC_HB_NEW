@@ -210,7 +210,6 @@ public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
     }
 
 
-    // Use the same wheel and angular constraint combination as MecanumDrive.
     private VelConstraint pathVelocity(double maxWheelVel, double maxAngVel) {
         MecanumKinematics kinematics = new MecanumKinematics(
                 MecanumDrive.PARAMS.inPerTick * MecanumDrive.PARAMS.trackWidthTicks,
