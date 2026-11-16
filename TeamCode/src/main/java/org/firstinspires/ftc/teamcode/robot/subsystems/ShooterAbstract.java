@@ -349,4 +349,26 @@ public abstract class ShooterAbstract {
 
     }
 
+    private class SpinUpShooterAuto implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            robot.intakeDirection(true);
+            robot.feederDirection(false);
+            rpmSet(1145.0);
+
+            shoot(true, 4, false, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public Action spinUpShooterAuto() {
+        return new SpinUpShooterAuto();
+    }
+
 }

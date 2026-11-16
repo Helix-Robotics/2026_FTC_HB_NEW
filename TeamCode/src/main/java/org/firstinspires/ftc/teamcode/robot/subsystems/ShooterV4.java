@@ -99,4 +99,19 @@ public class ShooterV4 extends ShooterAbstract {
     public Action launchAction() {
         return new LaunchV4();
     }
+
+
+    private class SpinUpShooterAuto implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            robot.setShooterVelocity(1100);
+            return false;
+        }
+    }
+
+    @Override
+    public Action spinUpShooterAuto() {
+        return new SpinUpShooterAuto();
+    }
 }
