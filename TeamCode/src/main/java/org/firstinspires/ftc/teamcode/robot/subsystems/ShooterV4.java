@@ -83,7 +83,7 @@ public class ShooterV4 extends ShooterAbstract {
             updateShooterPID();
             setHold(false);
             robot.intakeDirection(true);
-            robot.feederDirection(true);
+            robot.feederDirection(false);
             rpmSet(1145.0);
 
             shoot(true, 4, false, false);

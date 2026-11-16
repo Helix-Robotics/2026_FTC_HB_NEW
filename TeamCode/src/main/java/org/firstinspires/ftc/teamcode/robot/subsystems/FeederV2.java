@@ -260,7 +260,7 @@ public class FeederV2 extends Feeder{
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setPower(0.8);
+            intakeSlowFeed();
             return false;
         }
     }
@@ -274,7 +274,7 @@ public class FeederV2 extends Feeder{
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            setPower(0);
+            stopfeed();
             return false;
         }
     }
