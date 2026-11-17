@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "AUTO FOR THE 6 TIP Goal", group = "Autonomous")
+//@Autonomous(name = "AUTO FOR THE 6 TIP Goal", group = "Autonomous")
 public class V4RedLeaveShootFlowerParkAuto_2_Cycles extends LinearOpMode {
 
     protected CommandAbstract robot;

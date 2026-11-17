@@ -166,6 +166,12 @@ public class Arm {
 
     }
 
+    public void flowerShake() {
+
+        setPosition(0.90);
+
+    }
+
     public void up() {
         setPosition(0.01);
     }
@@ -203,6 +209,23 @@ public class Arm {
     }
 
     public Action armUpAction() {return new ArmUpAction(); }
+
+
+    public class FlowerShakeUp implements Action {
+
+        //private boolean hold = false;
+
+
+        // actions are formatted via telemetry packets as below
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            flowerShake();
+            return false;
+        }
+
+    }
+
+    public Action flowerShakeUp() {return new FlowerShakeUp(); }
 
 
 

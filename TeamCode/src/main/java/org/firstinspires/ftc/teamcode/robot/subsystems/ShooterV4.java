@@ -123,7 +123,7 @@ public class ShooterV4 extends ShooterAbstract {
             setHold(false);
             robot.intakeDirection(true);
             robot.feederDirection(false);
-            rpmSet(1110.0);
+            rpmSet(1115.0);
 
             shoot(true, 4, false, false);
             packet.put("Launch Status:", launchState);
