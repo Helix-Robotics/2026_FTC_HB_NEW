@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Red One Tip Auto Main Side Push", group = "Autonomous")
+@Autonomous(name = "3. Red One Tip Auto Main Side Push", group = "Autonomous")
 public class RedOneTipAutoMainSidePush extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -64,11 +64,15 @@ public class RedOneTipAutoMainSidePush extends LinearOpMode {
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
+        TrajectoryActionBuilder tab2_3 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 56.1725),
                         pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
+                        new ProfileAccelConstraint(-30, 40));
+
+
+        TrajectoryActionBuilder tab2 = tab2_3.endTrajectory().fresh()
+
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
@@ -87,6 +91,8 @@ public class RedOneTipAutoMainSidePush extends LinearOpMode {
                 .strafeToConstantHeading(new Vector2d(-26.7575, 48.0),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
+
+
 
 
 
@@ -155,6 +161,7 @@ public class RedOneTipAutoMainSidePush extends LinearOpMode {
 
         Action trajectoryActionChosen1 = tab1.build();
         Action trajectoryActionChosen1_2 = tab1_2.build();
+        Action trajectoryActionChosen2_3 = tab2_3.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
 
@@ -167,6 +174,11 @@ public class RedOneTipAutoMainSidePush extends LinearOpMode {
                         robot.shooter.launchAction(),
 
                         trajectoryActionChosen1_2,
+                        robot.arm.flowerShakeUp(),
+                        robot.arm.armDownAction(),
+                        trajectoryActionChosen2_3,
+
+
 
 
 //

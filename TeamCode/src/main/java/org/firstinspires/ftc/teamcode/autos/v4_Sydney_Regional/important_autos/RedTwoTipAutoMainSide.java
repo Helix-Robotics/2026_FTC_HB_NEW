@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Red Two Tip Auto Main Side", group = "Autonomous")
+@Autonomous(name = "1. Red Two Tip Auto Main Side", group = "Autonomous")
 public class RedTwoTipAutoMainSide extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -64,11 +64,16 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
+        TrajectoryActionBuilder tab2_3 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 56.1725),
                         pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
+                        new ProfileAccelConstraint(-30, 40));
+
+
+
+        TrajectoryActionBuilder tab2 = tab2_3.endTrajectory().fresh()
+
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
@@ -87,6 +92,10 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
                 .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
+
+
+
+
 
 
 
@@ -209,6 +218,7 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
         Action trajectoryActionChosen1 = tab1.build();
         Action trajectoryActionChosen1_2 = tab1_2.build();
         Action trajectoryActionChosen2 = tab2.build();
+        Action trajectoryActionChosen2_3 = tab2_3.build();
         Action returnToShootAction = returnToShoot.build();
         Action trajectoryActionChosen5 = tab5.build();
         Action trajectoryActionChosen6 = tab6.build();
@@ -222,6 +232,9 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
                         robot.shooter.launchAction(),
 
                         trajectoryActionChosen1_2,
+                        robot.arm.flowerShakeUp(),
+                        robot.arm.armDownAction(),
+                        trajectoryActionChosen2_3,
 
 
 //

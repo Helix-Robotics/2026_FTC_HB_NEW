@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Blue Two Tip Auto Main Side", group = "Autonomous")
+@Autonomous(name = "5. Blue Two Tip Auto Main Side", group = "Autonomous")
 public class BlueTwoTipAutoMainSide extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -64,27 +64,33 @@ public class BlueTwoTipAutoMainSide extends LinearOpMode {
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
+        TrajectoryActionBuilder tab1__2 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
+
+
+
+
+        TrajectoryActionBuilder tab2 = tab1__2.endTrajectory().fresh()
+
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(26.7575, -55),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                .strafeToConstantHeading(new Vector2d(26.7575, -55),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                .strafeToConstantHeading(new Vector2d(26.7575, -55),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -207,6 +213,7 @@ public class BlueTwoTipAutoMainSide extends LinearOpMode {
         if (isStopRequested()) return;
 
         Action trajectoryActionChosen1 = tab1.build();
+        Action trajectoryActionChosen1__2 = tab1__2.build();
         Action trajectoryActionChosen1_2 = tab1_2.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action returnToShootAction = returnToShoot.build();
@@ -220,8 +227,12 @@ public class BlueTwoTipAutoMainSide extends LinearOpMode {
                         robot.arm.armUpAction(),
                         trajectoryActionChosen1,
                         robot.shooter.launchAction(),
-
                         trajectoryActionChosen1_2,
+
+                        robot.arm.flowerShakeUp(),
+                        robot.arm.armDownAction(),
+                        trajectoryActionChosen1__2,
+
 
 
 //
@@ -244,7 +255,7 @@ public class BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
                         returnToShootAction,
-                        robot.vision.checkForRedSideTag(),
+                        robot.vision.checkForBlueSideTag(),
                         robot.shooter.launchAction(),
 
                         robot.intake.stopIntake(),

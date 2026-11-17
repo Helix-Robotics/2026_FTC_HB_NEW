@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Blue One Tip Auto Main Side No Push", group = "Autonomous")
+@Autonomous(name = "8. Blue One Tip Auto Main Side No Push", group = "Autonomous")
 public class BlueOneTipAutoMainSideNoPush extends LinearOpMode {
 
     protected CommandAbstract robot;
@@ -66,21 +66,26 @@ public class BlueOneTipAutoMainSideNoPush extends LinearOpMode {
 
         TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
+
+
+
+        TrajectoryActionBuilder tab2_3 = tab2.endTrajectory().fresh()
+
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(26.7575, -55),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                .strafeToConstantHeading(new Vector2d(26.7575, -55),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -57),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
@@ -97,7 +102,7 @@ public class BlueOneTipAutoMainSideNoPush extends LinearOpMode {
 
 
 
-        TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
+        TrajectoryActionBuilder tab3 = tab2_3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-23.57, -58.729), Math.toRadians(179.9),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
@@ -131,6 +136,7 @@ public class BlueOneTipAutoMainSideNoPush extends LinearOpMode {
 
         Action trajectoryActionChosen1 = tab1.build();
         Action trajectoryActionChosen1_2 = tab1_2.build();
+        Action trajectoryActionChosen2_3 = tab2_3.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
 
@@ -155,6 +161,11 @@ public class BlueOneTipAutoMainSideNoPush extends LinearOpMode {
                         ),
 
                         trajectoryActionChosen2,
+                        robot.arm.flowerShakeUp(),
+                        robot.arm.armDownAction(),
+
+                        trajectoryActionChosen2_3,
+
 
                         new ParallelAction(
 
