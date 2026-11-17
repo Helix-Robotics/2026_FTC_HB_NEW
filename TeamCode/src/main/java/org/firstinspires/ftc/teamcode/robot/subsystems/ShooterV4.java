@@ -114,4 +114,28 @@ public class ShooterV4 extends ShooterAbstract {
     public Action spinUpShooterAuto() {
         return new SpinUpShooterAuto();
     }
+
+
+    private class closeLaunch implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            robot.intakeDirection(true);
+            robot.feederDirection(false);
+            rpmSet(1110.0);
+
+            shoot(true, 4, false, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Action closeLaunchAction() {
+        return new closeLaunch();
+    }
 }

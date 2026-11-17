@@ -1,6 +1,6 @@
 
 
-package org.firstinspires.ftc.teamcode.autos.v4_Sydney_Regional.important_autos;
+package org.firstinspires.ftc.teamcode.autos.v4_Sydney_Regional;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;

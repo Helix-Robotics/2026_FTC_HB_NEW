@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "AUTO FOR THE 6 TIP Goal - Spline", group = "Autonomous")
-public class spline extends LinearOpMode {
+@Autonomous(name = "Red Two Tip Auto Main Side", group = "Autonomous")
+public class RedTwoTipAutoMainSide extends LinearOpMode {
 
     protected CommandAbstract robot;
 
@@ -60,31 +60,31 @@ public class spline extends LinearOpMode {
         TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
 
 
-                .strafeToLinearHeading(new Vector2d(-21.616,  50.58), Math.toRadians(90),
+                .strafeToLinearHeading(new Vector2d(-26.616,  48.58), Math.toRadians(90),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
         TrajectoryActionBuilder tab2 = tab1_2.endTrajectory().fresh()
-                .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(-26.7575, 56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                .strafeToConstantHeading(new Vector2d(-26.7575, 56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(-21.7575, 55.1725),
+                .strafeToConstantHeading(new Vector2d(-26.7575, 56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.5)
-                .strafeToConstantHeading(new Vector2d(-21.7575, 53.5025),
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(-26.7575, 54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -95,8 +95,8 @@ public class spline extends LinearOpMode {
 
         Vector2d collectionEnd = new Vector2d(-21.7575, 53.5025);
         Vector2d returnWaypoint = new Vector2d(30, 44);
-        Vector2d shootingApproach = new Vector2d(57, 10.5);
-        Vector2d shootingPosition = new Vector2d(61, 10.5);
+        Vector2d shootingApproach = new Vector2d(57, 10);
+        Vector2d shootingPosition = new Vector2d(61, 10);
         double departureTangent = Math.atan2(
                 returnWaypoint.y - collectionEnd.y, returnWaypoint.x - collectionEnd.x);
 
@@ -131,20 +131,59 @@ public class spline extends LinearOpMode {
                 );
 
         TrajectoryActionBuilder tab5 = returnToShoot.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(44.79, 17.38),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
 
-                .setTangent(Math.toRadians(180))
-                .splineToConstantHeading(
-                        new Vector2d(51, 16.5),
-                        Math.toRadians(100),
+        TrajectoryActionBuilder tab6 = tab5.endTrajectory().fresh()
+
+
+
+                .strafeToLinearHeading(new Vector2d(57.5,  24.75), Math.toRadians(0),
                         pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40)
-                )
-                .splineToSplineHeading(
-                        new Pose2d(45, 60, Math.toRadians(90)),
-                        Math.toRadians(90),
+                        new ProfileAccelConstraint(-30, 40))
+
+
+
+
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(56, 24.75),
                         pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40)
-                );
+                        new ProfileAccelConstraint(-30, 40))
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(57.5, 24.75),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(new Vector2d(52.659,  22.97), Math.toRadians(15.0),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40));
+
+
+        TrajectoryActionBuilder tab7 = tab6.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(48.78,  54.266), Math.toRadians(0),
+                        pathVelocity(67, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-67, 67));
+
+//
+//                .setTangent(Math.toRadians(180))
+//                .splineToConstantHeading(
+//                        new Vector2d(51, 16.5),
+//                        Math.toRadians(100),
+//                        pathVelocity(40, Math.PI * 1.25),
+//                        new ProfileAccelConstraint(-30, 40)
+//                )
+//                .splineToSplineHeading(
+//                        new Pose2d(45, 60, Math.toRadians(90)),
+//                        Math.toRadians(90),
+//                        pathVelocity(40, Math.PI * 1.25),
+//                        new ProfileAccelConstraint(-30, 40)
+//                );
+
+
+
+
+
 
 
 
@@ -172,6 +211,8 @@ public class spline extends LinearOpMode {
         Action trajectoryActionChosen2 = tab2.build();
         Action returnToShootAction = returnToShoot.build();
         Action trajectoryActionChosen5 = tab5.build();
+        Action trajectoryActionChosen6 = tab6.build();
+        Action trajectoryActionChosen7 = tab7.build();
 
 
         runActionSafely(
@@ -207,7 +248,24 @@ public class spline extends LinearOpMode {
                         robot.shooter.launchAction(),
 
                         robot.intake.stopIntake(),
-                        trajectoryActionChosen5
+                        trajectoryActionChosen5,
+
+                        new ParallelAction(
+
+
+                                robot.arm.armDownAction(),
+                                robot.intake.spinUpIntake(),
+                                robot.feeder.startFeedAction(),
+                                robot.shooter.spinUpShooterAuto()
+                        ),
+
+
+
+
+                        trajectoryActionChosen6,
+                        robot.shooter.closeLaunchAction(),
+                        trajectoryActionChosen7
+
 
 
 
@@ -219,8 +277,8 @@ public class spline extends LinearOpMode {
 
 
                 ),
-                29.0,
-                26.0
+                29.5,
+                28.5
         );
     }
 
@@ -259,12 +317,9 @@ public class spline extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(
-                                new Vector2d(25, 56),
-                                Math.toRadians(0),
-                                pathVelocity(40, Math.PI * 1.25),
-                                new ProfileAccelConstraint(-30, 40)
-                        )
+                        .strafeToLinearHeading(new Vector2d(48.78,  54.266), Math.toRadians(0),
+                                pathVelocity(67, Math.PI * 1.25),
+                                new ProfileAccelConstraint(-67, 67))
                         .build();
             }
 
