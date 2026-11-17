@@ -83,7 +83,7 @@ public class ShooterV4 extends ShooterAbstract {
             updateShooterPID();
             setHold(false);
             robot.intakeDirection(true);
-            robot.feederDirection(true);
+            robot.feederDirection(false);
             rpmSet(1145.0);
 
             shoot(true, 4, false, false);
@@ -98,5 +98,44 @@ public class ShooterV4 extends ShooterAbstract {
     @Override
     public Action launchAction() {
         return new LaunchV4();
+    }
+
+
+    private class SpinUpShooterAuto implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            robot.setShooterVelocity(1100);
+            return false;
+        }
+    }
+
+    @Override
+    public Action spinUpShooterAuto() {
+        return new SpinUpShooterAuto();
+    }
+
+
+    private class closeLaunch implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            robot.intakeDirection(true);
+            robot.feederDirection(false);
+            rpmSet(1115.0);
+
+            shoot(true, 4, false, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Action closeLaunchAction() {
+        return new closeLaunch();
     }
 }

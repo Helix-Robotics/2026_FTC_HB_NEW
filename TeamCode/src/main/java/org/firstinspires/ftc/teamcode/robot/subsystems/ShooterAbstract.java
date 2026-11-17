@@ -31,7 +31,7 @@ public abstract class ShooterAbstract {
     public static double SHOOTER_D = 0.5;
     public static double SHOOTER_F = 11.75;
 
-    public static double shoot_time_ms = 750; //700 3
+    public static double shoot_time_ms = 500; //700 3
 
     protected double targetVelocity;
     protected double minVelocity;
@@ -347,6 +347,28 @@ public abstract class ShooterAbstract {
 
     public void sensorShoot(boolean shotRequested, int shot_count) {
 
+    }
+
+    private class SpinUpShooterAuto implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            updateShooterPID();
+            setHold(false);
+            robot.intakeDirection(true);
+            robot.feederDirection(false);
+            rpmSet(1145.0);
+
+            shoot(true, 4, false, false);
+            packet.put("Launch Status:", launchState);
+            if (launchState != LaunchState.IDLE){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public Action spinUpShooterAuto() {
+        return new SpinUpShooterAuto();
     }
 
 }

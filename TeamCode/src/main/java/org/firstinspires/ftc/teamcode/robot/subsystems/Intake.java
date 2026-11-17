@@ -128,9 +128,7 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intaking = true;
-            outtaking = false;
-            setPower(1.0);
+            in();
             return false;
         }
     }
@@ -143,9 +141,7 @@ public class Intake {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intaking = false;
-            outtaking = true;
-            setPower(-1.0);
+            out();
             return false;
         }
     }
