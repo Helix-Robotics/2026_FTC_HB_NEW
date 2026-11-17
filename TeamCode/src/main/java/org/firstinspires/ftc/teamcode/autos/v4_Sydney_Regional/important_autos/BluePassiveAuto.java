@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Blue Passive Auto", group = "Autonomous")
+@Autonomous(name = "6. Blue Passive Auto", group = "Autonomous")
 public class BluePassiveAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
@@ -50,12 +50,17 @@ public class BluePassiveAuto extends LinearOpMode {
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
                 .waitSeconds(0.75)
-                .strafeToLinearHeading(new Vector2d(-55.75,  -27.5), Math.toRadians(179.9))
+                .strafeToLinearHeading(new Vector2d(-55.75,  -27.5), Math.toRadians(179.9));
 
 
 
 
 
+
+
+
+
+        TrajectoryActionBuilder tab3__4 = tab3.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-54.25, -27.5))
                 .waitSeconds(0.25)
@@ -64,7 +69,8 @@ public class BluePassiveAuto extends LinearOpMode {
 
 
 
-        TrajectoryActionBuilder tab3_4 = tab3.endTrajectory().fresh()
+
+        TrajectoryActionBuilder tab3_4 = tab3__4.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-53,  -25), Math.toRadians(-167.5))
                 .waitSeconds(0.75);
 
@@ -104,6 +110,7 @@ public class BluePassiveAuto extends LinearOpMode {
         Action trajectoryActionChosen1 = tab1.build();
         Action trajectoryActionChosen2 = tab2.build();
         Action trajectoryActionChosen3 = tab3.build();
+        Action trajectoryActionChosen3__4 = tab3__4.build();
         Action trajectoryActionChosen3_4 = tab3_4.build();
         Action trajectoryActionChosen4 = tab4.build();
 
@@ -132,13 +139,13 @@ public class BluePassiveAuto extends LinearOpMode {
 
 
                         trajectoryActionChosen3,
-                        new ParallelAction(
+                        robot.shooter.spinUpShooterAuto(),
 
-                                robot.shooter.spinUpShooterAuto(),
-                                trajectoryActionChosen3_4
+                        trajectoryActionChosen3__4,
+                        robot.arm.flowerShakeUp(),
+                        robot.arm.armDownAction(),
+                        trajectoryActionChosen3_4,
 
-
-                        ),
 
                         robot.intake.spinUpIntake(),
 
