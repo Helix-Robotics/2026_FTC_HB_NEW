@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "4. Red One Tip Auto Main Side No Push", group = "Autonomous")
+@Autonomous(name = "Red One Tip Auto Main Side No Push", group = "Autonomous")
 public class RedOneTipAutoMainSideNoPush extends LinearOpMode {
 
     protected CommandAbstract robot;
