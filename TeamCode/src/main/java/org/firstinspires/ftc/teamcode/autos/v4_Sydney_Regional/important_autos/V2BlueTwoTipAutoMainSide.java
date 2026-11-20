@@ -137,7 +137,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
                 );
 
         TrajectoryActionBuilder tab5 = returnToShoot.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(-44.79, -17.38),
+                .strafeToConstantHeading(new Vector2d(-44.79, -22.5),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
