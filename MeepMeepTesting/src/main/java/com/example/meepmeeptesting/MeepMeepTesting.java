@@ -5,12 +5,14 @@ import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MecanumKinematics;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
+import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
@@ -28,14 +30,25 @@ public class MeepMeepTesting {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        Pose2d initialPose = new Pose2d(-60, 14, Math.toRadians(179.9));
+        Pose2d redStartPose = new Pose2d(-60, 14, Math.toRadians(179.9));
+        Pose2d blueStartPose = new Pose2d(
+                redStartPose.position.unaryMinus(), redStartPose.heading.plus(Math.PI));
+        RoadRunnerBotEntity blueBot = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeBlueDark())
+                .setStartPose(blueStartPose)
+                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, TRACK_WIDTH)
+                .build();
         RoadRunnerBotEntity redBot = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeRedDark())
-                .setStartPose(initialPose)
-                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, Math.PI * 1.25, TRACK_WIDTH)
+                .setStartPose(redStartPose)
+                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, TRACK_WIDTH)
                 .build();
 
-        redBot.runAction(v2RedTwoTipAutoMainSide(redBot.getDrive().actionBuilder(initialPose)));
+        TrajectoryActionBuilder redBuilder = redBot.getDrive().actionBuilder(redStartPose);
+        TrajectoryActionBuilder blueBuilder = rotateRouteForBlue(
+                blueBot.getDrive().actionBuilder(blueStartPose), redStartPose);
+        redBot.runAction(v2RedTwoTipAutoMainSide(redBuilder));
+        blueBot.runAction(v2RedTwoTipAutoMainSide(blueBuilder));
 
         try {
             BufferedImage customField = ImageIO.read(new File(
@@ -51,8 +64,24 @@ public class MeepMeepTesting {
 
         meepMeep.setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
+                .addEntity(blueBot)
                 .addEntity(redBot)
                 .start();
+    }
+
+    private static TrajectoryActionBuilder rotateRouteForBlue(TrajectoryActionBuilder template,
+                                                               Pose2d redStartPose) {
+        // The builder takes red-side waypoints and rotates the resulting path onto the blue side.
+        return new TrajectoryActionBuilder(
+                template.getTurnActionFactory(),
+                template.getTrajectoryActionFactory(),
+                template.getTrajectoryBuilderParams(),
+                redStartPose,
+                template.getBeginEndVel(),
+                template.getBaseTurnConstraints(),
+                template.getBaseVelConstraint(),
+                template.getBaseAccelConstraint(),
+                pose -> new Pose2dDual<>(pose.position.unaryMinus(), pose.heading.plus(Math.PI)));
     }
 
     private static Action v2RedTwoTipAutoMainSide(TrajectoryActionBuilder start) {
@@ -85,8 +114,8 @@ public class MeepMeepTesting {
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(firstPickupBackoff, driveVelocity, driveAcceleration);
 
-        Vector2d secondRowEntry = new Vector2d(-10, 37);
-        Vector2d secondRowExit = new Vector2d(30, 37);
+        Vector2d secondRowEntry = new Vector2d(-21.7575, 35);
+        Vector2d secondRowExit = new Vector2d(30, 35);
         TrajectoryActionBuilder returnToShoot = collectFirst.endTrajectory().fresh()
                 .setTangent(Math.toRadians(-90))
                 .splineToSplineHeading(new Pose2d(secondRowEntry, 0), 0,
@@ -96,7 +125,7 @@ public class MeepMeepTesting {
                 .strafeToConstantHeading(new Vector2d(61, 10), driveVelocity, driveAcceleration);
 
         TrajectoryActionBuilder approachSecondPickup = returnToShoot.endTrajectory().fresh()
-                .strafeToConstantHeading(new Vector2d(44.79, 17.38), driveVelocity, driveAcceleration);
+                .strafeToConstantHeading(new Vector2d(44.79, 22.5), driveVelocity, driveAcceleration);
 
         Vector2d secondPickup = new Vector2d(57.5, 24.75);
         TrajectoryActionBuilder collectSecond = approachSecondPickup.endTrajectory().fresh()

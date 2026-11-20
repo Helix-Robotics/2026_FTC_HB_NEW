@@ -102,10 +102,15 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d secondRowEntry = new Vector2d(-10, 37);
-        Vector2d secondRowExit = new Vector2d(30, 37);
+        Vector2d secondRowEntry = new Vector2d(-21.7575, 35);
+        Vector2d secondRowExit = new Vector2d(30, 35);
         Vector2d shootingApproach = new Vector2d(57, 10);
         Vector2d shootingPosition = new Vector2d(61, 10);
+
+
+
+
+
         VelConstraint returnVelocity = pathVelocity(40, Math.PI * 1.25);
         ProfileAccelConstraint returnAcceleration = new ProfileAccelConstraint(-30, 40);
 

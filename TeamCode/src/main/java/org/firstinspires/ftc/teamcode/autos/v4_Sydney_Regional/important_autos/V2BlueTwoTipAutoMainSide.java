@@ -99,8 +99,8 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d collectionEnd = new Vector2d(21.7575, -53.5025);
-        Vector2d returnWaypoint = new Vector2d(-30, -44);
+        Vector2d collectionEnd = new Vector2d(21.7575, -35);
+        Vector2d returnWaypoint = new Vector2d(-30, -35);
         Vector2d shootingApproach = new Vector2d(-57, -10);
         Vector2d shootingPosition = new Vector2d(-61, -10);
         double departureTangent = Math.atan2(
