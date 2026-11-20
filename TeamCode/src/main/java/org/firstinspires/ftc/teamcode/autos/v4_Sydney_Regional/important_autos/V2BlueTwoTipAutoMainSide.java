@@ -40,7 +40,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
         Pose2d initialPose = new Pose2d(
                 60,
                 -14,
-                Math.toRadians(0)
+                Math.toRadians(-0.1)
         );
 
         robot = new CommandsV4(hardwareMap, initialPose);
@@ -66,7 +66,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
         TrajectoryActionBuilder tab1__2 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -57),
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -76,21 +76,21 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
         TrajectoryActionBuilder tab2 = tab1__2.endTrajectory().fresh()
 
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -55),
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -57),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -55),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -57),
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -55),
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -99,24 +99,22 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d collectionEnd = new Vector2d(21.7575, -35);
-        Vector2d returnWaypoint = new Vector2d(-30, -35);
+        Vector2d secondRowEntry = new Vector2d(21.7575, -35);
+        Vector2d secondRowExit = new Vector2d(-30, -35);
         Vector2d shootingApproach = new Vector2d(-57, -10);
         Vector2d shootingPosition = new Vector2d(-61, -10);
-        double departureTangent = Math.atan2(
-                returnWaypoint.y - collectionEnd.y, returnWaypoint.x - collectionEnd.x);
-
-        double waypointTangent = departureTangent;
-
+        VelConstraint returnVelocity = pathVelocity(40, Math.PI * 1.25);
+        ProfileAccelConstraint returnAcceleration = new ProfileAccelConstraint(-30, 40);
 
         TrajectoryActionBuilder returnToShoot = tab2.endTrajectory().fresh()
-                .setTangent(departureTangent)
+                .setTangent(Math.toRadians(90))
                 .splineToSplineHeading(
-                        new Pose2d(returnWaypoint, Math.toRadians(179.9)),
-                        waypointTangent,
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40)
+                        new Pose2d(secondRowEntry, Math.PI),
+                        Math.PI,
+                        returnVelocity,
+                        returnAcceleration
                 )
+                .strafeToConstantHeading(secondRowExit, returnVelocity, returnAcceleration)
 
                 .afterDisp(0, new SequentialAction(
                         robot.arm.armUpAction(),
@@ -126,14 +124,14 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
                 ))
                 .splineToConstantHeading(
                         shootingApproach,
-                        Math.toRadians(179.9),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40)
+                        Math.PI,
+                        returnVelocity,
+                        returnAcceleration
                 )
                 .strafeToConstantHeading(
                         shootingPosition,
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40)
+                        returnVelocity,
+                        returnAcceleration
                 );
 
         TrajectoryActionBuilder tab5 = returnToShoot.endTrajectory().fresh()
@@ -145,7 +143,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-                .strafeToLinearHeading(new Vector2d(-57.5,  -24.75), Math.toRadians(179.9),
+                .strafeToLinearHeading(new Vector2d(-57.5,  -24.75), Math.PI,
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
 
@@ -167,7 +165,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab7 = tab6.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-48.78,  -54.266), Math.toRadians(179.9),
+                .strafeToLinearHeading(new Vector2d(-48.78,  -54.266), Math.PI,
                         pathVelocity(67, Math.PI * 1.25),
                         new ProfileAccelConstraint(-67, 67));
 
@@ -328,7 +326,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(new Vector2d(-48.78,  -54.266), Math.toRadians(179.9),
+                        .strafeToLinearHeading(new Vector2d(-48.78,  -54.266), Math.PI,
                                 pathVelocity(67, Math.PI * 1.25),
                                 new ProfileAccelConstraint(-67, 67))
                         .build();

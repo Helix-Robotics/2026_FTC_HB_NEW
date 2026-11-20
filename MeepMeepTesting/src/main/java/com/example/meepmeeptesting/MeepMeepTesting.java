@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MecanumKinematics;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -31,8 +30,7 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
         Pose2d redStartPose = new Pose2d(-60, 14, Math.toRadians(179.9));
-        Pose2d blueStartPose = new Pose2d(
-                redStartPose.position.unaryMinus(), redStartPose.heading.plus(Math.PI));
+        Pose2d blueStartPose = new Pose2d(60, -14, Math.toRadians(-0.1));
         RoadRunnerBotEntity blueBot = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setStartPose(blueStartPose)
@@ -45,10 +43,9 @@ public class MeepMeepTesting {
                 .build();
 
         TrajectoryActionBuilder redBuilder = redBot.getDrive().actionBuilder(redStartPose);
-        TrajectoryActionBuilder blueBuilder = rotateRouteForBlue(
-                blueBot.getDrive().actionBuilder(blueStartPose), redStartPose);
+        TrajectoryActionBuilder blueBuilder = blueBot.getDrive().actionBuilder(blueStartPose);
         redBot.runAction(v2RedTwoTipAutoMainSide(redBuilder));
-        blueBot.runAction(v2RedTwoTipAutoMainSide(blueBuilder));
+        blueBot.runAction(v2BlueTwoTipAutoMainSide(blueBuilder));
 
         try {
             BufferedImage customField = ImageIO.read(new File(
@@ -69,19 +66,79 @@ public class MeepMeepTesting {
                 .start();
     }
 
-    private static TrajectoryActionBuilder rotateRouteForBlue(TrajectoryActionBuilder template,
-                                                               Pose2d redStartPose) {
-        // The builder takes red-side waypoints and rotates the resulting path onto the blue side.
-        return new TrajectoryActionBuilder(
-                template.getTurnActionFactory(),
-                template.getTrajectoryActionFactory(),
-                template.getTrajectoryBuilderParams(),
-                redStartPose,
-                template.getBeginEndVel(),
-                template.getBaseTurnConstraints(),
-                template.getBaseVelConstraint(),
-                template.getBaseAccelConstraint(),
-                pose -> new Pose2dDual<>(pose.position.unaryMinus(), pose.heading.plus(Math.PI)));
+    private static Action v2BlueTwoTipAutoMainSide(TrajectoryActionBuilder start) {
+        MecanumKinematics kinematics = new MecanumKinematics(TRACK_WIDTH, 1.0);
+        VelConstraint driveVelocity = pathVelocity(kinematics, 40);
+        ProfileAccelConstraint driveAcceleration = new ProfileAccelConstraint(-30, 40);
+        VelConstraint parkVelocity = pathVelocity(kinematics, 67);
+        ProfileAccelConstraint parkAcceleration = new ProfileAccelConstraint(-67, 67);
+
+        TrajectoryActionBuilder preload = start
+                .strafeToConstantHeading(new Vector2d(59, -11.2845),
+                        driveVelocity, driveAcceleration);
+
+        TrajectoryActionBuilder approachFirstPickup = preload.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(26.616, -48.58), Math.toRadians(-90),
+                        driveVelocity, driveAcceleration);
+
+        Vector2d firstPickup = new Vector2d(26.7575, -56.1725);
+        Vector2d firstPickupBackoff = new Vector2d(26.7575, -54.5025);
+        TrajectoryActionBuilder enterFirstPickup = approachFirstPickup.endTrajectory().fresh()
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(firstPickup, driveVelocity, driveAcceleration);
+
+        TrajectoryActionBuilder collectFirst = enterFirstPickup.endTrajectory().fresh()
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(firstPickupBackoff, driveVelocity, driveAcceleration)
+                .strafeToConstantHeading(firstPickup, driveVelocity, driveAcceleration)
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(firstPickupBackoff, driveVelocity, driveAcceleration)
+                .strafeToConstantHeading(firstPickup, driveVelocity, driveAcceleration)
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(firstPickupBackoff, driveVelocity, driveAcceleration);
+
+        Vector2d secondRowEntry = new Vector2d(21.7575, -35);
+        Vector2d secondRowExit = new Vector2d(-30, -35);
+        Vector2d shootingApproach = new Vector2d(-57, -10);
+        Vector2d shootingPosition = new Vector2d(-61, -10);
+        double shootingHeading = Math.PI;
+        TrajectoryActionBuilder returnToShoot = collectFirst.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(secondRowEntry, shootingHeading), Math.PI,
+                        driveVelocity, driveAcceleration)
+                .strafeToConstantHeading(secondRowExit, driveVelocity, driveAcceleration)
+                .splineToConstantHeading(shootingApproach, shootingHeading, driveVelocity, driveAcceleration)
+                .strafeToConstantHeading(shootingPosition, driveVelocity, driveAcceleration);
+
+        TrajectoryActionBuilder approachSecondPickup = returnToShoot.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(-44.79, -22.5),
+                        driveVelocity, driveAcceleration);
+
+        Vector2d secondPickup = new Vector2d(-57.5, -24.75);
+        TrajectoryActionBuilder collectSecond = approachSecondPickup.endTrajectory().fresh()
+                .strafeToLinearHeading(secondPickup, shootingHeading, driveVelocity, driveAcceleration)
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(-56, -24.75),
+                        driveVelocity, driveAcceleration)
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(secondPickup, driveVelocity, driveAcceleration)
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(new Vector2d(-52.659, -22.97), Math.toRadians(-165),
+                        driveVelocity, driveAcceleration);
+
+        TrajectoryActionBuilder park = collectSecond.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-48.78, -54.266), shootingHeading,
+                        parkVelocity, parkAcceleration);
+
+        return new SequentialAction(
+                preload.build(),
+                approachFirstPickup.build(),
+                enterFirstPickup.build(),
+                collectFirst.build(),
+                returnToShoot.build(),
+                approachSecondPickup.build(),
+                collectSecond.build(),
+                park.build());
     }
 
     private static Action v2RedTwoTipAutoMainSide(TrajectoryActionBuilder start) {
