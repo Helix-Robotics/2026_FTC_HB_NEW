@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "5. v1 Blue Two Tip Auto Main Side", group = "Autonomous")
+@Autonomous(name = "5. Dont Use v1 Blue Two Tip Auto Main Side", group = "Autonomous")
 public class BlueTwoTipAutoMainSide extends LinearOpMode {
 
     protected CommandAbstract robot;
