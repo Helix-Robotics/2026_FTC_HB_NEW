@@ -32,7 +32,6 @@ public class MainV4Red extends MainV3Red {
         robot.intakeDirection(true);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
-        robot.upArm();
 
         stateMachine = StateMachine.WAITING_FOR_START;
     }
