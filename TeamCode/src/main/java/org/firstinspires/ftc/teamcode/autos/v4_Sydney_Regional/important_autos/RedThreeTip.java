@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Red Three Tip Auto", group = "Autonomous")
+//@Autonomous(name = "Red Three Tip Auto", group = "Autonomous")
 public class RedThreeTip extends LinearOpMode {
     private static final Vector2d HOME_POSITION = new Vector2d(-29, -61);
     private static final double HOME_HEADING = Math.PI;

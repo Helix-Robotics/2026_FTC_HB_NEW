@@ -12,6 +12,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
+import com.noahbres.meepmeep.core.colorscheme.ColorScheme;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -32,40 +33,48 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
         boolean previewTwoTipAutos = Arrays.asList(args).contains("--v2");
+        boolean compareSpecialAuto = !previewTwoTipAutos && !Arrays.asList(args).contains("--three-tip");
         Pose2d positiveYStartPose = new Pose2d(-60, 14, Math.toRadians(179.9));
         Pose2d negativeYStartPose = new Pose2d(60, -14, Math.toRadians(-0.1));
         Pose2d redStartPose = previewTwoTipAutos ? positiveYStartPose : negativeYStartPose;
-        Pose2d blueStartPose = previewTwoTipAutos ? negativeYStartPose : positiveYStartPose;
-        RoadRunnerBotEntity redBot = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeRedDark() {
-                    @Override
-                    public Color getTRAJECTORY_PATH_COLOR() {
-                        return getBOT_BODY_COLOR();
-                    }
-                })
-                .setStartPose(redStartPose)
-                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, TRACK_WIDTH)
-                .build();
-        RoadRunnerBotEntity blueBot = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueDark() {
-                    @Override
-                    public Color getTRAJECTORY_PATH_COLOR() {
-                        return getBOT_BODY_COLOR();
-                    }
-                })
-                .setStartPose(blueStartPose)
-                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, TRACK_WIDTH)
-                .build();
-
+        RoadRunnerBotEntity redBot = buildBot(meepMeep, redStartPose, new ColorSchemeRedDark() {
+            @Override
+            public Color getTRAJECTORY_PATH_COLOR() {
+                return getBOT_BODY_COLOR();
+            }
+        });
         TrajectoryActionBuilder redBuilder = redBot.getDrive().actionBuilder(redStartPose);
-        TrajectoryActionBuilder blueBuilder = blueBot.getDrive().actionBuilder(blueStartPose);
-        if (previewTwoTipAutos) {
-            redBot.runAction(positiveYAuto(redBuilder, positiveYStartPose, true));
-            blueBot.runAction(v2BlueTwoTipAutoMainSide(blueBuilder));
+        if (!previewTwoTipAutos) {
+            redBuilder = rotateRoute180(redBuilder, positiveYStartPose);
+        }
+        redBot.runAction(positiveYAuto(redBuilder, positiveYStartPose, previewTwoTipAutos, false));
+        meepMeep.addEntity(redBot);
+
+        if (compareSpecialAuto) {
+            meepMeep.getWindowFrame().setTitle("Red Special Three Tip | Red (tag found) | Amber (2s timeout)");
+            RoadRunnerBotEntity fallbackBot = buildBot(meepMeep, redStartPose, new ColorSchemeRedDark() {
+                @Override
+                public Color getTRAJECTORY_PATH_COLOR() {
+                    return new Color(255, 183, 55);
+                }
+            });
+            TrajectoryActionBuilder fallbackBuilder = rotateRoute180(
+                    fallbackBot.getDrive().actionBuilder(redStartPose), positiveYStartPose);
+            fallbackBot.runAction(positiveYAuto(fallbackBuilder, positiveYStartPose, false, true));
+            meepMeep.addEntity(fallbackBot);
         } else {
-            redBot.runAction(positiveYAuto(rotateRoute180(redBuilder, positiveYStartPose),
-                    positiveYStartPose, false));
-            blueBot.runAction(positiveYAuto(blueBuilder, positiveYStartPose, false));
+            Pose2d blueStartPose = previewTwoTipAutos ? negativeYStartPose : positiveYStartPose;
+            RoadRunnerBotEntity blueBot = buildBot(meepMeep, blueStartPose, new ColorSchemeBlueDark() {
+                @Override
+                public Color getTRAJECTORY_PATH_COLOR() {
+                    return getBOT_BODY_COLOR();
+                }
+            });
+            TrajectoryActionBuilder blueBuilder = blueBot.getDrive().actionBuilder(blueStartPose);
+            blueBot.runAction(previewTwoTipAutos
+                    ? v2BlueTwoTipAutoMainSide(blueBuilder)
+                    : positiveYAuto(blueBuilder, positiveYStartPose, false, false));
+            meepMeep.addEntity(blueBot);
         }
 
         try {
@@ -82,9 +91,15 @@ public class MeepMeepTesting {
 
         meepMeep.setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(redBot)
-                .addEntity(blueBot)
                 .start();
+    }
+
+    private static RoadRunnerBotEntity buildBot(MeepMeep meepMeep, Pose2d startPose, ColorScheme colorScheme) {
+        return new DefaultBotBuilder(meepMeep)
+                .setColorScheme(colorScheme)
+                .setStartPose(startPose)
+                .setConstraints(40, 40, MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY, TRACK_WIDTH)
+                .build();
     }
 
     private static TrajectoryActionBuilder rotateRoute180(TrajectoryActionBuilder template,
@@ -176,7 +191,8 @@ public class MeepMeepTesting {
                 park.build());
     }
 
-    private static Action positiveYAuto(TrajectoryActionBuilder start, Pose2d startPose, boolean twoTip) {
+    private static Action positiveYAuto(TrajectoryActionBuilder start, Pose2d startPose,
+                                        boolean twoTip, boolean tipFallback) {
         MecanumKinematics kinematics = new MecanumKinematics(TRACK_WIDTH, 1.0);
         VelConstraint driveVelocity = pathVelocity(kinematics, 40);
         VelConstraint transitVelocity = twoTip ? driveVelocity : pathVelocity(kinematics, 55);
@@ -207,19 +223,29 @@ public class MeepMeepTesting {
                 .strafeToConstantHeading(firstPickupBackoff, driveVelocity, driveAcceleration);
 
         if (!twoTip) {
-            TrajectoryActionBuilder returnToOpeningShot = collectFirst.endTrajectory().fresh()
+            VelConstraint crossFieldVelocity = pathVelocity(kinematics, 67);
+            TrajectoryActionBuilder secondShot = collectFirst.endTrajectory().fresh()
                     .strafeToLinearHeading(openingShootingPosition, startPose.heading,
                             transitVelocity, driveAcceleration);
+            if (tipFallback) {
+                Pose2d oppositeShot = new Pose2d(59, openingShootingPosition.y, 0);
+                Pose2d primaryShot = new Pose2d(openingShootingPosition, startPose.heading);
+                VelConstraint hiveCrossingVelocity = pathVelocity(kinematics, 80);
+                TrajectoryActionBuilder crossAfterFirstPickup = transferToShot(
+                        secondShot.waitSeconds(2), oppositeShot,
+                        hiveCrossingVelocity, driveVelocity, driveAcceleration);
+                secondShot = transferToShot(crossAfterFirstPickup.endTrajectory(), primaryShot,
+                        hiveCrossingVelocity, driveVelocity, driveAcceleration);
+            }
             Vector2d infieldWaypoint = new Vector2d(-49, openingShootingPosition.y);
             Vector2d nextPickup = new Vector2d(-58.5, 60);
-            TrajectoryActionBuilder approachNextPickup = returnToOpeningShot.endTrajectory().fresh()
+            TrajectoryActionBuilder approachNextPickup = secondShot.endTrajectory().fresh()
                     .strafeToConstantHeading(infieldWaypoint, driveVelocity, driveAcceleration)
                     .strafeToLinearHeading(nextPickup, Math.PI / 2, driveVelocity, driveAcceleration);
             TrajectoryActionBuilder returnFromNextPickup = approachNextPickup.endTrajectory().fresh()
                     .strafeToLinearHeading(infieldWaypoint, startPose.heading, driveVelocity, driveAcceleration)
                     .strafeToConstantHeading(openingShootingPosition, driveVelocity, driveAcceleration);
             VelConstraint parkVelocity = pathVelocity(kinematics, 60);
-            VelConstraint crossFieldVelocity = pathVelocity(kinematics, 67);
             TrajectoryActionBuilder parkInBlueHome = returnFromNextPickup.endTrajectory().fresh()
                     .setTangent(Math.PI / 2)
                     .splineToSplineHeading(new Pose2d(-35, 39, Math.PI / 2), 0,
@@ -232,7 +258,7 @@ public class MeepMeepTesting {
                     approachFirstPickup.build(),
                     enterFirstPickup.build(),
                     collectFirst.build(),
-                    returnToOpeningShot.build(),
+                    secondShot.build(),
                     approachNextPickup.build(),
                     returnFromNextPickup.build(),
                     parkInBlueHome.build());
@@ -275,6 +301,16 @@ public class MeepMeepTesting {
                 approachSecondPickup.build(),
                 collectSecond.build(),
                 park.build());
+    }
+
+    private static TrajectoryActionBuilder transferToShot(TrajectoryActionBuilder start, Pose2d destination,
+                                                          VelConstraint crossingVelocity, VelConstraint approachVelocity,
+                                                          ProfileAccelConstraint approachAcceleration) {
+        double turnStartX = Math.copySign(42.0, destination.position.x);
+        double travelTangent = turnStartX < 0 ? Math.PI : 0;
+        return start.strafeToConstantHeading(new Vector2d(turnStartX, destination.position.y),
+                        crossingVelocity, new ProfileAccelConstraint(-67, 67))
+                .splineToSplineHeading(destination, travelTangent, approachVelocity, approachAcceleration);
     }
 
     private static VelConstraint pathVelocity(MecanumKinematics kinematics, double maxWheelVelocity) {
