@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.commands.CommandsV4;
 
 import java.util.List;
 
-@TeleOp(name = "Dont use V4 Red Teleop")
+@TeleOp(name = "V4 Red Teleop")
 public class MainV4Red extends MainV3Red {
 
     private boolean slowMode = false;
@@ -32,6 +32,7 @@ public class MainV4Red extends MainV3Red {
         robot.intakeDirection(true);
         //robot.shooterDirection(true);
         robot.shooter.setHold(true);
+        robot.upArm();
 
         stateMachine = StateMachine.WAITING_FOR_START;
     }
