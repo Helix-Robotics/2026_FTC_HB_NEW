@@ -66,7 +66,7 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
         TrajectoryActionBuilder tab1__2 = tab1_2.endTrajectory().fresh()
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.75),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -76,21 +76,21 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
         TrajectoryActionBuilder tab2 = tab1__2.endTrajectory().fresh()
 
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.75),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
-                        pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40))
-                .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.75),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.75),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(new Vector2d(26.7575, -56.75),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40))
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(26.7575, -54.75),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
@@ -161,7 +161,8 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
                 .waitSeconds(0.25)
                 .strafeToLinearHeading(new Vector2d(-52.659,  -22.97), Math.toRadians(-165.0),
                         pathVelocity(40, Math.PI * 1.25),
-                        new ProfileAccelConstraint(-30, 40));
+                        new ProfileAccelConstraint(-30, 40))
+                .waitSeconds(0.67);
 
 
         TrajectoryActionBuilder tab7 = tab6.endTrajectory().fresh()

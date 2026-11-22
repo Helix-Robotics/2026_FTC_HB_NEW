@@ -162,13 +162,13 @@ public class Arm {
 
     public void down() {
 
-        setPosition(0.95);
+        setPosition(0.9);
 
     }
 
     public void flowerShake() {
 
-        setPosition(0.90);
+        setPosition(0.875);
 
     }
 

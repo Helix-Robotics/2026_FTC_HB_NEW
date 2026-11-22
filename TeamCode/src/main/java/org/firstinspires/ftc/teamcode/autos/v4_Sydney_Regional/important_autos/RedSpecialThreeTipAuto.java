@@ -30,7 +30,7 @@ import java.util.Arrays;
 public class RedSpecialThreeTipAuto extends LinearOpMode {
     private static final Vector2d HOME_POSITION = new Vector2d(-29, -61);
     private static final double HOME_HEADING = Math.PI;
-    private static final double TIP_WAIT_SECONDS = 2.0;
+    private static final double TIP_WAIT_SECONDS = 1.5;
 
     protected CommandAbstract robot;
 
@@ -177,7 +177,6 @@ public class RedSpecialThreeTipAuto extends LinearOpMode {
                         robot.arm.armDownAction(),
                         new ParallelAction(
 
-                                robot.arm.armDownAction(),
                                 robot.intake.spinUpIntake(),
                                 robot.feeder.startFeedAction()
                         ),
