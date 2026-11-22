@@ -52,7 +52,6 @@ public class BlueSpecialThreeTipAuto extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
         Vector2d shootingPosition = new Vector2d(-59, 11.2845);
-        VelConstraint transitVelocity = pathVelocity(55, Math.PI * 1.25);
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
                 .strafeToConstantHeading(shootingPosition,
                         pathVelocity(40, Math.PI * 1.25),
@@ -61,7 +60,7 @@ public class BlueSpecialThreeTipAuto extends LinearOpMode {
         TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
 
                 .strafeToLinearHeading(new Vector2d(-26.616, 48.58), Math.toRadians(90),
-                        transitVelocity,
+                        pathVelocity(55, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
         TrajectoryActionBuilder tab2_3 = tab1_2.endTrajectory().fresh()
@@ -93,41 +92,40 @@ public class BlueSpecialThreeTipAuto extends LinearOpMode {
 
         TrajectoryActionBuilder returnToShootingPosition = tab2.endTrajectory().fresh()
                 .strafeToLinearHeading(shootingPosition, initialPose.heading,
-                        transitVelocity,
+                        pathVelocity(55, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        VelConstraint cycleVelocity = pathVelocity(40, Math.PI * 1.25);
-        ProfileAccelConstraint cycleAcceleration = new ProfileAccelConstraint(-30, 40);
-        Vector2d infieldWaypoint = new Vector2d(-49, shootingPosition.y);
-        Vector2d nextPickup = new Vector2d(-58.5, 60);
         TrajectoryActionBuilder approachNextPickup = returnToShootingPosition.endTrajectory().fresh()
-                .strafeToConstantHeading(infieldWaypoint, cycleVelocity, cycleAcceleration)
-                .strafeToLinearHeading(nextPickup, Math.PI / 2, cycleVelocity, cycleAcceleration);
+                .strafeToConstantHeading(new Vector2d(-49, shootingPosition.y),
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
+                .strafeToLinearHeading(new Vector2d(-58.5, 60), Math.PI / 2,
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
         TrajectoryActionBuilder returnFromNextPickup = approachNextPickup.endTrajectory().fresh()
-                .strafeToLinearHeading(infieldWaypoint, initialPose.heading, cycleVelocity, cycleAcceleration)
-                .strafeToConstantHeading(shootingPosition, cycleVelocity, cycleAcceleration);
+                .strafeToLinearHeading(new Vector2d(-49, shootingPosition.y), initialPose.heading,
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
+                .strafeToConstantHeading(shootingPosition,
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
-        VelConstraint parkVelocity = pathVelocity(60, Math.PI * 1.25);
-        VelConstraint crossFieldVelocity = pathVelocity(67, Math.PI * 1.25);
         TrajectoryActionBuilder parkInBlueHome = returnFromNextPickup.endTrajectory().fresh()
                 .setTangent(Math.PI / 2)
                 .splineToSplineHeading(new Pose2d(-35, 39, Math.PI / 2), 0,
-                        parkVelocity, cycleAcceleration)
+                        pathVelocity(60, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
                 .splineToSplineHeading(new Pose2d(10, 39, HOME_HEADING), 0,
-                        crossFieldVelocity, cycleAcceleration)
+                        pathVelocity(67, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
                 .splineToConstantHeading(HOME_POSITION, Math.PI / 4,
-                        parkVelocity, cycleAcceleration);
+                        pathVelocity(60, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
-        Pose2d primaryShot = new Pose2d(shootingPosition, initialPose.heading);
-        Pose2d oppositeShot = new Pose2d(59, shootingPosition.y, HOME_HEADING);
-        VelConstraint hiveCrossingVelocity = pathVelocity(80, Math.PI * 1.25);
-        TrajectoryActionBuilder crossAfterFirstPickup = transferToShot(
-                returnToShootingPosition.endTrajectory().fresh(), oppositeShot,
-                hiveCrossingVelocity, cycleVelocity, cycleAcceleration);
-        TrajectoryActionBuilder returnAfterOppositeShot = transferToShot(
-                crossAfterFirstPickup.endTrajectory().fresh(), primaryShot,
-                hiveCrossingVelocity, cycleVelocity, cycleAcceleration);
+        TrajectoryActionBuilder crossAfterFirstPickup = returnToShootingPosition.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(42, shootingPosition.y),
+                        pathVelocity(80, Math.PI * 1.25), new ProfileAccelConstraint(-67, 67))
+                .splineToSplineHeading(new Pose2d(59, shootingPosition.y, HOME_HEADING), 0,
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
+        TrajectoryActionBuilder returnAfterOppositeShot = crossAfterFirstPickup.endTrajectory().fresh()
+                .strafeToConstantHeading(new Vector2d(-42, shootingPosition.y),
+                        pathVelocity(80, Math.PI * 1.25), new ProfileAccelConstraint(-67, 67))
+                .splineToSplineHeading(new Pose2d(shootingPosition, initialPose.heading), Math.PI,
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
         while (!isStopRequested() && !opModeIsActive()) {
 
@@ -216,17 +214,6 @@ public class BlueSpecialThreeTipAuto extends LinearOpMode {
                 29.5,
                 26.5
         );
-    }
-
-    private TrajectoryActionBuilder transferToShot(TrajectoryActionBuilder start, Pose2d destination,
-                                                   VelConstraint crossingVelocity, VelConstraint approachVelocity,
-                                                   ProfileAccelConstraint approachAcceleration) {
-        double turnStartX = Math.copySign(42.0, destination.position.x);
-        double travelTangent = turnStartX < 0 ? Math.PI : 0;
-        // Matching path tangents keep the approach straight while the heading changes outside the hive.
-        return start.strafeToConstantHeading(new Vector2d(turnStartX, destination.position.y),
-                        crossingVelocity, new ProfileAccelConstraint(-67, 67))
-                .splineToSplineHeading(destination, travelTangent, approachVelocity, approachAcceleration);
     }
 
     private Action shootWithTipFallback(Action shootHere, Action shootOnOppositeSide) {

@@ -102,21 +102,13 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d collectionEnd = new Vector2d(-21.7575, 53.5025);
-        Vector2d returnWaypoint = new Vector2d(30, 44);
-        Vector2d shootingApproach = new Vector2d(57, 10);
-        Vector2d shootingPosition = new Vector2d(61, 10);
-        double departureTangent = Math.atan2(
-                returnWaypoint.y - collectionEnd.y, returnWaypoint.x - collectionEnd.x);
-
-        double waypointTangent = departureTangent;
-
+        double departureTangent = Math.atan2(44 - 53.5025, 30 - (-21.7575));
 
         TrajectoryActionBuilder returnToShoot = tab2.endTrajectory().fresh()
                 .setTangent(departureTangent)
                 .splineToSplineHeading(
-                        new Pose2d(returnWaypoint, Math.toRadians(0)),
-                        waypointTangent,
+                        new Pose2d(30, 44, Math.toRadians(0)),
+                        departureTangent,
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40)
                 )
@@ -128,13 +120,13 @@ public class RedTwoTipAutoMainSide extends LinearOpMode {
                         robot.shooter.spinUpShooterAuto()
                 ))
                 .splineToConstantHeading(
-                        shootingApproach,
+                        new Vector2d(57, 10),
                         Math.toRadians(0),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40)
                 )
                 .strafeToConstantHeading(
-                        shootingPosition,
+                        new Vector2d(61, 10),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40)
                 );

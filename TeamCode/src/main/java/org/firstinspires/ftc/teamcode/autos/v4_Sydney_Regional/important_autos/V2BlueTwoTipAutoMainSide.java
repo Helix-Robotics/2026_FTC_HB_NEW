@@ -99,22 +99,16 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d secondRowEntry = new Vector2d(21.7575, -35);
-        Vector2d secondRowExit = new Vector2d(-30, -35);
-        Vector2d shootingApproach = new Vector2d(-57, -10);
-        Vector2d shootingPosition = new Vector2d(-61, -10);
-        VelConstraint returnVelocity = pathVelocity(40, Math.PI * 1.25);
-        ProfileAccelConstraint returnAcceleration = new ProfileAccelConstraint(-30, 40);
-
         TrajectoryActionBuilder returnToShoot = tab2.endTrajectory().fresh()
                 .setTangent(Math.toRadians(90))
                 .splineToSplineHeading(
-                        new Pose2d(secondRowEntry, Math.PI),
+                        new Pose2d(21.7575, -35, Math.PI),
                         Math.PI,
-                        returnVelocity,
-                        returnAcceleration
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 )
-                .strafeToConstantHeading(secondRowExit, returnVelocity, returnAcceleration)
+                .strafeToConstantHeading(new Vector2d(-30, -35),
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
 
                 .afterDisp(0, new SequentialAction(
                         robot.arm.armUpAction(),
@@ -123,15 +117,15 @@ public class V2BlueTwoTipAutoMainSide extends LinearOpMode {
                         robot.shooter.spinUpShooterAuto()
                 ))
                 .splineToConstantHeading(
-                        shootingApproach,
+                        new Vector2d(-57, -10),
                         Math.PI,
-                        returnVelocity,
-                        returnAcceleration
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 )
                 .strafeToConstantHeading(
-                        shootingPosition,
-                        returnVelocity,
-                        returnAcceleration
+                        new Vector2d(-61, -10),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 );
 
         TrajectoryActionBuilder tab5 = returnToShoot.endTrajectory().fresh()
