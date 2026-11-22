@@ -28,8 +28,6 @@ import java.util.Arrays;
 @Config
 //@Autonomous(name = "Red Three Tip Auto", group = "Autonomous")
 public class RedThreeTip extends LinearOpMode {
-    private static final Vector2d HOME_POSITION = new Vector2d(-29, -61);
-    private static final double HOME_HEADING = Math.PI;
 
     protected CommandAbstract robot;
 
@@ -51,24 +49,24 @@ public class RedThreeTip extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
         Vector2d shootingPosition = new Vector2d(59, -11.2845);
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+        TrajectoryActionBuilder preloadPath = md.actionBuilder(initialPose)
                 .strafeToConstantHeading(shootingPosition,
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerApproachPath = preloadPath.endTrajectory().fresh()
 
                 .strafeToLinearHeading(new Vector2d(26.616, -48.58), Math.toRadians(-90),
                         pathVelocity(55, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2_3 = tab1_2.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerEntryPath = flowerApproachPath.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(26.7575, -56.1725),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2 = tab2_3.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerPickupPath = flowerEntryPath.endTrajectory().fresh()
 
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(26.7575, -54.5025),
@@ -89,30 +87,30 @@ public class RedThreeTip extends LinearOpMode {
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder returnToShootingPosition = tab2.endTrajectory().fresh()
+        TrajectoryActionBuilder secondShotPath = flowerPickupPath.endTrajectory().fresh()
                 .strafeToLinearHeading(shootingPosition, initialPose.heading,
                         pathVelocity(55, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder approachNextPickup = returnToShootingPosition.endTrajectory().fresh()
+        TrajectoryActionBuilder nextPickupPath = secondShotPath.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(49, shootingPosition.y),
                         pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
                 .strafeToLinearHeading(new Vector2d(58.5, -60), -Math.PI / 2,
                         pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder returnFromNextPickup = approachNextPickup.endTrajectory().fresh()
+        TrajectoryActionBuilder thirdShotPath = nextPickupPath.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(49, shootingPosition.y), initialPose.heading,
                         pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
                 .strafeToConstantHeading(shootingPosition,
                         pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder parkInRedHome = returnFromNextPickup.endTrajectory().fresh()
+        TrajectoryActionBuilder parkPath = thirdShotPath.endTrajectory().fresh()
                 .setTangent(-Math.PI / 2)
                 .splineToSplineHeading(new Pose2d(35, -39, -Math.PI / 2), Math.PI,
                         pathVelocity(60, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
-                .splineToSplineHeading(new Pose2d(-10, -39, HOME_HEADING), Math.PI,
+                .splineToSplineHeading(new Pose2d(-10, -39, Math.PI), Math.PI,
                         pathVelocity(67, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
-                .splineToConstantHeading(HOME_POSITION, -3 * Math.PI / 4,
+                .splineToConstantHeading(new Vector2d(-29, -61), -3 * Math.PI / 4,
                         pathVelocity(60, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40));
 
         while (!isStopRequested() && !opModeIsActive()) {
@@ -133,22 +131,22 @@ public class RedThreeTip extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen1 = tab1.build();
-        Action trajectoryActionChosen1_2 = tab1_2.build();
-        Action trajectoryActionChosen2 = tab2.build();
-        Action trajectoryActionChosen2_3 = tab2_3.build();
-        Action returnToShootingPositionAction = returnToShootingPosition.build();
-        Action approachNextPickupAction = approachNextPickup.build();
-        Action returnFromNextPickupAction = returnFromNextPickup.build();
-        Action parkInRedHomeAction = parkInRedHome.build();
+        Action toPreload = preloadPath.build();
+        Action approachFlower = flowerApproachPath.build();
+        Action collectFlower = flowerPickupPath.build();
+        Action enterFlower = flowerEntryPath.build();
+        Action toSecondShot = secondShotPath.build();
+        Action toNextPickup = nextPickupPath.build();
+        Action toThirdShot = thirdShotPath.build();
+        Action park = parkPath.build();
 
         runActionSafely(
                 new SequentialAction(
                         robot.arm.armUpAction(),
-                        trajectoryActionChosen1,
+                        toPreload,
                         robot.shooter.launchAction(),
 
-                        trajectoryActionChosen1_2,
+                        approachFlower,
                         robot.arm.armDownAction(),
                         new ParallelAction(
 
@@ -156,9 +154,9 @@ public class RedThreeTip extends LinearOpMode {
                                 robot.intake.spinUpIntake(),
                                 robot.feeder.startFeedAction()
                         ),
-                        trajectoryActionChosen2_3,
+                        enterFlower,
 
-                        trajectoryActionChosen2,
+                        collectFlower,
 
                         robot.shooter.spinUpShooterAuto(),
                         robot.intake.spinUpIntake(),
@@ -167,7 +165,7 @@ public class RedThreeTip extends LinearOpMode {
 
                         new ParallelAction(
 
-                                returnToShootingPositionAction,
+                                toSecondShot,
                                 robot.arm.armUpAction()
                         ),
 
@@ -176,20 +174,20 @@ public class RedThreeTip extends LinearOpMode {
 
                         new ParallelAction(
 
-                                approachNextPickupAction,
+                                toNextPickup,
                                 robot.intake.spinUpIntake(),
                                 robot.feeder.startFeedAction()
                         ),
 
                         new ParallelAction(
 
-                                returnFromNextPickupAction,
+                                toThirdShot,
                                 robot.shooter.spinUpShooterAuto()
                         ),
                         robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
 
-                        parkInRedHomeAction
+                        park
 
                 ),
                 29.5,
@@ -231,7 +229,7 @@ public class RedThreeTip extends LinearOpMode {
 
                 action = robot.drivetrain
                         .actionBuilder(localizer.getPose())
-                        .strafeToLinearHeading(HOME_POSITION, HOME_HEADING,
+                        .strafeToLinearHeading(new Vector2d(-29, -61), Math.PI,
                                 pathVelocity(67, Math.PI * 1.25),
                                 new ProfileAccelConstraint(-67, 67))
                         .build();
