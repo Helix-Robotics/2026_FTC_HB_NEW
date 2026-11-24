@@ -157,7 +157,7 @@ public class MainV4Red extends MainV3Red {
 
 
             if (gamepad2.xWasPressed()) {
-                robot.setShooterVelocity(1100);
+                robot.setShooterVelocity(1145.0);
             }
 
             if (gamepad2.y) {
