@@ -38,18 +38,19 @@ public class RedPassiveAuto extends LinearOpMode {
 
 
         TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(58.5, 10.0));
+                .waitSeconds(0.2);
 
 
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 // -10 x y 10
 
-                .strafeToLinearHeading(new Vector2d(47.19, 22.5), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(48.0, 18.0), Math.toRadians(0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .waitSeconds(0.25)
-                .strafeToLinearHeading(new Vector2d(56.5,  22.5), Math.toRadians(0));
+                .setTangent(Math.PI / 2)
+                .splineToConstantHeading(new Vector2d(48.0, 26.25), 0)
+                .strafeToConstantHeading(new Vector2d(56.5, 26.25));
 
 
 
@@ -63,17 +64,17 @@ public class RedPassiveAuto extends LinearOpMode {
 
 
 
-                .waitSeconds(0.25)
+
                 .strafeToConstantHeading(new Vector2d(54.5, 22.5))
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(56.5, 22.5))
-                .waitSeconds(0.25);
+
+                .strafeToConstantHeading(new Vector2d(56.5, 22.5));
+
 
 
 
         TrajectoryActionBuilder tab3_4 = tab3__4.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(53,  25), Math.toRadians(12.5))
-                .waitSeconds(0.75);
+                .strafeToLinearHeading(new Vector2d(53,  25), Math.toRadians(15.0))
+                .waitSeconds(0.25);
 
 
         TrajectoryActionBuilder tab4 = tab3_4.endTrajectory().fresh()
@@ -123,8 +124,9 @@ public class RedPassiveAuto extends LinearOpMode {
 
         runActionSafely(
                 new SequentialAction(
-
+                        robot.shooter.spinUpShooterAuto(),
                         robot.vision.checkForRedSideTag(),
+                        trajectoryActionChosen1,
                         robot.shooter.launchAction(),
 
 

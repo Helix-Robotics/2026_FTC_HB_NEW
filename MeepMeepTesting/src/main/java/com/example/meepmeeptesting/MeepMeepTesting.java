@@ -76,28 +76,25 @@ public class MeepMeepTesting {
         MecanumKinematics kinematics = new MecanumKinematics(NATIONALS_TRACK_WIDTH);
         VelConstraint velocity = pathVelocity(kinematics, 40, NATIONALS_MAX_ANGULAR_VELOCITY);
         ProfileAccelConstraint acceleration = new ProfileAccelConstraint(-30, 40);
-        Vector2d pickup = new Vector2d(55.5, 27.5);
+        Vector2d pickup = new Vector2d(56.5, 22.5);
 
         // RedPassiveAuto uses tab1 to seed tab2 and starts driving with tab2.
         TrajectoryActionBuilder approachPath = builder
                 .strafeToConstantHeading(new Vector2d(58.5, 10), velocity, acceleration)
                 .endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(47.19, 27.5), 0, velocity, acceleration);
+                .setTangent(Math.PI)
+                .splineToConstantHeading(new Vector2d(47.19, 22.5), Math.PI / 2, velocity, acceleration);
 
         TrajectoryActionBuilder entryPath = approachPath.endTrajectory().fresh()
-                .waitSeconds(0.75)
                 .strafeToLinearHeading(pickup, 0, velocity, acceleration);
 
         TrajectoryActionBuilder pickupPath = entryPath.endTrajectory().fresh()
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(54, 27.5), velocity, acceleration)
-                .waitSeconds(0.25)
-                .strafeToConstantHeading(pickup, velocity, acceleration)
-                .waitSeconds(0.25);
+                .strafeToConstantHeading(new Vector2d(54.5, 22.5), velocity, acceleration)
+                .strafeToConstantHeading(pickup, velocity, acceleration);
 
         TrajectoryActionBuilder shotPath = pickupPath.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(53, 25), Math.toRadians(12.5), velocity, acceleration)
-                .waitSeconds(0.75);
+                .waitSeconds(0.25);
 
         TrajectoryActionBuilder parkPath = shotPath.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(47, 57.266), 0, velocity, acceleration);
