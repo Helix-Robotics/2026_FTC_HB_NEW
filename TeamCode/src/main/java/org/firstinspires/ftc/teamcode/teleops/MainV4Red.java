@@ -25,12 +25,22 @@ public class MainV4Red extends MainV3Red {
     public static double maxTurnPower = 0.25;
     public static double turnStickDeadband = 0.08;
     public static double maxShotTurnDegrees = 2;
+    public static double hiveCornerDifferenceInches = 3;
+
+    public static double hiveLeftAimOffsetDegrees = 2.5; // pos aim right
+    public static double hiveRightAimOffsetDegrees = -2.5;
 
     private double heldHeading = Double.NaN;
     private double shotStartHeading = Double.NaN;
     private boolean shootTriggerWasHeld;
     private double lastTagFrame = Double.NaN;
     private long lastTagFrameMs;
+    private boolean hiveLock;
+    private boolean hiveTriggerWasHeld;
+    private double hiveHeading = Double.NaN;
+    private double lastHiveFrame = Double.NaN;
+    private boolean hasHiveTarget;
+    private HiveTarget.AimPoint hiveAimPoint = HiveTarget.AimPoint.CENTER;
 
     private boolean slowMode = false;
 
@@ -45,6 +55,12 @@ public class MainV4Red extends MainV3Red {
         shotStartHeading = Double.NaN;
         shootTriggerWasHeld = false;
         lastTagFrame = Double.NaN;
+        hiveLock = false;
+        hiveTriggerWasHeld = false;
+        hiveHeading = Double.NaN;
+        lastHiveFrame = Double.NaN;
+        hasHiveTarget = false;
+        hiveAimPoint = HiveTarget.AimPoint.CENTER;
 
         robot.drivetrain.setSlowMode(false);
 
@@ -72,7 +88,14 @@ public class MainV4Red extends MainV3Red {
         List<Double> driveValues = bindDriveTrain();
         double turnStick = driveValues.get(2);
 
-        boolean manualTurn = Math.abs(turnStick) > turnStickDeadband;
+        boolean shotInProgress = robot.shooter.getLaunchState() != LaunchState.IDLE;
+        boolean hiveTriggerHeld = gamepad1.left_trigger > 0.5;
+        if (hiveTriggerHeld && !hiveTriggerWasHeld && !shotInProgress) {
+            hiveLock = !hiveLock;
+            hiveAimPoint = HiveTarget.AimPoint.CENTER;
+        }
+        hiveTriggerWasHeld = hiveTriggerHeld;
+        boolean manualTurn = !hiveLock && Math.abs(turnStick) > turnStickDeadband;
         double heading = Math.toDegrees(robot.drivetrain.getGyroRadians());
         double turnRate = robot.drivetrain.getIMU().getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate;
 
@@ -86,12 +109,17 @@ public class MainV4Red extends MainV3Red {
         boolean shootTriggerHeld = gamepad2.left_trigger > 0.75 || gamepad2.right_trigger > 0.75;
         boolean shootPressed = shootTriggerHeld && !shootTriggerWasHeld;
         shootTriggerWasHeld = shootTriggerHeld;
-        if (shootPressed && robot.shooter.getLaunchState() == LaunchState.IDLE) {
+        if (shootPressed && !shotInProgress) {
             shotStartHeading = heading;
         }
         double shotHeadingChange = Math.abs(AngleUnit.normalizeDegrees(heading - shotStartHeading));
         boolean shotHeadingOkay = Double.isFinite(shotHeadingChange) && shotHeadingChange <= maxShotTurnDegrees;
-        boolean hasTarget = hasFreshAllianceTag();
+        LLResult frame = robot.vision.getLatestResult();
+        boolean freshFrame = isFreshTagFrame(frame);
+        updateHiveAim(frame, freshFrame, !shotInProgress && !shootPressed, heading);
+        boolean blue = robot.getIsBlue();
+        boolean hasTarget = hiveLock ? hasHiveTarget
+                : freshFrame && robot.getFilteredCameraTagX(blue ? 41 : 33, blue ? 42 : 34) > -180;
 
         /** Intake Related **/
         if (gamepad2.rightBumperWasPressed())
@@ -239,8 +267,17 @@ public class MainV4Red extends MainV3Red {
 
 
         /** Bind Drivetrain **/
-        boolean feeding = robot.shooter.getLaunchState() == LaunchState.LAUNCHING;
-        double headingError = AngleUnit.normalizeDegrees(heldHeading - heading);
+        LaunchState launchState = robot.shooter.getLaunchState();
+        boolean feeding = launchState == LaunchState.LAUNCHING;
+        double driveHeading = heldHeading;
+        if (hiveLock && launchState != LaunchState.IDLE) {
+            driveHeading = shotStartHeading;
+            heldHeading = shotStartHeading;
+            hiveHeading = Double.NaN;
+        } else if (hiveLock && Double.isFinite(hiveHeading)) {
+            driveHeading = hiveHeading;
+        }
+        double headingError = AngleUnit.normalizeDegrees(driveHeading - heading);
         double turnPower = 0;
 
 
@@ -267,6 +304,15 @@ public class MainV4Red extends MainV3Red {
         //telemetryFeeder(telemetry, packet);
         telemetryShooter(telemetry, packet);
         telemetryShooting(telemetry, packet);
+        if (!hiveLock) {
+            telemetry.addData("Hive lock", "Off");
+        } else if (launchState != LaunchState.IDLE) {
+            telemetry.addData("Hive lock", "Holding shot heading");
+        } else if (!hasTarget) {
+            telemetry.addData("Hive lock", "Waiting for hive");
+        } else {
+            telemetry.addData("Hive lock", hiveAimPoint);
+        }
         if (Double.isFinite(shotHeadingChange)) {
             telemetry.addData("Turn since Shoot", "%.1f deg", shotHeadingChange);
         }
@@ -282,8 +328,35 @@ public class MainV4Red extends MainV3Red {
         dashboard.sendTelemetryPacket(packet);
     }
 
-    private boolean hasFreshAllianceTag() {
-        LLResult frame = robot.vision.getLatestResult();
+    private void updateHiveAim(LLResult frame, boolean freshFrame, boolean canChooseAim, double heading) {
+        if (!hiveLock || !freshFrame || gamepad1.a || !Double.isFinite(heading)) {
+            hasHiveTarget = false;
+            lastHiveFrame = Double.NaN;
+        } else if (frame.getTimestamp() != lastHiveFrame) {
+            lastHiveFrame = frame.getTimestamp();
+            HiveTarget target = HiveTarget.find(frame.getFiducialResults(), robot.getIsBlue());
+            hasHiveTarget = target != null;
+            if (hasHiveTarget && canChooseAim) {
+                hiveAimPoint = target.chooseAimPoint(hiveAimPoint, hiveCornerDifferenceInches);
+                double offset = 0;
+                if (hiveAimPoint == HiveTarget.AimPoint.LEFT) {
+                    offset = hiveLeftAimOffsetDegrees;
+                } else if (hiveAimPoint == HiveTarget.AimPoint.RIGHT) {
+                    offset = hiveRightAimOffsetDegrees;
+                }
+                hiveHeading = heading - target.angleTo(hiveAimPoint) - offset;
+            }
+        }
+
+        if (!hasHiveTarget && Double.isFinite(hiveHeading)) {
+            if (Double.isFinite(heldHeading)) {
+                heldHeading = heading;
+            }
+            hiveHeading = Double.NaN;
+        }
+    }
+
+    private boolean isFreshTagFrame(LLResult frame) {
         if (frame == null || !frame.isValid() || !Double.isFinite(frame.getTimestamp())
                 || frame.getTimestamp() <= 0 || frame.getStaleness() > 150) {
             return false;
@@ -294,12 +367,7 @@ public class MainV4Red extends MainV3Red {
             lastTagFrame = frame.getTimestamp();
             lastTagFrameMs = nowMs;
         }
-        if (nowMs - lastTagFrameMs > 150) {
-            return false;
-        }
-
-        boolean blue = robot.getIsBlue();
-        return robot.getFilteredCameraTagX(blue ? 41 : 33, blue ? 42 : 34) > -180;
+        return nowMs - lastTagFrameMs <= 150;
     }
 
 
