@@ -99,7 +99,7 @@ public class MainV4Red extends MainV3Red {
         double heading = Math.toDegrees(robot.drivetrain.getGyroRadians());
         double turnRate = robot.drivetrain.getIMU().getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate;
 
-        if (manualTurn || !Double.isFinite(heading)) {
+        if (!hiveLock || !Double.isFinite(heading)) {
             heldHeading = Double.NaN;
         } else if (gamepad1.a || !Double.isFinite(heldHeading)) {
             heldHeading = heading;
@@ -120,6 +120,7 @@ public class MainV4Red extends MainV3Red {
         boolean blue = robot.getIsBlue();
         boolean hasTarget = hiveLock ? hasHiveTarget
                 : freshFrame && robot.getFilteredCameraTagX(blue ? 41 : 33, blue ? 42 : 34) > -180;
+        boolean missingStartTarget = !shotInProgress && !hasTarget;
 
         /** Intake Related **/
         if (gamepad2.rightBumperWasPressed())
@@ -209,17 +210,17 @@ public class MainV4Red extends MainV3Red {
                 robot.shooter.updateShooterPIDFar();
 
 
-                robot.shooter.rpmSet(1240.0);
+                robot.shooter.rpmSet(1225.0);
             }
 
             if (gamepad2.y) {
                 robot.stopshoot();
-            } else if (manualTurn || gamepad1.a || !shotHeadingOkay || !hasTarget) {
+            } else if (manualTurn || gamepad1.a || !shotHeadingOkay || missingStartTarget) {
                 if (robot.shooter.getLaunchState() != LaunchState.IDLE) {
                     robot.stopshoot();
                 }
             } else {
-                robot.shoot(shootPressed, 6, false, false);
+                robot.shoot(shootPressed, 4, false, false);
             }
 
 
