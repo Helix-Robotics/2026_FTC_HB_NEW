@@ -52,19 +52,19 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
         Localizer localizer = md.getLocalizer();
 
 
-        TrajectoryActionBuilder tab1 = md.actionBuilder(initialPose)
+        TrajectoryActionBuilder preloadPath = md.actionBuilder(initialPose)
                 .strafeToConstantHeading(new Vector2d(-59, 11.2845),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab1_2 = tab1.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerApproachPath = preloadPath.endTrajectory().fresh()
 
 
                 .strafeToLinearHeading(new Vector2d(-26.616,  48.58), Math.toRadians(90),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab2_3 = tab1_2.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerEntryPath = flowerApproachPath.endTrajectory().fresh()
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 56.75),
                         pathVelocity(40, Math.PI * 1.25),
@@ -72,7 +72,7 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        TrajectoryActionBuilder tab2 = tab2_3.endTrajectory().fresh()
+        TrajectoryActionBuilder flowerPickupPath = flowerEntryPath.endTrajectory().fresh()
 
                 .waitSeconds(0.25)
                 .strafeToConstantHeading(new Vector2d(-26.7575, 54.75),
@@ -102,27 +102,16 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-        Vector2d secondRowEntry = new Vector2d(-21.7575, 35);
-        Vector2d secondRowExit = new Vector2d(30, 35);
-        Vector2d shootingApproach = new Vector2d(57, 10);
-        Vector2d shootingPosition = new Vector2d(61, 10);
-
-
-
-
-
-        VelConstraint returnVelocity = pathVelocity(40, Math.PI * 1.25);
-        ProfileAccelConstraint returnAcceleration = new ProfileAccelConstraint(-30, 40);
-
-        TrajectoryActionBuilder returnToShoot = tab2.endTrajectory().fresh()
+        TrajectoryActionBuilder secondShotPath = flowerPickupPath.endTrajectory().fresh()
                 .setTangent(Math.toRadians(-90))
                 .splineToSplineHeading(
-                        new Pose2d(secondRowEntry, 0),
+                        new Pose2d(-21.7575, 35, 0),
                         0,
-                        returnVelocity,
-                        returnAcceleration
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 )
-                .strafeToConstantHeading(secondRowExit, returnVelocity, returnAcceleration)
+                .strafeToConstantHeading(new Vector2d(30, 35),
+                        pathVelocity(40, Math.PI * 1.25), new ProfileAccelConstraint(-30, 40))
 
                 .afterDisp(0, new SequentialAction(
                         robot.arm.armUpAction(),
@@ -131,23 +120,23 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
                         robot.shooter.spinUpShooterAuto()
                 ))
                 .splineToConstantHeading(
-                        shootingApproach,
+                        new Vector2d(57, 10),
                         0,
-                        returnVelocity,
-                        returnAcceleration
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 )
                 .strafeToConstantHeading(
-                        shootingPosition,
-                        returnVelocity,
-                        returnAcceleration
+                        new Vector2d(61, 10),
+                        pathVelocity(40, Math.PI * 1.25),
+                        new ProfileAccelConstraint(-30, 40)
                 );
 
-        TrajectoryActionBuilder tab5 = returnToShoot.endTrajectory().fresh()
+        TrajectoryActionBuilder nextApproachPath = secondShotPath.endTrajectory().fresh()
                 .strafeToConstantHeading(new Vector2d(44.79, 22.5),
                         pathVelocity(40, Math.PI * 1.25),
                         new ProfileAccelConstraint(-30, 40));
 
-        TrajectoryActionBuilder tab6 = tab5.endTrajectory().fresh()
+        TrajectoryActionBuilder nextPickupPath = nextApproachPath.endTrajectory().fresh()
 
 
 
@@ -173,7 +162,7 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
                 .waitSeconds(0.67);
 
 
-        TrajectoryActionBuilder tab7 = tab6.endTrajectory().fresh()
+        TrajectoryActionBuilder parkPath = nextPickupPath.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(48.78,  54.266), Math.toRadians(0),
                         pathVelocity(67, Math.PI * 1.25),
                         new ProfileAccelConstraint(-67, 67));
@@ -219,26 +208,26 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen1 = tab1.build();
-        Action trajectoryActionChosen1_2 = tab1_2.build();
-        Action trajectoryActionChosen2 = tab2.build();
-        Action trajectoryActionChosen2_3 = tab2_3.build();
-        Action returnToShootAction = returnToShoot.build();
-        Action trajectoryActionChosen5 = tab5.build();
-        Action trajectoryActionChosen6 = tab6.build();
-        Action trajectoryActionChosen7 = tab7.build();
+        Action toPreload = preloadPath.build();
+        Action approachFlower = flowerApproachPath.build();
+        Action collectFlower = flowerPickupPath.build();
+        Action enterFlower = flowerEntryPath.build();
+        Action toSecondShot = secondShotPath.build();
+        Action approachNext = nextApproachPath.build();
+        Action collectNext = nextPickupPath.build();
+        Action park = parkPath.build();
 
 
         runActionSafely(
                 new SequentialAction(
                         robot.arm.armUpAction(),
-                        trajectoryActionChosen1,
+                        toPreload,
                         robot.shooter.launchAction(),
 
-                        trajectoryActionChosen1_2,
+                        approachFlower,
                         robot.arm.flowerShakeUp(),
                         robot.arm.armDownAction(),
-                        trajectoryActionChosen2_3,
+                        enterFlower,
 
 
 //
@@ -250,7 +239,7 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
                                 robot.feeder.startFeedAction()
                         ),
 
-                        trajectoryActionChosen2,
+                        collectFlower,
 
 
                         robot.intake.spinUpIntake(),
@@ -260,12 +249,12 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-                        returnToShootAction,
+                        toSecondShot,
                         robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
 
                         robot.intake.stopIntake(),
-                        trajectoryActionChosen5,
+                        approachNext,
 
                         new ParallelAction(
 
@@ -279,9 +268,9 @@ public class V2RedTwoTipAutoMainSide extends LinearOpMode {
 
 
 
-                        trajectoryActionChosen6,
+                        collectNext,
                         robot.shooter.closeLaunchAction(),
-                        trajectoryActionChosen7
+                        park
 
 
 

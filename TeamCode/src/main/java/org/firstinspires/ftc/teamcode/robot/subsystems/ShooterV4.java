@@ -24,7 +24,7 @@ public class ShooterV4 extends ShooterAbstract {
     public static double V3_TARGET_VELOCITY = 1175.0; //  1160.0;
     public static double V3_MIN_VELOCITY = 1125.0; // 1110.0;
 
-    public static int V3_READY_CYCLES = 5; //2
+    public static int V3_READY_CYCLES = 1; //2
     public static int V3_FEED_DELAY_CYCLES = 0;
 
     public static boolean isV3 = false;
