@@ -711,6 +711,10 @@ public final class MecanumDrive {
 
     // This routine drives the robot field relative
     public void driveFieldRelative(double forward, double right, double rotate) {
+        driveFieldRelative(forward, right, rotate, false);
+    }
+
+    public void driveFieldRelative(double forward, double right, double rotate, boolean prioritizeTurn) {
         //make sure that we will get imu
         imu = lazyImu.get();
 
@@ -726,6 +730,16 @@ public final class MecanumDrive {
         // Third, convert back to cartesian
         double newForward = r * Math.sin(theta);
         double newRight = r * Math.cos(theta);
+
+        if (prioritizeTurn) {
+            double translationLimit = 1 - Math.abs(rotate);
+            double translationPower = Math.abs(newForward) + Math.abs(newRight);
+            if (translationPower > translationLimit) {
+                double scale = translationLimit / translationPower;
+                newForward *= scale;
+                newRight *= scale;
+            }
+        }
 
         // Finally, call the drive method with robot relative forward and right amounts
         drive(newForward, newRight, rotate);

@@ -1,17 +1,31 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.commands.CommandAbstract;
 import org.firstinspires.ftc.teamcode.commands.CommandsV4;
+import org.firstinspires.ftc.teamcode.robot.subsystems.ShooterAbstract.LaunchState;
 
 import java.util.List;
 
+@Config
 @TeleOp(name = "V4 Red Teleop")
 public class MainV4Red extends MainV3Red {
+
+    public static double headingP = 0.02;
+    public static double headingD = 0.003;
+    public static double maxTurnPower = 0.25;
+    public static double turnStickDeadband = 0.08;
+
+    private double heldHeading = Double.NaN;
 
     private boolean slowMode = false;
 
@@ -21,6 +35,8 @@ public class MainV4Red extends MainV3Red {
     @Override
     public void init() {
         robot = new CommandsV4(hardwareMap, new Pose2d(0, 0, 0));
+        CommandAbstract.alignStatus = CommandAbstract.ALIGN_STATUS.PENDING;
+        heldHeading = Double.NaN;
 
         robot.drivetrain.setSlowMode(false);
 
@@ -46,15 +62,14 @@ public class MainV4Red extends MainV3Red {
         // drivetrain
         bindCommonDriveTrain();
         List<Double> driveValues = bindDriveTrain();
-
-        //binding
-        /**Above is only for testing**/
-        robot.fieldRelativeDrive(driveValues.get(1), driveValues.get(0), driveValues.get(2));
-
-        /** Bind Drivetrain **/
-        //binding Drive train
-        if (gamepad1.aWasPressed()) {
-            bindCommonDriveTrain();
+        double turnStick = driveValues.get(2);
+        boolean manualTurn = Math.abs(turnStick) > turnStickDeadband;
+        double heading = Math.toDegrees(robot.drivetrain.getGyroRadians());
+        double turnRate = robot.drivetrain.getIMU().getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate;
+        if (manualTurn || !Double.isFinite(heading)) {
+            heldHeading = Double.NaN;
+        } else if (gamepad1.a || !Double.isFinite(heldHeading)) {
+            heldHeading = heading;
         }
 
         /** Intake Related **/
@@ -150,7 +165,11 @@ public class MainV4Red extends MainV3Red {
 
             boolean leftShotRequested = gamepad2.left_trigger > 0.75;
             boolean rightShotRequested = gamepad2.right_trigger > 0.75;
-            robot.shoot(leftShotRequested || rightShotRequested, 6, leftShotRequested, false);
+            if (manualTurn && robot.shooter.getLaunchState() != LaunchState.IDLE) {
+                robot.stopshoot();
+            } else if (!manualTurn) {
+                robot.shoot(leftShotRequested || rightShotRequested, 6, false, false);
+            }
 
 
 
@@ -200,6 +219,22 @@ public class MainV4Red extends MainV3Red {
 
 
 
+        /** Bind Drivetrain **/
+        boolean feeding = robot.shooter.getLaunchState() == LaunchState.LAUNCHING;
+        double headingError = AngleUnit.normalizeDegrees(heldHeading - heading);
+        double turnPower = 0;
+        if (manualTurn) {
+            turnPower = turnStick;
+        } else if (Double.isFinite(headingError) && Double.isFinite(turnRate)) {
+            double limit = Range.clip(maxTurnPower, 0, 1);
+            turnPower = Range.clip(-headingP * headingError + headingD * turnRate, -limit, limit);
+        }
+        if (Double.isFinite(heading)) {
+            robot.drivetrain.driveFieldRelative(driveValues.get(0), driveValues.get(1), turnPower, feeding);
+        } else {
+            robot.drivetrain.drive(-driveValues.get(0), -driveValues.get(1), turnPower);
+        }
+
         // telemetry
         TelemetryPacket packet = new TelemetryPacket();
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -217,6 +252,12 @@ public class MainV4Red extends MainV3Red {
 
         telemetry.addData("Intake Velocity", robot.intake.getVel());
         packet.put("Intake Vel", robot.intake.getVel());
+        packet.put("Desired heading (deg)", heldHeading);
+        packet.put("Actual heading (deg)", heading);
+        packet.put("Heading error (deg)", headingError);
+        packet.put("Turn rate (deg/s)", turnRate);
+        packet.put("Turn power", turnPower);
+        packet.put("Shooting rotation priority", feeding);
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
@@ -235,14 +276,22 @@ public class MainV4Red extends MainV3Red {
 
     public void telemetryShooting(Telemetry telemetry, TelemetryPacket packet){
 
-        telemetry.addData("Distance to Tag", robot.getDistanceFromTag());
-        packet.put("Distance to Tag", robot.getDistanceFromTag());
+        LLResult frame = robot.vision.getLatestResult();
+        double distanceToTag = -1;
+        if (frame != null && frame.isValid() && frame.getFiducialResults() != null
+                && !frame.getFiducialResults().isEmpty()) {
+            distanceToTag = robot.getDistanceFromTag();
+        }
+        telemetry.addData("Distance to Tag", distanceToTag);
+        packet.put("Distance to Tag", distanceToTag);
         telemetry.addData("Distance to Tag PODS", robot.getDistanceFromTagPODS());
         packet.put("Distance to Tag PODS", robot.getDistanceFromTagPODS());
 
-        telemetry.addData("TagX", robot.getCameraTagX());
-        packet.put("TagX", robot.getCameraTagX());
-        telemetry.addData("TagY", robot.getCameraTagY());
-        packet.put("TagY", robot.getCameraTagY());
+        if (frame != null) {
+            telemetry.addData("TagX", robot.getCameraTagX());
+            packet.put("TagX", robot.getCameraTagX());
+            telemetry.addData("TagY", robot.getCameraTagY());
+            packet.put("TagY", robot.getCameraTagY());
+        }
     }
 }
