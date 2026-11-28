@@ -201,7 +201,7 @@ public class MainV4Red extends MainV3Red {
             if (gamepad2.right_trigger > 0.5) {
 //
                 robot.shooter.updateShooterPID();
-                robot.shooter.rpmSet(1145.0);
+                robot.shooter.rpmSet(1150.0);
             }
 
 
@@ -210,7 +210,7 @@ public class MainV4Red extends MainV3Red {
                 robot.shooter.updateShooterPIDFar();
 
 
-                robot.shooter.rpmSet(1225.0);
+                robot.shooter.rpmSet(1200.0);
             }
 
             if (gamepad2.y) {
