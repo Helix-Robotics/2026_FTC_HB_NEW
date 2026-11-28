@@ -44,12 +44,12 @@ public class RedPassiveAuto extends LinearOpMode {
         TrajectoryActionBuilder tab2 = tab1.endTrajectory().fresh()
                 // -10 x y 10
 
-                .strafeToLinearHeading(new Vector2d(47.19, 27.5), Math.toRadians(0));
+                .strafeToLinearHeading(new Vector2d(47.19, 22.5), Math.toRadians(0));
 
 
         TrajectoryActionBuilder tab3 = tab2.endTrajectory().fresh()
-                .waitSeconds(0.75)
-                .strafeToLinearHeading(new Vector2d(55.5,  27.5), Math.toRadians(0));
+                .waitSeconds(0.25)
+                .strafeToLinearHeading(new Vector2d(56.5,  22.5), Math.toRadians(0));
 
 
 
@@ -64,9 +64,9 @@ public class RedPassiveAuto extends LinearOpMode {
 
 
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(54, 27.5))
+                .strafeToConstantHeading(new Vector2d(54.5, 22.5))
                 .waitSeconds(0.25)
-                .strafeToConstantHeading(new Vector2d(55.5, 27.5))
+                .strafeToConstantHeading(new Vector2d(56.5, 22.5))
                 .waitSeconds(0.25);
 
 
@@ -127,9 +127,10 @@ public class RedPassiveAuto extends LinearOpMode {
                         robot.vision.checkForRedSideTag(),
                         robot.shooter.launchAction(),
 
-                        trajectoryActionChosen2,
+
 
                         new ParallelAction(
+                                trajectoryActionChosen2,
                                 robot.intake.spinUpIntake(),
                                 robot.arm.armDownAction(),
                                 robot.feeder.startFeedAction()

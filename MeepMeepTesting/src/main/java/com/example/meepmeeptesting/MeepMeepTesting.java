@@ -28,13 +28,18 @@ public class MeepMeepTesting {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        boolean redOnly = args.length > 0 && "red".equalsIgnoreCase(args[0]);
-        boolean blueOnly = args.length > 0 && "blue".equalsIgnoreCase(args[0]);
-        if (!blueOnly) {
+        String route = args.length > 0 ? args[0] : "passive";
+        boolean showBoth = "both".equalsIgnoreCase(route);
+        boolean showRed = showBoth || "red".equalsIgnoreCase(route);
+        boolean showBlue = showBoth || "blue".equalsIgnoreCase(route);
+        if (showRed) {
             meepMeep.addEntity(buildBot(meepMeep, false));
         }
-        if (!redOnly) {
+        if (showBlue) {
             meepMeep.addEntity(buildBot(meepMeep, true));
+        }
+        if (!showRed && !showBlue) {
+            meepMeep.addEntity(buildRedPassiveBot(meepMeep));
         }
 
         BufferedImage customField;
@@ -53,6 +58,52 @@ public class MeepMeepTesting {
         meepMeep.setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .start();
+    }
+
+    private static RoadRunnerBotEntity buildRedPassiveBot(MeepMeep meepMeep) {
+        Pose2d initialPose = new Pose2d(59, 10, 0);
+        RoadRunnerBotEntity bot = new DefaultBotBuilder(meepMeep)
+                .setColorScheme(new ColorSchemeRedDark())
+                .setStartPose(initialPose)
+                .setConstraints(40, 40, NATIONALS_MAX_ANGULAR_VELOCITY,
+                        NATIONALS_MAX_ANGULAR_VELOCITY, NATIONALS_TRACK_WIDTH)
+                .build();
+        bot.runAction(buildRedPassiveRoute(bot.getDrive().actionBuilder(initialPose)));
+        return bot;
+    }
+
+    private static SequentialAction buildRedPassiveRoute(TrajectoryActionBuilder builder) {
+        MecanumKinematics kinematics = new MecanumKinematics(NATIONALS_TRACK_WIDTH);
+        VelConstraint velocity = pathVelocity(kinematics, 40, NATIONALS_MAX_ANGULAR_VELOCITY);
+        ProfileAccelConstraint acceleration = new ProfileAccelConstraint(-30, 40);
+        Vector2d pickup = new Vector2d(55.5, 27.5);
+
+        // RedPassiveAuto uses tab1 to seed tab2 and starts driving with tab2.
+        TrajectoryActionBuilder approachPath = builder
+                .strafeToConstantHeading(new Vector2d(58.5, 10), velocity, acceleration)
+                .endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(47.19, 27.5), 0, velocity, acceleration);
+
+        TrajectoryActionBuilder entryPath = approachPath.endTrajectory().fresh()
+                .waitSeconds(0.75)
+                .strafeToLinearHeading(pickup, 0, velocity, acceleration);
+
+        TrajectoryActionBuilder pickupPath = entryPath.endTrajectory().fresh()
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(new Vector2d(54, 27.5), velocity, acceleration)
+                .waitSeconds(0.25)
+                .strafeToConstantHeading(pickup, velocity, acceleration)
+                .waitSeconds(0.25);
+
+        TrajectoryActionBuilder shotPath = pickupPath.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(53, 25), Math.toRadians(12.5), velocity, acceleration)
+                .waitSeconds(0.75);
+
+        TrajectoryActionBuilder parkPath = shotPath.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(47, 57.266), 0, velocity, acceleration);
+
+        return new SequentialAction(approachPath.build(), entryPath.build(), pickupPath.build(), shotPath.build(),
+                parkPath.build());
     }
 
     private static RoadRunnerBotEntity buildBot(MeepMeep meepMeep, boolean blue) {

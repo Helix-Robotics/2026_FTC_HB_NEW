@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.utils.Localizer;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "Blue Special Three Tip Auto", group = "Autonomous")
+//@Autonomous(name = "Blue Special Three Tip Auto", group = "Autonomous")
 public class BlueSpecialThreeTipAuto extends LinearOpMode {
     private static final double TIP_WAIT_SECONDS = 1.5;
 

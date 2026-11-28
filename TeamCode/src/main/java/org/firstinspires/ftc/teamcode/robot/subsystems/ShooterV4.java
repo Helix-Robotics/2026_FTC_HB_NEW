@@ -86,7 +86,7 @@ public class ShooterV4 extends ShooterAbstract {
             robot.feederDirection(false);
             rpmSet(1145.0);
 
-            shoot(true, 4, false, false);
+            shoot(true, 3, false, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;
@@ -125,7 +125,7 @@ public class ShooterV4 extends ShooterAbstract {
             robot.feederDirection(false);
             rpmSet(1115.0);
 
-            shoot(true, 4, false, false);
+            shoot(true, 3, false, false);
             packet.put("Launch Status:", launchState);
             if (launchState != LaunchState.IDLE){
                 return true;

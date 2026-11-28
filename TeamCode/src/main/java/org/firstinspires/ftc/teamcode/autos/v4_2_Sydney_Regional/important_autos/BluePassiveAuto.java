@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystems.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.Localizer;
 
 @Config
-@Autonomous(name = "Blue Passive Auto", group = "Autonomous")
+//@Autonomous(name = "Blue Passive Auto", group = "Autonomous")
 public class BluePassiveAuto extends LinearOpMode {
     protected CommandAbstract robot;
 
