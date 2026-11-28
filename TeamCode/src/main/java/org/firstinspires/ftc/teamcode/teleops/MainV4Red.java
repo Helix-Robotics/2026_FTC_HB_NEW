@@ -24,8 +24,13 @@ public class MainV4Red extends MainV3Red {
     public static double headingD = 0.003;
     public static double maxTurnPower = 0.25;
     public static double turnStickDeadband = 0.08;
+    public static double maxShotTurnDegrees = 2;
 
     private double heldHeading = Double.NaN;
+    private double shotStartHeading = Double.NaN;
+    private boolean shootTriggerWasHeld;
+    private double lastTagFrame = Double.NaN;
+    private long lastTagFrameMs;
 
     private boolean slowMode = false;
 
@@ -37,6 +42,9 @@ public class MainV4Red extends MainV3Red {
         robot = new CommandsV4(hardwareMap, new Pose2d(0, 0, 0));
         CommandAbstract.alignStatus = CommandAbstract.ALIGN_STATUS.PENDING;
         heldHeading = Double.NaN;
+        shotStartHeading = Double.NaN;
+        shootTriggerWasHeld = false;
+        lastTagFrame = Double.NaN;
 
         robot.drivetrain.setSlowMode(false);
 
@@ -63,14 +71,27 @@ public class MainV4Red extends MainV3Red {
         bindCommonDriveTrain();
         List<Double> driveValues = bindDriveTrain();
         double turnStick = driveValues.get(2);
+
         boolean manualTurn = Math.abs(turnStick) > turnStickDeadband;
         double heading = Math.toDegrees(robot.drivetrain.getGyroRadians());
         double turnRate = robot.drivetrain.getIMU().getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate;
+
         if (manualTurn || !Double.isFinite(heading)) {
             heldHeading = Double.NaN;
         } else if (gamepad1.a || !Double.isFinite(heldHeading)) {
             heldHeading = heading;
         }
+
+
+        boolean shootTriggerHeld = gamepad2.left_trigger > 0.75 || gamepad2.right_trigger > 0.75;
+        boolean shootPressed = shootTriggerHeld && !shootTriggerWasHeld;
+        shootTriggerWasHeld = shootTriggerHeld;
+        if (shootPressed && robot.shooter.getLaunchState() == LaunchState.IDLE) {
+            shotStartHeading = heading;
+        }
+        double shotHeadingChange = Math.abs(AngleUnit.normalizeDegrees(heading - shotStartHeading));
+        boolean shotHeadingOkay = Double.isFinite(shotHeadingChange) && shotHeadingChange <= maxShotTurnDegrees;
+        boolean hasTarget = hasFreshAllianceTag();
 
         /** Intake Related **/
         if (gamepad2.rightBumperWasPressed())
@@ -163,12 +184,14 @@ public class MainV4Red extends MainV3Red {
                 robot.shooter.rpmSet(1240.0);
             }
 
-            boolean leftShotRequested = gamepad2.left_trigger > 0.75;
-            boolean rightShotRequested = gamepad2.right_trigger > 0.75;
-            if (manualTurn && robot.shooter.getLaunchState() != LaunchState.IDLE) {
+            if (gamepad2.y) {
                 robot.stopshoot();
-            } else if (!manualTurn) {
-                robot.shoot(leftShotRequested || rightShotRequested, 6, false, false);
+            } else if (manualTurn || gamepad1.a || !shotHeadingOkay || !hasTarget) {
+                if (robot.shooter.getLaunchState() != LaunchState.IDLE) {
+                    robot.stopshoot();
+                }
+            } else {
+                robot.shoot(shootPressed, 6, false, false);
             }
 
 
@@ -179,10 +202,6 @@ public class MainV4Red extends MainV3Red {
                 robot.setShooterVelocity(1145.0);
             }
 
-            if (gamepad2.y) {
-                robot.stopshoot();
-                //robot.turnToTag(true);
-            }
         }
 
         if (gamepad1.y) {
@@ -223,6 +242,10 @@ public class MainV4Red extends MainV3Red {
         boolean feeding = robot.shooter.getLaunchState() == LaunchState.LAUNCHING;
         double headingError = AngleUnit.normalizeDegrees(heldHeading - heading);
         double turnPower = 0;
+
+
+
+
         if (manualTurn) {
             turnPower = turnStick;
         } else if (Double.isFinite(headingError) && Double.isFinite(turnRate)) {
@@ -244,6 +267,9 @@ public class MainV4Red extends MainV3Red {
         //telemetryFeeder(telemetry, packet);
         telemetryShooter(telemetry, packet);
         telemetryShooting(telemetry, packet);
+        if (Double.isFinite(shotHeadingChange)) {
+            telemetry.addData("Turn since Shoot", "%.1f deg", shotHeadingChange);
+        }
         telementryRoadRunner(telemetry, packet);
 
         /**Start of Drive Train Information **/
@@ -251,17 +277,31 @@ public class MainV4Red extends MainV3Red {
         /**End of Drive Train Information**/
 
         telemetry.addData("Intake Velocity", robot.intake.getVel());
-        packet.put("Intake Vel", robot.intake.getVel());
-        packet.put("Desired heading (deg)", heldHeading);
-        packet.put("Actual heading (deg)", heading);
-        packet.put("Heading error (deg)", headingError);
-        packet.put("Turn rate (deg/s)", turnRate);
-        packet.put("Turn power", turnPower);
-        packet.put("Shooting rotation priority", feeding);
 
         telemetry.update();
         dashboard.sendTelemetryPacket(packet);
     }
+
+    private boolean hasFreshAllianceTag() {
+        LLResult frame = robot.vision.getLatestResult();
+        if (frame == null || !frame.isValid() || !Double.isFinite(frame.getTimestamp())
+                || frame.getTimestamp() <= 0 || frame.getStaleness() > 150) {
+            return false;
+        }
+
+        long nowMs = System.nanoTime() / 1_000_000L;
+        if (frame.getTimestamp() != lastTagFrame) {
+            lastTagFrame = frame.getTimestamp();
+            lastTagFrameMs = nowMs;
+        }
+        if (nowMs - lastTagFrameMs > 150) {
+            return false;
+        }
+
+        boolean blue = robot.getIsBlue();
+        return robot.getFilteredCameraTagX(blue ? 41 : 33, blue ? 42 : 34) > -180;
+    }
+
 
     @Override
     public void telemetryFeeder(Telemetry telemetry, TelemetryPacket packet) {
